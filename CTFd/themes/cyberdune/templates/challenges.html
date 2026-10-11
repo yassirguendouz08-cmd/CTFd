@@ -21,7 +21,7 @@
             <div class="cd-challenge-grid">
               <template x-for="c in getChallenges(cat).filter(c => Cyberdune.matches(c, query, category, state))" :key="c.id">
                 <button type="button" class="cd-challenge-card challenge-button" :class="[c.solved_by_me ? 'challenge-solved' : '', ...c.tags.map(tag => `tag-${tag.value.replace(/ /g, '-')}`)]" :value="c.id" @click="loadChallenge(c.id)">
-                  <span class="cd-card-top"><span class="cd-card-category" x-text="c.category"></span><span class="cd-card-state" x-text='c.solved_by_me ? "✓ " + {{ cd_copy("Solved") | tojson }} : {{ cd_copy("Open") | tojson }}' ></span></span>
+                  <span class="cd-card-top"><span class="cd-card-category"><i class="cd-category-symbol" :class="Cyberdune.categoryIcon(c.category)" aria-hidden="true"></i><span x-text="c.category"></span></span><span class="cd-card-state" x-text='c.solved_by_me ? "✓ " + {{ cd_copy("Solved") | tojson }} : {{ cd_copy("Open") | tojson }}' ></span></span>
                   <span class="cd-card-name" x-text="c.name"></span>
                   <span class="cd-card-tags"><template x-for="tag in c.tags" :key="tag.id"><span x-text="tag.value"></span></template></span>
                   <span class="cd-card-bottom"><span><strong x-text="c.value"></strong> <small>{{ cd_copy("Points") }}</small></span><span class="cd-card-solves" x-show="c.solves !== null && c.solves !== undefined" x-text='c.solves + " " + {{ cd_copy("solves") | tojson }}' ></span><span aria-hidden="true">↗</span></span>

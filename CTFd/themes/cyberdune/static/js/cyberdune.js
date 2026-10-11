@@ -8,7 +8,17 @@
       (!category || challenge.category === category) &&
       (state === 'all' || (state === 'solved' ? challenge.solved_by_me : !challenge.solved_by_me));
   };
-  window.Cyberdune = { matches };
+  const categoryIcon = category => {
+    const value = String(category || '').toLowerCase();
+    if (/web/.test(value)) return 'fas fa-globe';
+    if (/crypt/.test(value)) return 'fas fa-key';
+    if (/pwn|binary/.test(value)) return 'fas fa-microchip';
+    if (/rev/.test(value)) return 'fas fa-code';
+    if (/forensic/.test(value)) return 'fas fa-fingerprint';
+    if (/osint/.test(value)) return 'fas fa-search';
+    return 'fas fa-flag';
+  };
+  window.Cyberdune = { matches, categoryIcon };
 
   document.addEventListener('DOMContentLoaded', () => {
     const root = window.init || {};
@@ -33,6 +43,7 @@
           const link = document.createElement('a'); link.className = 'cd-home-category';
           link.href = `${root.urlRoot || ''}/challenges?category=${encodeURIComponent(category)}`;
           const title = document.createElement('strong'); title.textContent = category;
+          const icon = document.createElement('i'); icon.className = `cd-category-symbol ${categoryIcon(category)}`; icon.setAttribute('aria-hidden', 'true'); title.prepend(icon);
           const detail = document.createElement('span');
           detail.textContent = `${visible.filter(challenge => challenge.category === category).length} · ${copy('Available challenges')} ↗`;
           link.append(title, detail); grid.append(link);

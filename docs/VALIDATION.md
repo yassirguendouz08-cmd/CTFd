@@ -42,8 +42,12 @@ were not transferred. Layouts were adapted to original forms and authorized data
   appearance and no runtime errors; controls, editors and scripts stay upstream.
 - Representative final desktop/mobile/Arabic screenshots were visually reviewed.
 
-Decorative terminal/background animations are removed; earlier animation tests
-are historical. Reduced-motion CSS disables transitions. Fonts are locally served
+The new enhancement uses one decorative SVG network behind the existing hero,
+two signal paths, two sparse pulses and a scan line. Typing completes once; there
+is no continuous JavaScript animation loop, synthetic telemetry or extra API
+polling. Motion pauses while the page is hidden and honors reduced motion. A
+persisted pause/resume control stops decorative CSS motion. Earlier desert art
+and large terminal panels remain unused. Reduced-motion CSS disables transitions. Fonts are locally served
 with OFL licenses. Expected anonymous /events HTTP 403 requests are permitted by
 the browser suite; no other unexpected failed requests were found.
 
@@ -57,3 +61,16 @@ Local QA uses SQLite rather than live MariaDB/Redis. Email delivery, OAuth,
 external challenge instances and every plugin/bracket/freeze setup were not tested
 against live services. Keep core/admin themes and verify event integrations. For
 upgrades, compare upstream templates and API contracts; see [THEME.md](THEME.md).
+
+## Advanced operations enhancement — local QA
+
+- Existing browser suite: registration/login/logout, filters, challenge dialogs,
+  attachments, charts, profiles, mobile navigation and no unexpected errors.
+- English, French, Arabic and RTL checks pass after the enhancement.
+- Motion checks: one-pass typing, pause/resume persistence, reduced-motion static
+  rendering, mobile width, finite real-score update highlight and cleanup.
+  The observer test changes only fixture DOM text, never backend points.
+- Desktop hero, mobile hero, challenge board, modal and standings screenshots
+  reviewed. Existing backend, scoring, flag validation and databases are untouched.
+- CSS and SVG assets are local; existing Font Awesome category icons require no
+  new dependency. Effects have no canvas, video, filters or oversized blur layers.

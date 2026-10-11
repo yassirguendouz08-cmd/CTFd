@@ -99,6 +99,14 @@
       "reference": "mobile",
       "device": "MOBILE",
       "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "1fe2bf7df4c9494386f03bfccdb6a423",
+      "name": "projects/10465941215322521387/screens/1fe2bf7df4c9494386f03bfccdb6a423",
+      "title": "CYBERDUNE CTF — Enhanced Operational Interface",
+      "reference": "operations-enhanced",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP edit_screens refinement of landing variant 1"
     }
   ],
   "selectedLanding": "811c3aec8fb84afc94dcf715250386b5",

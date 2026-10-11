@@ -55,3 +55,13 @@ Push the local `platform` checkout to GitHub, then run
 If an older pasted Theme Header/Footer overrides the theme, follow [THEME.md](../THEME.md).
 Baseline code checkpoint: `7832aa34`. The local test database is isolated; deployed
 MariaDB, Redis and email delivery require the live rollout checks in [VALIDATION.md](../VALIDATION.md).
+
+## Advanced visual enhancement
+
+The existing selected landing was refined with the official `edit_screens` tool,
+not regenerated from scratch. Screen `1fe2bf7df4c9494386f03bfccdb6a423` adds
+angular network paths, sparse signal nodes, a terminal label, motion controls and
+HUD accents. [PNG](exports/operations-enhanced.png) · [HTML](exports/operations-enhanced.html).
+The export is a visual reference only: its sample dates, coordinates, policies and
+telemetry are not deployed or treated as real event data. The application keeps
+its existing layout, copy, palette, official logos and authorized CTFd metrics.

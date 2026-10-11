@@ -10,7 +10,8 @@
   {% block stylesheets %}{{ Assets.css("assets/scss/main.scss", theme="core") }}{% endblock %}
   {{ Plugins.styles }}
   {{ Configs.theme_header }}
-  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/cyberdune.css') }}?v=9">
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/cyberdune.css') }}?v=10">
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/operations.css') }}?v=10">
   <script>
     window.cyberduneCopy = {{ messages.get(get_locale() | string, messages.en) | tojson }};
     window.init = {
@@ -47,12 +48,13 @@
   <footer class="cd-footer">
     {% include 'components/contacts.html' %}
     <div class="container cd-footer-inner">
-      <div class="cd-footer-brand"><span class="cd-official-logo"><img src="{{ url_for('views.themes_beta', theme='cyberdune', path='img/cyberdune-white.png') }}?v=9" alt="CyberDune" width="11812" height="11812" loading="lazy"></span><small>{{ cd_copy("Sahara roots. Hacker mindset.") }}</small></div>
+      <div class="cd-footer-brand"><span class="cd-official-logo"><img src="{{ url_for('views.themes_beta', theme='cyberdune', path='img/cyberdune-white.png') }}?v=10" alt="CyberDune" width="11812" height="11812" loading="lazy"></span><small>{{ cd_copy("Sahara roots. Hacker mindset.") }}</small></div>
       <div class="cd-footer-links"><a href="https://cyberdune.online" target="_blank" rel="noopener">{{ cd_copy("The club \u2197") }}</a><a href="{{ url_for('views.static_html', route='/') }}#event-guide">{{ cd_copy("Event guide") }}</a><a href="https://ctfd.io" target="_blank" rel="noopener">Powered by CTFd</a></div>
     </div>
   </footer>
   {% include 'components/notifications.html' %}
-  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/cyberdune.js') }}?v=9"></script>
+  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/cyberdune.js') }}?v=10"></script>
+  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/operations.js') }}?v=10"></script>
   {% block scripts %}{{ Assets.js("assets/js/page.js", theme="core") }}{% endblock %}
   {{ Plugins.scripts }}
   {{ Configs.theme_footer }}

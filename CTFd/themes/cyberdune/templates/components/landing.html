@@ -1,6 +1,13 @@
 {% from "components/copy.html" import cd_copy with context %}
+{% set ops = {
+  'en': {'label': 'CYBERDUNE // CTF OPERATIONS', 'pause': 'Pause motion', 'resume': 'Resume motion', 'art': 'CTF LAB // EST GUELMIM'},
+  'fr': {'label': 'CYBERDUNE // OPÉRATIONS CTF', 'pause': 'Suspendre les animations', 'resume': 'Reprendre les animations', 'art': 'LAB CTF // EST GUELMIM'},
+  'ar': {'label': 'CYBERDUNE // عمليات CTF', 'pause': 'إيقاف الحركة', 'resume': 'تشغيل الحركة', 'art': 'مختبر CTF // المدرسة العليا للتكنولوجيا كلميم'}
+}.get(get_locale() | string, {'label': 'CYBERDUNE // CTF OPERATIONS', 'pause': 'Pause motion', 'resume': 'Resume motion', 'art': 'CTF LAB // EST GUELMIM'}) %}
 <section class="container cd-hero">
+  {% include 'components/network.html' %}
   <div class="cd-hero-copy">
+    <p class="cd-operation-label"><span class="visually-hidden">{{ ops.label }}</span><span aria-hidden="true"><span data-operation-copy="{{ ops.label }}">{{ ops.label }}</span><span class="cd-cursor"></span></span></p>
     <div class="cd-club-tags"><span>EST Guelmim</span><span>CyberDune CTF</span></div>
     <p class="cd-eyebrow"><span class="cd-dot"></span> {{ cd_copy("BORN IN THE SAHARA. CONNECTED BY CURIOSITY.") }}</p>
     <h1 class="cd-brand-title">{{ cd_copy('Follow the clues.') }}<br><span>{{ cd_copy("Find your flag.") }}</span></h1>
@@ -9,6 +16,7 @@
       <a class="btn btn-primary" href="{{ url_for('challenges.listing') }}">{{ cd_copy("Take the challenge") }} <span aria-hidden="true">↗</span></a>
       {% if not authed() and registration_visible() %}<a class="btn btn-outline-secondary" href="{{ url_for('auth.register') }}">{{ cd_copy("Join CyberDune") }}</a>{% else %}<a class="btn btn-outline-secondary" href="{{ url_for('views.static_html', route='/') }}#event-guide">{{ cd_copy("Your first flag starts here") }}</a>{% endif %}
     </div>
+    <div class="cd-motion-tools"><small>{{ ops.art }}</small><button type="button" class="cd-motion-toggle" data-motion-toggle data-pause="{{ ops.pause }}" data-resume="{{ ops.resume }}" aria-pressed="false">{{ ops.pause }}</button></div>
     <div class="cd-hero-note">{{ cd_copy("EST Guelmim · Moroccan Sahara") }}</div>
   </div>
   <aside class="cd-briefing" aria-labelledby="cd-briefing-title">

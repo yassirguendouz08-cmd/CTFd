@@ -19,6 +19,10 @@ teams and standings, with English, French and Arabic copy.
 
 - Official CyberDune logo and responsive theme.
 - Google Stitch-informed competition workspace with an actual event briefing.
+- Subtle circuit/network hero, category icons and HUD accents.
+- Pauseable motion, reduced-motion support and finite score/solve highlights.
+- Subtle circuit/network hero, category icons and HUD accents.
+- Pauseable motion, reduced-motion support and finite score/solve highlights.
 - Live authorized homepage metrics, category links and standings preview.
 - Local typography, recovery page and rank-preserving scoreboard search.
 - English, French and Arabic language choices, with RTL support for Arabic.

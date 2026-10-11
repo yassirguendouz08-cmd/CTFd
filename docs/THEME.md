@@ -83,3 +83,17 @@ blocks and Alpine bindings. Check core asset paths and board/scoreboard contract
 Validate registration, login, settings, teams, files, hints, flag attempts, solved
 states, scores, profiles, languages, notifications and logout. See
 [validation notes](VALIDATION.md) for completed checks and live limits.
+
+## Operations visual layer
+
+`static/css/operations.css` adds HUD corners, subtle card motifs, category icons,
+input focus and standings highlights to the existing theme.
+`templates/components/network.html` supplies the decorative hero SVG;
+`static/js/operations.js` manages one-pass typing, motion preferences and finite
+highlights on actual score/solve changes. The illustration is hidden from screen
+readers; the terminal label has a stable accessible equivalent.
+
+Colors and page grids remain in `cyberdune.css`. To adjust intensity, tune signal
+opacity/timing in `operations.css`; do not modify challenge state or score APIs.
+The hero pause button remembers its preference locally and reduced motion takes
+priority. Cache version 10 loads the enhancement after the original CSS.
