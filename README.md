@@ -2,6 +2,10 @@
 
 # CyberDune CTF
 
+The requested theme from **core-theme.zip** is now included as **core-theme**.
+The activation helper selects it by default. See the
+[supplied theme guide](docs/SUPPLIED-THEME.md) for activation and rollback.
+
 **Follow the clues. Find your flag.**
 
 The CyberDune club's Capture The Flag platform, built on **CTFd 3.8.8**.

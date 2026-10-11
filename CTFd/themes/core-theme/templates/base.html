@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}" data-bs-theme="dark">
+<head>
+  <title>{{ title or Configs.ctf_name }}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="{{ Configs.ctf_small_icon or url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-white.png') }}" type="image/x-icon">
+
+
+  {{ meta | safe }}
+
+  {% block stylesheets %}
+    {{ Assets.css("assets/scss/main.scss") }}
+    <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/bootstrap4-neon-glow.css') }}">
+
+  {% endblock %}
+
+  {{ Plugins.styles }}
+
+
+  <script type="text/javascript">
+      window.init = {
+          'urlRoot': {{ request.script_root | tojson }},
+          'csrfNonce': {{ Session.nonce | tojson }},
+          'userMode': "{{ Configs.user_mode }}",
+          'userId': {{ Session.id }},
+          'userName': {{ User.name | tojson }},
+          'userEmail': {{ User.email | tojson }},
+          'userVerified': {{ User.verified | tojson }},
+          'teamId': {{ Team.id | tojson }},
+          'teamName': {{ Team.name | tojson }},
+          'start': {{ Configs.start | tojson }},
+          'end': {{ Configs.end | tojson }},
+          'themeSettings': {{ Configs.theme_settings | tojson }},
+          'eventSounds': [
+            "{{ url_for('views.themes_beta', theme='core-theme', path='sounds/notification.webm') }}",
+            "{{ url_for('views.themes_beta', theme='core-theme', path='sounds/notification.mp3') }}",
+          ],
+      }
+  </script>
+
+  {{ Configs.theme_header }}
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/integration.css') }}">
+</head>
+<body>
+{% include "components/navbar.html" %}
+
+
+<main role="main">
+  {% block content %}
+  {% endblock %}
+</main>
+
+{% include "components/snackbar.html" %}
+
+{% include "components/notifications.html" %}
+
+{% block scripts %}
+  {{ Assets.js("assets/js/page.js") }}
+{% endblock %}
+
+{{ Plugins.scripts }}
+
+{{ Configs.theme_footer }}
+
+<script>
+  // Click outside modal-content → close modal
+  document.addEventListener('mousedown', function(e) {
+    if (e.target.closest('.modal-content')) return;
+
+    var openModals = document.querySelectorAll('.modal.show');
+    openModals.forEach(function(modal) {
+      if (modal.contains(e.target)) {
+        var bsModal = window.bootstrap && window.bootstrap.Modal.getInstance(modal);
+        if (bsModal) {
+          bsModal.hide();
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>

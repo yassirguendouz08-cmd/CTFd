@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg_container df-content">
+  <div class="title_container">
+    <div class="container">
+      <h1>{% trans %}Users{% endtrans %}</h1>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        {% if q and field %}
+          <h5 class="text-muted text-center">
+            {% trans %}Searching for users with <strong>{{ field }}</strong> matching <strong>{{ q }}</strong>{% endtrans %}
+          </h5>
+          <h6 class="text-muted text-center pb-3">
+            {% trans page=users.page, total=users.total %}Page {{ page }} of {{ total }} results{% endtrans %}
+          </h6>
+        {% endif %}
+
+        {% with form = Forms.users.PublicUserSearchForm(field=field, q=q) %}
+          <form m ethod="GET" class="row justify-content-around align-items-center">
+            <div class="mb-3 col-md-2">
+              {{ form.field(class="form-select w-100") }}
+            </div>
+            <div class="mb-3 col-md-8">
+              {{ form.q(class="form-control w-100", placeholder=form.q.description) }}
+            </div>
+            <div class="mb-3 col-md-2">
+              <button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 21L17.5001 17.5M20 11.5C20 16.1944 16.1944 20 11.5 20C6.80558 20 3 16.1944 3 11.5C3 6.80558 6.80558 3 11.5 3C16.1944 3 20 6.80558 20 11.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </form>
+        {% endwith %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-striped align-middle">
+          <thead>
+          <tr>
+            <th>{% trans %}User{% endtrans %}</th>
+            <th>{% trans %}Website{% endtrans %}</th>
+            <th class="d-none d-md-table-cell">{% trans %}Affiliation{% endtrans %}</th>
+            <th class="d-none d-md-table-cell">{% trans %}Country{% endtrans %}</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for user in users.items %}
+            <tr>
+              <td>
+                {% if scores_visible() %}
+                  <a href="{{ url_for('users.public', user_id=user.id) }}">
+                    {{ user.name | truncate(50) }}
+                  </a>
+                {% else %}
+                  <span>{{ user.name | truncate(50) }}</span>
+                {% endif %}
+
+                {% if user.bracket_id %}
+                  <span class="badge bg-secondary ms-2">{{ user.bracket.name }}</span>
+                {% endif %}
+
+                {% if user.oauth_id %}
+                  <a href="https://majorleaguecyber.org/u/{{ user.name }}">
+                    <span class="badge bg-primary ms-2">{% trans %}Official{% endtrans %}</span>
+                  </a>
+                {% endif %}
+              </td>
+
+              <td class="text-center" style="width: 10px;">
+                {% if user.website and (user.website.startswith('http://') or user.website.startswith('https://')) %}
+                  <a href="{{ user.website }}" target="_blank" rel="noopener">
+                    <i data-toggle="tooltip" data-placement="top" title="{{ user.website }}">
+                      <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C14.5013 4.73835 15.9228 8.29203 16 12C15.9228 15.708 14.5013 19.2616 12 22M12 2C9.49872 4.73835 8.07725 8.29203 8 12C8.07725 15.708 9.49872 19.2616 12 22M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22M2.50002 9H21.5M2.5 15H21.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </i>
+                  </a>
+                {% endif %}
+              </td>
+
+              <td class="d-none d-md-table-cell d-lg-table-cell">
+                {% if user.affiliation %}
+                  {% if user.affiliation | length > 50 %}
+                    <span data-toggle="tooltip" data-placement="top" title="{{ user.affiliation }}">
+									{% if user.affiliation %}{{ user.affiliation | truncate(50) }}{% endif %}
+								</span>
+                  {% else %}
+                    <span>
+									{% if user.affiliation %}{{ user.affiliation | truncate(50) }}{% endif %}
+								</span>
+                  {% endif %}
+                {% endif %}
+              </td>
+              <td class="d-none d-md-table-cell d-lg-table-cell">
+								<span>
+									{% if user.country %}
+                    <i class="flag-{{ user.country.lower() }}"></i>
+                    {{ lookup_country_code(user.country) }}
+                  {% endif %}
+								</span>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {% if users.pages > 1 %}
+      <div class="row">
+        <div class="col-md-12">
+          <div class="text-center">
+            {% trans %}Page{% endtrans %} <br>
+
+            {% if users.page != 1 %}
+              <a href="{{ prev_page }}">&lt;&lt;&lt;</a>
+            {% endif %}
+
+            <select class="page-select">
+              {% for page in range(1, users.pages + 1) %}
+                <option {% if users.page == page %}selected{% endif %}>{{ page }}</option>
+              {% endfor %}
+            </select>
+
+            {% if users.next_num %}
+              <a href="{{ next_page }}">&gt;&gt;&gt;</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ Assets.js("assets/js/users/list.js") }}
+{% endblock %}

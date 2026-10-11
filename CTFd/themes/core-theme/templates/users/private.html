@@ -1,0 +1,506 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/css/flag-icons.min.css"
+/>
+
+<div class="bg_container df-content">
+  <div class="title_container">
+    <div class="container">
+      <h1>{{ user.name }}</h1>
+
+      {% if user.team_id %}
+        <div class="profile-team-badge">
+          <a href="{{ url_for('teams.public', team_id=user.team_id) }}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            {{ user.team.name }}
+          </a>
+        </div>
+      {% endif %}
+
+      <div class="profile-badges" style="display: flex !important; align-items: center !important; gap: 20px !important; justify-content: center !important;">
+        {% if user.oauth_id %}
+          <a href="https://majorleaguecyber.org/u/{{ user.name }}" class="profile-badge profile-badge-official">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            {% trans %}Official{% endtrans %}
+          </a>
+        {% endif %}
+
+        {% if user.affiliation %}
+          <span class="profile-badge profile-badge-affiliation">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            {{ user.affiliation }}
+          </span>
+        {% endif %}
+
+        {% if user.country %}
+          <span class="profile-badge profile-badge-country">
+            <i class="flag-{{ user.country.lower() }}"></i>
+            {{ lookup_country_code(user.country) }}
+          </span>
+        {% endif %}
+
+        {% if user.website %}
+          <a href="{{ user.website }}" target="_blank" rel="noopener" class="profile-badge profile-badge-website" title="{{ user.website }}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+            Website
+          </a>
+        {% endif %}
+
+        {% if user.bracket_id %}
+          <span class="profile-badge profile-badge-bracket">
+            {{ user.bracket.name }}
+          </span>
+        {% endif %}
+      </div>
+
+      {% if user.fields %}
+        <div class="profile-fields">
+          {% for field in user.fields %}
+            <span class="profile-field">
+              <strong>{{ field.name }}:</strong> {{ field.value }}
+            </span>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="profile-stats">
+        {% if account.place %}
+          <div class="profile-stat">
+            <span class="profile-stat-value">{{ account.place }}</span>
+            <span class="profile-stat-label">Place</span>
+          </div>
+          <div class="profile-stat-divider"></div>
+        {% endif %}
+        {% if account %}
+          <div class="profile-stat">
+            <span class="profile-stat-value">{{ account.get_score(admin=True) }}</span>
+            <span class="profile-stat-label">Points</span>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container">
+    {% include "components/errors.html" %}
+
+    {% set solves = user.solves %}
+    {% set awards = user.awards %}
+
+    {% if solves or awards %}
+      {% if awards %}
+        <div class="profile-section">
+          <h3 class="profile-section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="7"/>
+              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+            </svg>
+            {% trans %}Awards{% endtrans %}
+          </h3>
+          <div class="awards-grid">
+            {% for award in awards %}
+              <div class="award-card">
+                <div class="award-card-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 15C8.68629 15 6 12.3137 6 9V3.44444C6 3.0306 6 2.82367 6.06031 2.65798C6.16141 2.38021 6.38021 2.16141 6.65798 2.06031C6.82367 2 7.0306 2 7.44444 2H16.5556C16.9694 2 17.1763 2 17.342 2.06031C17.6198 2.16141 17.8386 2.38021 17.9397 2.65798C18 2.82367 18 3.0306 18 3.44444V9C18 12.3137 15.3137 15 12 15ZM12 15V18M18 4H20.5C20.9659 4 21.1989 4 21.3827 4.07612C21.6277 4.17761 21.8224 4.37229 21.9239 4.61732C22 4.80109 22 5.03406 22 5.5V6C22 6.92997 22 7.39496 21.8978 7.77646C21.6204 8.81173 20.8117 9.62038 19.7765 9.89778C19.395 10 18.93 10 18 10M6 4H3.5C3.03406 4 2.80109 4 2.61732 4.07612C2.37229 4.17761 2.17761 4.37229 2.07612 4.61732C2 4.80109 2 5.03406 2 5.5V6C2 6.92997 2 7.39496 2.10222 7.77646C2.37962 8.81173 3.18827 9.62038 4.22354 9.89778C4.60504 10 5.07003 10 6 10M7.44444 22H16.5556C16.801 22 17 21.801 17 21.5556C17 19.5919 15.4081 18 13.4444 18H10.5556C8.59188 18 7 19.5919 7 21.5556C7 21.801 7.19898 22 7.44444 22Z"/>
+                  </svg>
+                </div>
+                <div class="award-card-info">
+                  <strong class="award-card-name">{{ award.name }}</strong>
+                  {% if award.category %}
+                    <span class="award-card-category">{{ award.category }}</span>
+                  {% endif %}
+                  {% if award.description %}
+                    <span class="award-card-desc">{{ award.description }}</span>
+                  {% endif %}
+                </div>
+                <div class="award-card-value">{{ award.value }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="profile-section">
+        <h3 class="profile-section-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          {% trans %}Solves{% endtrans %}
+        </h3>
+        <table class="table table-striped align-middle">
+          <thead>
+          <tr>
+            <th>{% trans %}Challenge{% endtrans %}</th>
+            <th class="d-none d-md-block d-lg-block">{% trans %}Category{% endtrans %}</th>
+            <th>{% trans %}Value{% endtrans %}</th>
+            <th>{% trans %}Time{% endtrans %}</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for solve in solves %}
+            <tr>
+              <td>
+                <a href="{{ url_for('challenges.listing') }}#{{ solve.challenge.name }}-{{ solve.challenge.id }}">
+                  {{ solve.challenge.name }}
+                </a>
+              </td>
+              <td class="d-none d-md-block d-lg-block">{{ solve.challenge.category }}</td>
+              <td>{{ solve.challenge.value }}</td>
+              <td class="solve-time">
+                <span data-time="{{ solve.date | isoformat }}"></span>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div class="row" x-data="UserGraphs">
+        <div class="col-md-6 d-none d-md-block d-lg-block py-4">
+          <div class="progress">
+            <div
+              class="progress-bar"
+              role="progressbar"
+              :style="{ width: `${getSolvePercentage()}%`, 'background-color': 'rgb(0, 209, 64)' }"
+            >
+            </div>
+            <div
+              class="progress-bar"
+              role="progressbar"
+              :style="{ width: `${getFailPercentage()}%`, 'background-color': 'rgb(0, 82, 207)' }"
+            >
+            </div>
+          </div>
+          <div class="ps-2 float-start">
+            <svg height="16" width="16">
+              <circle cx="8" cy="8" r="5" fill="rgb(0, 209, 64)" />
+            </svg>
+            <small x-text="`Solves (${getSolvePercentage()}%)`"></small>
+          </div>
+          <div class="ps-2 float-start">
+            <svg height="16" width="16">
+              <circle cx="8" cy="8" r="5" fill="rgb(0, 82, 207)" />
+            </svg>
+            <small x-text="`Fails (${getFailPercentage()}%)`"></small>
+          </div>
+        </div>
+        <div class="col-md-6 d-none d-md-block d-lg-block py-4">
+          <div class="progress">
+            <template x-for="category in getCategoryBreakdown()" :key="category.name">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                :style="{ width: `${category.percent}%`, 'background-color': category.color }"
+              >
+              </div>
+            </template>
+          </div>
+          <template x-for="category in getCategoryBreakdown()" :key="category.name">
+            <div class="ps-2 float-start">
+              <svg height="16" width="16">
+                <circle cx="8" cy="8" r="5" :fill="category.color" />
+              </svg>
+              <small x-text="`${category.name} (${category.percent}%)`"></small>
+            </div>
+          </template>
+        </div>
+        <br class="clearfix">
+        <div class="col-md-12 d-none d-md-block d-lg-block py-4">
+          <div id="score-graph" x-ref="scoregraph" class="cyber-graph-container w-100 d-flex align-items-center">
+            <div class="text-center w-100">
+              <i class="fas fa-circle-notch fa-spin fa-3x fa-fw spinner"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="row min-vh-25">
+        <h3 class="opacity-50 text-center w-100 justify-content-center align-self-center">
+          {% trans %}No solves yet{% endtrans %}
+        </h3>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+/* ===========================
+   USER PRIVATE PROFILE
+=========================== */
+
+/* Team Badge */
+.profile-team-badge {
+  margin-top: 6px;
+}
+
+.profile-team-badge a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 10px;
+  background: rgba(186, 24, 27, 0.12);
+  border: 1px solid rgba(186, 24, 27, 0.25);
+  color: #ff8a8a;
+  font-family: "Hack", monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.profile-team-badge a:hover {
+  background: rgba(186, 24, 27, 0.2);
+  border-color: rgba(186, 24, 27, 0.45);
+  color: #ffb3b3;
+}
+
+/* Profile Badges Row */
+.profile-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-family: "Hack", monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+}
+
+.profile-badge-official {
+  background: rgba(0, 180, 100, 0.12);
+  border: 1px solid rgba(0, 180, 100, 0.3);
+  color: #5eff9e;
+}
+
+.profile-badge-official:hover {
+  color: #5eff9e;
+  background: rgba(0, 180, 100, 0.2);
+}
+
+.profile-badge-affiliation {
+  background: rgba(100, 140, 255, 0.1);
+  border: 1px solid rgba(100, 140, 255, 0.25);
+  color: #8eb8ff;
+}
+
+.profile-badge-country {
+  background: rgba(255, 200, 50, 0.1);
+  border: 1px solid rgba(255, 200, 50, 0.25);
+  color: #ffdd70;
+}
+
+.profile-badge-website {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.profile-badge-website:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.profile-badge-bracket {
+  background: rgba(186, 24, 27, 0.1);
+  border: 1px solid rgba(186, 24, 27, 0.25);
+  color: #ff7070;
+}
+
+/* Profile Fields */
+.profile-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.profile-field {
+  font-family: "Hack", monospace;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Stats (Place + Points) */
+.profile-stats {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.profile-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-stat-value {
+  font-family: 'Courier New', monospace;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: goldenrod;
+  line-height: 1;
+}
+
+.profile-stat-label {
+  font-family: "Hack", monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 4px;
+}
+
+.profile-stat-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Section Headers */
+.profile-section {
+  margin-bottom: 2rem;
+}
+
+.profile-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Hack", monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.profile-section-title svg {
+  color: #ff6b6b;
+}
+
+/* Awards Grid */
+.awards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.award-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(20, 20, 22, 0.8), rgba(15, 15, 17, 0.7));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: border-color 0.25s ease;
+}
+
+.award-card:hover {
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.award-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255, 215, 0, 0.08);
+  color: #ffd700;
+  flex-shrink: 0;
+}
+
+.award-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.award-card-name {
+  font-family: "Hack", monospace;
+  font-size: 0.82rem;
+  color: #f0f0f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.award-card-category {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 2px;
+}
+
+.award-card-desc {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.award-card-value {
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: goldenrod;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .awards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-stats {
+    justify-content: center;
+  }
+
+  .profile-badges {
+    justify-content: center;
+  }
+}
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ Assets.js("assets/js/users/private.js") }}
+{% endblock %}

@@ -1,0 +1,202 @@
+<div class="rules-bg">
+  <div class="rules-container">
+
+    <h1 class="rules-title">RamaDune CTF V1 RULES</h1>
+    <p class="rules-sub">Please read the rules carefully before participating in this CYBERDUNE ACADEMY CTF.</p>
+    <div class="rules-grid">
+        <div class="rule-card-left">
+            <!-- TEAM & ELIGIBILITY -->
+            <div class="rule-card">
+                <h3 class="rule-heading">TEAM & ELIGIBILITY</h3>
+                <ul class="rule-list">
+                <li><span>></span> Team Size: <strong> 1 - 4 Players</strong></li>
+                 <li><span>></span> Members Cyberdune Division : Just for PLayers members in Club CTF </li>
+                 <li><span>></span> Open Division : Open To all Players </li>
+               <li><span>&gt;</span> Attention ⚠️: If Team X shares the&nbsp;<strong>FLAG</strong>, they will be banned.</li>
+                </ul>
+                <br>
+                <h3 class="rule-heading">FLAG FORMAT CYBERDUNE{}</h3>
+
+                <div class="code-box">
+                    <div class="comment">// Hak di M3ak hadi</div>
+                    <div class="flag-text">CYBERDUNE{7ta_mnba3d_on3tiih_liiiiikom_hihi}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rule-card-right">
+
+            <!-- CONDUCT -->
+            <div class="rule-card red-glow">
+                <h3 class="rule-heading red">CODE OF CONDUCT</h3>
+
+                <ul class="rule-list danger">
+                <li><span>></span> No harassment of any kind</li>
+                <li><span>></span> No sharing flags/hints</li>
+                <li><span>></span> No flag holding</li>
+                <li><span>></span> No attacking the infrastructure</li>
+                <li><span>></span> No brute forcing or automation</li>
+                <li><span>></span> Use Discord tickets (no staff DMs)</li>
+                <li><span>></span> Violations = <strong class="bad"> Banne</strong></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* ====================== */
+/* CYBERDUNE RULES STYLE  */
+/* ====================== */
+main{
+    margin-top: 90px;
+}
+
+	.title_container{
+      padding: 0 !important;
+      text-align: center;
+}
+
+.rules-bg {
+  background-color: rgba(15, 15, 15, 0.70);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 25px;
+  padding : 2rem 2rem 1rem;
+  margin : 0 6rem;
+  border: 1px solid rgba(62, 60, 57, 0.3);
+  min-height: 50vh;
+  display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rules-container {
+  width: 100%;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+}
+
+.rules-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  color: #fff;
+  text-shadow: 0 0 15px #e60000;
+  animation: glitch 1.5s infinite;
+}
+
+.rules-sub {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.rules-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.rule-card-left, .rule-card-right {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 25px;
+    width: 90%;
+}
+
+.rule-card {
+  background: rgba(15, 15, 0, 0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 20px;
+  width: 100%;
+  border-radius: 18px;
+  backdrop-filter: blur(8px);
+  transition: 0.3s ease;
+}
+
+
+.rule-heading {
+  color: #ff4d4d;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+    font-style: bold;
+}
+
+.rule-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+
+.rule-list li {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  opacity: 0.95;
+}
+
+.rule-list li span {
+  color: #ff3333;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+.rule-list.danger li {
+  color: #ffb3b3;
+}
+
+.bad {
+  color: #ff0000;
+  font-weight: bold;
+}
+
+.code-box {
+  background: rgba(0,0,0,0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 10px;
+  border-radius: 10px;
+  font-family: monospace;
+  margin-top: 12px;
+  font-size: 0.8rem;
+  align-items: start;
+}
+
+.comment {
+  color: #6afc6a;
+  font-size: 0.8rem;
+  opacity: 0.8;
+  text-align: left;
+}
+
+.flag-text {
+  margin-top: 6px;
+  color: #6afc6a;
+  font-weight: bold;
+  word-break: break-all;
+  text-align: left;
+}
+
+/* Glitch title */
+@keyframes glitch {
+  0% { text-shadow: 2px 2px red; }
+  50% { text-shadow: -2px -2px #ff3333; }
+  100% { text-shadow: 2px 2px red; }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .rules-title { font-size: 2.2rem; }
+  .rule-card { padding: 15px; }
+}
+</style>

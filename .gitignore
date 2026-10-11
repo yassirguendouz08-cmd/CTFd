@@ -103,6 +103,8 @@ CTFd/themes/*
 # CYBERDUNE custom theme must survive commits and upgrades.
 !CTFd/themes/cyberdune/
 !CTFd/themes/cyberdune/**
+!CTFd/themes/core-theme/
+!CTFd/themes/core-theme/**
 
 # Local runtime/configuration, credentials and packaged releases
 .env

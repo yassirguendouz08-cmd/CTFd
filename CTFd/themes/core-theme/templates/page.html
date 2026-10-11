@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if request.path.rstrip('/') == request.script_root.rstrip('/') %}
+    {% include 'pagehome.html' %}
+  {% else %}
+  <div class="title-container">
+    {{ content | safe }}
+  </div>
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {{ Assets.js("assets/js/page.js") }}
+{% endblock %}

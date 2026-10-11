@@ -1,0 +1,61 @@
+/* Challenge styles
+-------------------------------------------------- */
+
+.challenge-desc {
+  overflow-wrap: anywhere;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 0.95rem;
+
+  img {
+    max-width: 100%;
+    border-radius: 6px;
+  }
+}
+
+[data-bs-theme="light"] .challenge-button {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.05);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 0.95rem;
+  transition: none;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  &.challenge-solved {
+    background-color: #059669;
+    border-color: #10b981;
+
+    &:hover {
+      background-color: #059669;
+      border-color: #10b981;
+    }
+  }
+}
+
+[data-bs-theme="dark"] .challenge-button {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.02);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 0.95rem;
+  transition: none;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  &.challenge-solved {
+    background-color: #059669;
+    border-color: #10b981;
+
+    &:hover {
+      background-color: #059669;
+      border-color: #10b981;
+    }
+  }
+}

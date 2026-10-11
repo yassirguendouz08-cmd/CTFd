@@ -1,0 +1,28 @@
+/* CTFd integration fixes; the supplied design remains in its original files. */
+body { overflow-y: auto !important; overflow-x: hidden; }
+main[role="main"] { padding-top: 100px; padding-bottom: 32px; }
+.ht-tm-navbar .mobile-nav-toggle { display: none; }
+.challenge-title { overflow-wrap: anywhere; padding-right: 0; font-size: 1.3rem; }
+.challenge-pill { position: static; transform: none; align-self: flex-start; margin: 12px 0; }
+.challenge-stat { font-size: 1.3rem; }
+:focus-visible { outline: 2px solid #ff7676 !important; outline-offset: 4px; }
+@media (max-width: 992px) {
+  .ht-tm-navbar .mobile-nav-toggle { display: flex; background: rgba(15,15,15,.9); }
+  .ht-tm-nav.mobile-open { display: flex; position: absolute; top: 85px; left: 12px; right: 12px; height: auto; flex-wrap: wrap; padding: 12px; background: #0f0f0f; }
+  .ht-tm-navbar .container { gap: 6px; }
+  .ht-tm-navbar-left { width: 70px; }
+  .ht-tm-navbar .btn-accent { padding: .5rem .45rem; font-size: .75rem; }
+  .ht-tm-navbar .ht-tm-navbar-left { flex: 0 0 60px; }
+  .bg_container .container .row { flex-direction: column !important; align-items: center !important; margin: 0 !important; width: 100% !important; }
+  .bg_container .text-content, .bg_container .right-column { width: 100% !important; max-width: 420px !important; min-width: 0 !important; }
+  .bg_container .right-column .text-slider { width: 100% !important; min-width: 0 !important; }
+  .bg_container .container { max-width: 100% !important; }
+  .bg_container .ctf-breached { font-size: 1rem !important; white-space: normal !important; text-align: center; }
+  .bg_container .hud-timer-container { max-width: 100%; }
+  .bottom-hud { position: relative !important; flex-wrap: wrap; gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  #hack-loader { display: none !important; }
+  .challenge-button.challenge-solved::after { background-image: none; }
+}
