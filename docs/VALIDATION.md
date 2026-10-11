@@ -82,3 +82,42 @@ removes its decorative network SVG, typing cursor, motion toggle, HUD corners an
 redundant labels. Card, metadata, form and footer typography is more readable;
 real score/solve change feedback remains finite and honors reduced motion.
 Current screenshots replace the preceding animated design previews.
+
+## Centered landing
+
+Removed the entire Mission briefing from the homepage, including start/end dates,
+schedule badge, format panel and countdown. The headline, copy and actions are
+centered; decorative accent colors are neutralized while primary buttons and the
+official logo retain the red brand accent. Competition scheduling still works in
+CTFd and is not changed by this presentation-only adjustment. English/French/Arabic,
+RTL/mobile rendering, real homepage metrics, category links and standings search
+pass. Current desktop/mobile screenshots were reviewed.
+
+
+## Platform development mode — 2026-10-11
+
+Validated against isolated in-memory CTFd fixtures; no deployed database was
+accessed or changed.
+
+- Default mode suppresses dates/status/countdown even with configured timing
+  values and an old stored index-page announcement.
+- Explicit Event Mode displays configured name, escaped briefing, UTC/local
+  dates, and upcoming/live/ended status. Invalid/incomplete schedules fail closed.
+- Browser countdowns target Start for upcoming events and End for live events;
+  ended events have no countdown. Event CTAs adapt to the current status.
+- Admin Config renders the mode/briefing fields. The backed-up platform helper
+  clears only theme mode/start/end/freeze; fixture users, teams, challenges,
+  solves and pages are unchanged.
+- Existing integration verification passes registration, login/logout, profiles,
+  notifications, user/team pages, team creation/join, challenge lists, files,
+  hints, correct/incorrect flags, solved states, scores, dynamic scoring, admin
+  APIs and theme configuration backup/restore.
+- Browser checks pass at widths 320, 390, 768 and 1440 pixels: no horizontal
+  overflow, working mobile navigation, authorized categories load, and no
+  JavaScript errors across homepage and related pages.
+- Focused unit checks cover absent/malformed settings, sample dates, incomplete
+  schedules, missing names, and exact start/end status boundaries.
+
+Activation and deployed-date cleanup: [Platform Mode guide](PLATFORM-MODE.md).
+The original event status came from CTFd timing keys read by theme JavaScript;
+there is no local persistent database from which to inspect production values.

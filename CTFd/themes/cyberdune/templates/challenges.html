@@ -1,7 +1,7 @@
 {% from "components/copy.html" import cd_copy with context %}
 {% extends 'base.html' %}
 {% block content %}
-<header class="cd-page-head container"><p class="cd-eyebrow">CYBERDUNE CTF</p><div class="cd-head-row"><div><h1>{{ cd_copy("Challenges") }}</h1><p>{{ cd_copy("Pick your next breakthrough. Follow the evidence. Leave with a flag.") }}</p></div><span class="cd-status" data-event-status>{{ cd_copy("Checking schedule") }}</span></div></header>
+<header class="cd-page-head container"><p class="cd-eyebrow">CYBERDUNE CTF</p><div class="cd-head-row"><div><h1>{{ cd_copy("Challenges") }}</h1><p>{{ cd_copy("Pick your next breakthrough. Follow the evidence. Leave with a flag.") }}</p></div>{% include 'components/presentation-status.html' %}</div></header>
 <div class="container">
   {% include 'components/errors.html' %}
   <div x-data="{ query: '', category: new URLSearchParams(location.search).get('category') || '', state: 'all' }">

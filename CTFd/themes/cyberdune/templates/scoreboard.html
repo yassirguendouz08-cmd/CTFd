@@ -1,7 +1,7 @@
 {% from "components/copy.html" import cd_copy with context %}
 {% extends 'base.html' %}
 {% block content %}
-<header class="container cd-page-head"><p class="cd-eyebrow">CYBERDUNE CTF</p><div class="cd-head-row"><div><h1>{{ cd_copy("Scoreboard") }}</h1><p>{{ cd_copy("Let your solves speak. Every correct flag leaves its mark.") }}</p></div><span class="cd-status" data-event-status>{{ cd_copy("Checking schedule") }}</span></div></header>
+<header class="container cd-page-head"><p class="cd-eyebrow">CYBERDUNE CTF</p><div class="cd-head-row"><div><h1>{{ cd_copy("Scoreboard") }}</h1><p>{{ cd_copy("Let your solves speak. Every correct flag leaves its mark.") }}</p></div>{% include 'components/presentation-status.html' %}</div></header>
 <div class="container" x-data="{rankingQuery: ''}">
   {% include 'components/errors.html' %}
   <p class="cd-score-note">{% if Configs.freeze %}{{ cd_copy("Scores may be frozen according to the event schedule.") }}{% else %}<span>●</span> {{ cd_copy("Standings refresh every 60 seconds.") }}{% endif %}</p>

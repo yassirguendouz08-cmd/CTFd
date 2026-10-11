@@ -2,38 +2,62 @@
 <section class="container cd-hero">
   <div class="cd-hero-copy">
     <p class="cd-eyebrow"><span class="cd-dot"></span> {{ cd_copy("BORN IN THE SAHARA. CONNECTED BY CURIOSITY.") }}</p>
-    <h1 class="cd-brand-title">{{ cd_copy('Follow the clues.') }}<br><span>{{ cd_copy("Find your flag.") }}</span></h1>
-    <p class="cd-hero-description">{{ cd_copy("A strange packet. A hidden message. One clue worth chasing. Put your cybersecurity skills to the test with CyberDune.") }}</p>
+    {% if cd_presentation.mode == 'event' %}
+    <h1 class="cd-brand-title">{{ cd_presentation.name }}</h1>
+    <p class="cd-hero-description">{{ cd_presentation.briefing }}</p>
+    {% else %}
+    <h1 class="cd-brand-title cd-platform-title">CYBERDUNE <span>CTF PLATFORM</span></h1>
+    <p class="cd-platform-tagline">{{ cd_copy("Explore. Learn. Hack. Evolve.") }}</p>
+    <p class="cd-hero-description">{{ cd_copy("A cybersecurity playground built for curious minds, future hackers, and competitive CTF teams.") }}</p>
+    {% endif %}
     <div class="cd-actions">
-      <a class="btn btn-primary" href="{{ url_for('challenges.listing') }}">{{ cd_copy("Take the challenge") }} <span aria-hidden="true">↗</span></a>
-      {% if not authed() and registration_visible() %}<a class="btn btn-outline-secondary" href="{{ url_for('auth.register') }}">{{ cd_copy("Join CyberDune") }}</a>{% else %}<a class="btn btn-outline-secondary" href="{{ url_for('views.static_html', route='/') }}#event-guide">{{ cd_copy("Your first flag starts here") }}</a>{% endif %}
+      {% if cd_presentation.mode == 'event' %}
+      <a class="btn btn-primary" data-event-primary data-challenges-url="{{ url_for('challenges.listing') }}" data-scoreboard-url="{{ url_for('scoreboard.listing') }}" href="{{ '#cd-platform-panel-title' if cd_presentation.status == 'Starts soon' else url_for('scoreboard.listing') if cd_presentation.status == 'Event ended' else url_for('challenges.listing') }}"><span data-event-primary-label>{{ cd_copy('View event details') if cd_presentation.status == 'Starts soon' else cd_copy('View standings') if cd_presentation.status == 'Event ended' else cd_copy('Take the challenge') }}</span> <span aria-hidden="true">↗</span></a>
+      {% else %}
+      <a class="btn btn-primary" href="{{ url_for('challenges.listing') }}">{{ cd_copy("Explore challenges") }} <span aria-hidden="true">↗</span></a>
+      {% endif %}
+      {% if not authed() and registration_visible() %}<a class="btn btn-outline-secondary" href="{{ url_for('auth.register') }}">{{ cd_copy("Join CyberDune") }}</a>{% else %}<a class="btn btn-outline-secondary" href="{{ url_for('views.static_html', route='/') }}#platform-guide">{{ cd_copy("Your first flag starts here") }}</a>{% endif %}
     </div>
   </div>
-  <aside class="cd-briefing" aria-labelledby="cd-briefing-title">
-    <div class="cd-briefing-head"><h2 id="cd-briefing-title">{{ cd_copy("Mission briefing") }}</h2><span class="cd-status" data-event-status>{{ cd_copy("Checking schedule") }}</span></div>
+</section>
+<section class="container cd-platform-panel" aria-labelledby="cd-platform-panel-title">
+  <div class="cd-briefing">
+    <div class="cd-briefing-head"><h2 id="cd-platform-panel-title">{{ cd_copy("Mission briefing") if cd_presentation.mode == 'event' else cd_copy("Platform intelligence") }}</h2>{% include 'components/presentation-status.html' %}</div>
     <div class="cd-briefing-body"><dl>
-      <div><dt>{{ cd_copy("START") }}</dt><dd><time data-event-start>{{ cd_copy("Not scheduled") }}</time></dd></div>
-      <div><dt>{{ cd_copy("END") }}</dt><dd><time data-event-end>{{ cd_copy("Not scheduled") }}</time></dd></div>
-      <div><dt>{{ cd_copy("FORMAT") }}</dt><dd>{{ cd_copy('Team competition' if Configs.user_mode == 'teams' else 'Individual competition') }}</dd></div>
-    </dl><div class="cd-countdown" data-countdown hidden><span data-countdown-label></span><strong data-countdown-value></strong></div></div>
-    <div class="cd-briefing-foot"><a href="#event-guide">{{ cd_copy("Your first flag starts here") }} <span aria-hidden="true">↗</span></a></div>
-  </aside>
+      {% if cd_presentation.mode == 'event' %}
+      <div><dt>{{ cd_copy("Competition") }}</dt><dd>{{ cd_presentation.name }}</dd></div>
+      <div><dt>{{ cd_copy("Start time") }}</dt><dd><time data-event-start datetime="{{ cd_presentation.start_date }}">{{ cd_presentation.start_date }}</time></dd></div>
+      <div><dt>{{ cd_copy("End time") }}</dt><dd><time data-event-end datetime="{{ cd_presentation.end_date }}">{{ cd_presentation.end_date }}</time></dd></div>
+      {% else %}
+      <div><dt>{{ cd_copy("PLATFORM STATUS") }}</dt><dd>{{ cd_copy("Under Development") }}</dd></div>
+      <div><dt>{{ cd_copy("COMPETITIONS") }}</dt><dd>{{ cd_copy("Coming Soon") }}</dd></div>
+      <div><dt>{{ cd_copy("MISSION") }}</dt><dd>{{ cd_copy("Learn • Practice • Compete") }}</dd></div>
+      {% endif %}
+    </dl></div>
+    {% if cd_presentation.mode == 'event' %}
+    <div class="cd-briefing-foot" data-countdown hidden><span data-countdown-label></span> <strong data-countdown-value></strong></div>
+    {% else %}
+    <p class="cd-briefing-foot">{{ cd_copy("We’re building the playground. Future competitions will be announced here.") }}</p>
+    {% endif %}
+  </div>
 </section>
 <section class="container cd-home-workspace" data-home-workspace
   data-load-challenges="{{ 'true' if Configs.challenge_visibility == 'public' or (Configs.challenge_visibility == 'private' and authed()) or is_admin() else 'false' }}"
-  data-load-scores="{{ 'true' if Configs.account_visibility != 'admins' and (Configs.score_visibility == 'public' or (Configs.score_visibility == 'private' and authed())) else 'false' }}">
-  <div class="cd-home-metrics"><div><strong data-visible-count>—</strong><span>{{ cd_copy("Visible challenges") }}</span></div><div><strong data-category-count>—</strong><span>{{ cd_copy("Challenge categories") }}</span></div><div><strong data-standing-count>—</strong><span>{{ cd_copy("Published standings") }}</span></div></div>
+  data-load-scores="{{ 'true' if cd_presentation.mode == 'event' and Configs.account_visibility != 'admins' and (Configs.score_visibility == 'public' or (Configs.score_visibility == 'private' and authed())) else 'false' }}">
+  {% if cd_presentation.mode == 'event' %}<div class="cd-home-metrics"><div><strong data-visible-count>—</strong><span>{{ cd_copy("Visible challenges") }}</span></div><div><strong data-category-count>—</strong><span>{{ cd_copy("Challenge categories") }}</span></div><div><strong data-standing-count>—</strong><span>{{ cd_copy("Published standings") }}</span></div></div>{% endif %}
   <div class="cd-section-heading"><div><p class="cd-eyebrow">{{ cd_copy("CHOOSE YOUR ANGLE OF ATTACK") }}</p><h2>{{ cd_copy("Pick your next lead.") }}</h2></div><a href="{{ url_for('challenges.listing') }}">{{ cd_copy("All challenges") }} ↗</a></div>
   <div class="cd-home-categories" data-home-categories></div>
   <p data-categories-empty class="cd-home-placeholder">{{ cd_copy("Open the challenge board to see available challenges.") }}</p>
+  {% if cd_presentation.mode == 'event' %}
   <section class="cd-home-standings" aria-labelledby="cd-preview-title"><div><p class="cd-eyebrow">{{ cd_copy("Scoreboard") }}</p><h2 id="cd-preview-title">{{ cd_copy("Let your solves speak.") }}</h2><a href="{{ url_for('scoreboard.listing') }}">{{ cd_copy("View standings") }} ↗</a></div><div><ol data-home-leaders class="cd-home-leaders"></ol><p data-leaders-empty class="cd-home-placeholder">{{ cd_copy("Open the scoreboard for published standings.") }}</p></div></section>
+  {% endif %}
 </section>
-<section id="event-guide" class="container cd-guide">
+<section id="platform-guide" class="container cd-guide">
   <div class="cd-section-heading"><div><p class="cd-eyebrow">{{ cd_copy("FROM FIRST CLUE TO FIRST FLAG") }}</p><h2>{{ cd_copy("Your first solve is closer than you think.") }}</h2></div><p>{{ cd_copy("Bring your curiosity. We’ll bring the puzzles.") }}</p></div>
   <div class="cd-guide-grid">
     <article><span class="cd-step">01</span><h3>{{ cd_copy("Choose your handle.") }}</h3><p>{{ cd_copy("Join CyberDune") }}. {% if Configs.user_mode == 'teams' %}{{ cd_copy("Join a crew or build one with your friends. Different minds spot different clues.") }}{% else %}{{ cd_copy("Set up your profile. Your solves will tell the rest of the story.") }}{% endif %}</p></article>
     <article><span class="cd-step">02</span><h3>{{ cd_copy("Follow a lead.") }}</h3><p>{{ cd_copy("Pick a challenge that makes you curious. Inspect its files, connect the clues, and use hints if you hit a wall.") }}</p></article>
     <article><span class="cd-step">03</span><h3>{{ cd_copy("Make the solve count.") }}</h3><p>{{ cd_copy("Found it? Submit your flag inside the challenge. A correct flag earns points and adds your solve to the scoreboard.") }}</p></article>
   </div>
-  <div class="cd-scope"><span aria-hidden="true">⊞</span><div><strong>{{ cd_copy("Break the puzzle. Respect the scope.") }}</strong><p>{{ cd_copy("Only test targets explicitly provided for a challenge. The platform, other participants, and the club website are outside the scope. Follow the organizers’ event rules.") }}</p></div></div>
+  <div class="cd-scope"><span aria-hidden="true">⊞</span><div><strong>{{ cd_copy("Break the puzzle. Respect the scope.") }}</strong><p>{{ cd_copy("Only test targets explicitly provided for a challenge. The platform, other participants, and the club website are outside the scope. Follow the published challenge rules.") }}</p></div></div>
 </section>

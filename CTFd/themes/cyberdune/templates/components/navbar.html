@@ -14,7 +14,7 @@
           {% if Configs.user_mode == 'teams' %}<li class="nav-item"><a class="nav-link" href="{{ url_for('teams.listing') }}">{% trans %}Teams{% endtrans %}</a></li>{% endif %}
           <li class="nav-item"><a class="nav-link" href="{{ url_for('users.listing') }}">{% trans %}Users{% endtrans %}</a></li>
         {% endif %}
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('views.static_html', route='/') }}#event-guide">{{ cd_copy("Event guide") }}</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('views.static_html', route='/') }}#platform-guide">{{ cd_copy("Platform guide") }}</a></li>
         {% for page in Plugins.user_menu_pages %}<li class="nav-item"><a class="nav-link" href="{{ page.route }}" {% if page.link_target %}target="{{ page.link_target }}" rel="noopener"{% endif %}>{{ page.title }}</a></li>{% endfor %}
       </ul>
       <ul class="navbar-nav cd-nav-account">

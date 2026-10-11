@@ -36,8 +36,8 @@
         if (!challenges) return;
         const visible = challenges.filter(challenge => !challenge.state || challenge.state === 'visible');
         const categories = [...new Set(visible.map(challenge => challenge.category))];
-        home.querySelector('[data-visible-count]').textContent = visible.length;
-        home.querySelector('[data-category-count]').textContent = categories.length;
+        home.querySelector('[data-visible-count]')?.replaceChildren(String(visible.length));
+        home.querySelector('[data-category-count]')?.replaceChildren(String(categories.length));
         const grid = home.querySelector('[data-home-categories]');
         categories.forEach(category => {
           const link = document.createElement('a'); link.className = 'cd-home-category';
@@ -68,8 +68,10 @@
     }
     const statusNodes = document.querySelectorAll('[data-event-status]');
     const stamp = value => value && Number.isFinite(Number(value)) ? Number(value) * 1000 : null;
-    const start = stamp(root.start), end = stamp(root.end);
-    const dateFormat = new Intl.DateTimeFormat(undefined, {dateStyle: 'medium', timeStyle: 'short'});
+    const event = root.cyberdunePresentation || {};
+    const start = event.mode === 'event' ? stamp(event.start) : null;
+    const end = event.mode === 'event' ? stamp(event.end) : null;
+    const dateFormat = new Intl.DateTimeFormat(undefined, {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short'});
     for (const [selector, value] of [['[data-event-start]', start], ['[data-event-end]', end]]) {
       document.querySelectorAll(selector).forEach(node => {
         if (value) { node.textContent = dateFormat.format(value); node.dateTime = new Date(value).toISOString(); }
@@ -81,6 +83,10 @@
       const ended = end && now >= end;
       const label = scheduled ? copy('Starts soon') : ended ? copy('Event ended') : start ? copy('Event live') : end ? copy('Event open') : copy('Schedule not set');
       statusNodes.forEach(node => { node.textContent = label; node.dataset.state = scheduled ? 'scheduled' : ended ? 'ended' : start || end ? 'live' : 'unset'; });
+      document.querySelectorAll('[data-event-primary]').forEach(link => {
+        link.href = scheduled ? '#cd-platform-panel-title' : ended ? link.dataset.scoreboardUrl : link.dataset.challengesUrl;
+        link.querySelector('[data-event-primary-label]').textContent = scheduled ? copy('View event details') : ended ? copy('View standings') : copy('Take the challenge');
+      });
       const target = scheduled ? start : !ended ? end : null;
       document.querySelectorAll('[data-countdown]').forEach(node => {
         node.hidden = !target;
@@ -94,7 +100,7 @@
         node.querySelector('[data-countdown-value]').textContent = `${days ? days + 'd ' : ''}${hh}:${mm}:${ss}`;
       });
     };
-    if (statusNodes.length) { tick(); setInterval(() => { if (!document.hidden) tick(); }, 1000); }
+    if (event.mode === 'event' && start && end && end > start && statusNodes.length) { tick(); setInterval(() => { if (!document.hidden) tick(); }, 1000); }
 
     // Link highlighting respects reverse-proxy prefixes and admin-created pages.
     const highlightNavigation = () => {

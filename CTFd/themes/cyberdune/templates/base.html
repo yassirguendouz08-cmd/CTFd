@@ -1,8 +1,9 @@
 {% from "components/copy.html" import cd_copy, messages with context %}
+{% set cd_presentation = CyberdunePresentation | default({'mode': 'platform', 'status': 'Under Development'}) %}
 <!DOCTYPE html>
 <html lang="{{ get_locale() }}" dir="{{ 'rtl' if get_locale() | string == 'ar' else 'ltr' }}" data-bs-theme="dark">
 <head>
-  <title>{{ title or Configs.ctf_name }} · CYBERDUNE</title>
+  <title>{{ title or (cd_presentation.name if cd_presentation.mode == 'event' else 'CYBERDUNE CTF PLATFORM') }} · CYBERDUNE</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% if Configs.ctf_small_icon %}<link rel="icon" href="{{ Configs.ctf_small_icon }}">{% endif %}
@@ -10,8 +11,8 @@
   {% block stylesheets %}{{ Assets.css("assets/scss/main.scss", theme="core") }}{% endblock %}
   {{ Plugins.styles }}
   {{ Configs.theme_header }}
-  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/cyberdune.css') }}?v=11">
-  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/operations.css') }}?v=11">
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/cyberdune.css') }}?v=13">
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/operations.css') }}?v=13">
   <script>
     window.cyberduneCopy = {{ messages.get(get_locale() | string, messages.en) | tojson }};
     window.init = {
@@ -21,6 +22,7 @@
       userVerified: {{ User.verified | tojson }}, teamId: {{ Team.id | tojson }},
       teamName: {{ Team.name | tojson }}, start: {{ Configs.start | tojson }}, end: {{ Configs.end | tojson }},
       themeSettings: {{ Configs.theme_settings | tojson }},
+      cyberdunePresentation: {{ cd_presentation | tojson }},
       eventSounds: [{{ url_for('views.themes_beta', theme='core', path='sounds/notification.webm') | tojson }}, {{ url_for('views.themes_beta', theme='core', path='sounds/notification.mp3') | tojson }}]
     };
     window.scoreboardUpdateInterval = 60000;
@@ -48,13 +50,13 @@
   <footer class="cd-footer">
     {% include 'components/contacts.html' %}
     <div class="container cd-footer-inner">
-      <div class="cd-footer-brand"><span class="cd-official-logo"><img src="{{ url_for('views.themes_beta', theme='cyberdune', path='img/cyberdune-white.png') }}?v=11" alt="CyberDune" width="11812" height="11812" loading="lazy"></span><small>{{ cd_copy("Sahara roots. Hacker mindset.") }}</small></div>
-      <div class="cd-footer-links"><a href="https://cyberdune.online" target="_blank" rel="noopener">{{ cd_copy("The club \u2197") }}</a><a href="{{ url_for('views.static_html', route='/') }}#event-guide">{{ cd_copy("Event guide") }}</a><a href="https://ctfd.io" target="_blank" rel="noopener">Powered by CTFd</a></div>
+      <div class="cd-footer-brand"><span class="cd-official-logo"><img src="{{ url_for('views.themes_beta', theme='cyberdune', path='img/cyberdune-white.png') }}?v=13" alt="CyberDune" width="11812" height="11812" loading="lazy"></span><small>{{ cd_copy("Sahara roots. Hacker mindset.") }}</small></div>
+      <div class="cd-footer-links"><a href="https://cyberdune.online" target="_blank" rel="noopener">{{ cd_copy("The club \u2197") }}</a><a href="{{ url_for('views.static_html', route='/') }}#platform-guide">{{ cd_copy("Platform guide") }}</a><a href="https://ctfd.io" target="_blank" rel="noopener">Powered by CTFd</a></div>
     </div>
   </footer>
   {% include 'components/notifications.html' %}
-  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/cyberdune.js') }}?v=11"></script>
-  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/operations.js') }}?v=11"></script>
+  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/cyberdune.js') }}?v=13"></script>
+  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/operations.js') }}?v=13"></script>
   {% block scripts %}{{ Assets.js("assets/js/page.js", theme="core") }}{% endblock %}
   {{ Plugins.scripts }}
   {{ Configs.theme_footer }}

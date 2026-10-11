@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container cd-auth">
-  <aside class="cd-auth-aside"><div class="cd-auth-mark">CYBERDUNE CTF</div><h1>{{ cd_copy('Join the crew.') }}<br><span>{{ cd_copy('Find your first flag.') }}</span></h1><p>{{ cd_copy("No perfect résumé needed. Just curiosity, a little persistence, and the urge to figure things out.") }}</p><a href="{{ url_for('views.static_html', route='/') }}">{{ cd_copy("\u2190 Back to the event") }}</a></aside>
+  <aside class="cd-auth-aside"><div class="cd-auth-mark">CYBERDUNE CTF</div><h1>{{ cd_copy('Join the crew.') }}<br><span>{{ cd_copy('Find your first flag.') }}</span></h1><p>{{ cd_copy("No perfect résumé needed. Just curiosity, a little persistence, and the urge to figure things out.") }}</p><a href="{{ url_for('views.static_html', route='/') }}">{{ cd_copy("\u2190 Back to the platform") }}</a></aside>
   <section class="cd-auth-card" aria-label="{{ cd_copy("Join CyberDune") }}."><h2>{{ cd_copy("Join CyberDune") }}.</h2><p class="cd-auth-intro">{{ cd_copy("Choose your handle. Start your story.") }}</p>
 {% include "components/errors.html" %}
 

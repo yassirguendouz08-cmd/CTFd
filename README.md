@@ -18,12 +18,12 @@ teams and standings, with English, French and Arabic copy.
 ## What is included
 
 - Official CyberDune logo and responsive theme.
-- Google Stitch-informed competition workspace with an actual event briefing.
+- Default development landing with premium CYBERDUNE branding and explicit future Event Mode.
 - Clean club-branded hero, readable category cards and restrained red accents.
 - Reduced-motion support and finite highlights for real score/solve updates.
 - Clean club-branded hero, readable category cards and restrained red accents.
 - Reduced-motion support and finite highlights for real score/solve updates.
-- Live authorized homepage metrics, category links and standings preview.
+- Authorized challenge categories; real metrics and standings preview in Event Mode.
 - Local typography, recovery page and rank-preserving scoreboard search.
 - English, French and Arabic language choices, with RTL support for Arabic.
 - Challenge search and category/solve filters, using real CTFd data.
@@ -32,6 +32,10 @@ teams and standings, with English, French and Arabic copy.
 
 The terminal is an illustration; it does not execute commands. Challenge content,
 event dates and registration rules are managed through the CTFd admin panel.
+
+Platform Mode is active by default, even when old dates exist. See the
+[mode guide](docs/PLATFORM-MODE.md) for safe timing cleanup and the exact
+admin procedure to announce a real future competition.
 
 ## Project layout
 
