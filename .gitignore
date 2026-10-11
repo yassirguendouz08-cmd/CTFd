@@ -116,3 +116,7 @@ CTFd/themes/*
 CTFd/logs/
 .development/
 releases/
+
+# Compiled instance scenarios; publish through the helper, never commit binaries.
+scenarios/**/main
+scenarios/**/dist/

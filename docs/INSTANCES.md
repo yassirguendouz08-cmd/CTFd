@@ -73,6 +73,10 @@ API calls default to a 60-second timeout on the supplied deployment.
 
 ## Add an instance challenge
 
+For the included beginner web challenge and reusable Docker scenario, follow
+[the Cookie Mirage test guide](WEB-INSTANCE-TEST.md). The publisher helper uses
+the existing production instance backend and prints the real scenario reference.
+
 An instance needs **both** a challenge image and a deployment scenario (an OCI
 artifact containing a Pulumi program). An arbitrary Docker image alone is not
 a scenario. Follow the upstream [Docker walkthrough](https://ctfer.io/docs/ctfd-chall-manager/introduction/getting-started/)

@@ -1,0 +1,6 @@
+name: cyberdune-web
+description: Reusable private web container with an account-specific flag
+runtime:
+  name: go
+  options:
+    binary: ./main
