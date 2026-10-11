@@ -1,0 +1,84 @@
+{% from "components/copy.html" import cd_copy with context %}
+{% extends "base.html" %}
+{% block content %}
+<div class="container cd-auth">
+  <aside class="cd-auth-aside"><div class="cd-auth-mark">CYBERDUNE CTF</div><h1>{{ cd_copy('Join the crew.') }}<br><span>{{ cd_copy('Find your first flag.') }}</span></h1><p>{{ cd_copy("No perfect résumé needed. Just curiosity, a little persistence, and the urge to figure things out.") }}</p><a href="{{ url_for('views.static_html', route='/') }}">{{ cd_copy("\u2190 Back to the event") }}</a></aside>
+  <section class="cd-auth-card" aria-label="{{ cd_copy("Join CyberDune") }}."><h2>{{ cd_copy("Join CyberDune") }}.</h2><p class="cd-auth-intro">{{ cd_copy("Choose your handle. Start your story.") }}</p>
+{% include "components/errors.html" %}
+
+        {% if integrations.mlc() %}
+          <a class="btn btn-secondary btn-lg btn-block w-100" href="{{ url_for('auth.oauth_login') }}">
+            Login with Major League Cyber
+          </a>
+
+          <hr>
+        {% endif %}
+
+        {% with form = Forms.auth.RegistrationForm() %}
+
+          {% from "macros/forms.html" import render_extra_fields %}
+
+          <form method="post" accept-charset="utf-8" role="form">
+
+            <div class="mb-3">
+              <b>
+                {{ form.name.label(class="form-label") }}
+                <span class="text-danger">*</span>
+              </b>
+              {{ form.name(class="form-control", value=name, autocomplete="username") }}
+              <small class="form-text text-muted">
+                {% trans %}Your username on the site{% endtrans %}
+              </small>
+            </div>
+
+            <div class="mb-3">
+              <b>
+                {{ form.email.label(class="form-label") }}
+                <span class="text-danger">*</span>
+              </b>
+              {{ form.email(class="form-control", value=email, autocomplete="email") }}
+              <small class="form-text text-muted">
+                {% trans %}Never shown to the public{% endtrans %}
+              </small>
+            </div>
+
+            <div class="mb-3">
+              <b>
+                {{ form.password.label(class="form-label") }}
+                <span class="text-danger">*</span>
+              </b>
+              {{ form.password(class="form-control", value=password, autocomplete="new-password") }}
+              <small class="form-text text-muted">
+                {% trans %}Password used to log into your account{% endtrans %}
+              </small>
+            </div>
+
+            {{ form.nonce() }}
+
+            {{ render_extra_fields(form.extra) }}
+
+            <div class="row pt-3">
+              <div class="col-6 col-md-4 offset-6 offset-md-8">
+                {{ form.submit(class="btn btn-block btn-primary w-100") }}
+              </div>
+            </div>
+
+            {% if Configs.tos_or_privacy %}
+              <div class="row pt-3">
+                <div class="col-md-12 text-center">
+                  <small class="text-muted text-center">
+                    {% trans trimmed privacy_link=Configs.privacy_link, tos_link=Configs.tos_link %}
+                    By registering, you agree to the
+                    <a href="{{ privacy_link }}" target="_blank">privacy policy</a>
+                    and <a href="{{ tos_link }}" target="_blank">terms of service</a>
+                    {% endtrans %}
+                  </small>
+                </div>
+              </div>
+            {% endif %}
+          </form>
+        {% endwith %}
+    <div class="cd-auth-note"> {{ cd_copy("Already have an account?") }} <a href="{{ url_for('auth.login') }}">{{ cd_copy("Sign in") }}</a></div>
+  </section>
+</div>
+{% endblock %}

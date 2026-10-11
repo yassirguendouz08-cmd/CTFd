@@ -1,0 +1,53 @@
+{% from "components/copy.html" import cd_copy with context %}
+{% extends "base.html" %}
+{% block content %}
+<div class="container cd-auth">
+  <aside class="cd-auth-aside"><div class="cd-auth-mark">CYBERDUNE CTF</div><h1>{{ cd_copy("Back for another flag?") }}<br><span>{{ cd_copy("Pick up the trail.") }}</span></h1><p>{{ cd_copy("Your last clue was only the beginning. Sign in and get back to the hunt.") }}</p><a href="{{ url_for('views.static_html', route='/') }}">{{ cd_copy("\u2190 Back to the event") }}</a></aside>
+  <section class="cd-auth-card" aria-label="{{ cd_copy("Your next solve starts here.") }}"><h2>{{ cd_copy("Your next solve starts here.") }}</h2><p class="cd-auth-intro">{{ cd_copy("Sign in with your username or email and password.") }}</p>
+{% include "components/errors.html" %}
+
+        {% if integrations.mlc() %}
+          <a class="btn btn-secondary btn-lg btn-block w-100" href="{{ url_for('auth.oauth_login') }}">
+            Login with Major League Cyber
+          </a>
+
+          <hr>
+        {% endif %}
+
+        {% with form = Forms.auth.LoginForm() %}
+          <form method="post" accept-charset="utf-8">
+            <div class="mb-3">
+              <b>
+                {{ form.name.label(class="form-label") }}
+                <span class="text-danger">*</span>
+              </b>
+              {{ form.name(class="form-control", value=name, autocomplete="username email") }}
+            </div>
+
+            <div class="mb-3">
+              <b>
+                {{ form.password.label(class="form-label") }}
+                <span class="text-danger">*</span>
+              </b>
+              {{ form.password(class="form-control", value=password, autocomplete="current-password") }}
+            </div>
+
+            <div class="row pt-3">
+              <div class="col-6 col-md-8">
+                <a class="align-middle" href="{{ url_for('auth.reset_password') }}">
+                  {% trans %}Forgot your password?{% endtrans %}
+                </a>
+              </div>
+
+              <div class="col-6 col-md-4">
+                {{ form.submit(class="btn btn-block btn-primary w-100") }}
+              </div>
+            </div>
+
+            {{ form.nonce() }}
+          </form>
+        {% endwith %}
+    <div class="cd-auth-note">{% if registration_visible() %}{{ cd_copy("New here?") }} <a href="{{ url_for('auth.register') }}">{{ cd_copy("Join CyberDune") }}</a>{% endif %}</div>
+  </section>
+</div>
+{% endblock %}

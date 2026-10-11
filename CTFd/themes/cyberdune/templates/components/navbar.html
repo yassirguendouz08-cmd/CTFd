@@ -1,0 +1,45 @@
+{% from "components/copy.html" import cd_copy with context %}
+<nav class="navbar navbar-expand-xl fixed-top cd-nav" aria-label="Main navigation">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('views.static_html', route='/') }}" aria-label="CYBERDUNE home">
+      <span class="cd-official-logo"><img src="{{ url_for('views.themes_beta', theme='cyberdune', path='img/cyberdune-white.png') }}?v=4" alt="CyberDune" width="11812" height="11812"></span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#cd-navigation" aria-controls="cd-navigation" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="cd-navigation">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('views.static_html', route='/') }}">{{ cd_copy("Home") }}</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('challenges.listing') }}">{% trans %}Challenges{% endtrans %}</a></li>
+        {% if Configs.account_visibility != 'admins' and Configs.score_visibility != 'admins' %}<li class="nav-item"><a class="nav-link" href="{{ url_for('scoreboard.listing') }}">{% trans %}Scoreboard{% endtrans %}</a></li>{% endif %}
+        {% if Configs.account_visibility != 'admins' %}
+          {% if Configs.user_mode == 'teams' %}<li class="nav-item"><a class="nav-link" href="{{ url_for('teams.listing') }}">{% trans %}Teams{% endtrans %}</a></li>{% endif %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('users.listing') }}">{% trans %}Users{% endtrans %}</a></li>
+        {% endif %}
+        {% for page in Plugins.user_menu_pages %}<li class="nav-item"><a class="nav-link" href="{{ page.route }}" {% if page.link_target %}target="{{ page.link_target }}" rel="noopener"{% endif %}>{{ page.title }}</a></li>{% endfor %}
+      </ul>
+      <ul class="navbar-nav cd-nav-account">
+        {% if authed() %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('views.notifications') }}" aria-label="Notifications"><i class="fas fa-bell" aria-hidden="true"></i><span x-data x-show="$store.unread_count > 0" x-text="$store.unread_count" class="badge rounded-pill bg-danger badge-notification"></span><span class="d-xl-none"> Notifications</span></a></li>
+          <li class="nav-item dropdown">
+            <button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user-circle" aria-hidden="true"></i> {{ cd_copy("Account") }}</button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{{ url_for('users.private') }}">{% trans %}Profile{% endtrans %}</a></li>
+              {% if Configs.user_mode == 'teams' %}<li><a class="dropdown-item" href="{{ url_for('teams.private') }}">{% trans %}Team{% endtrans %}</a></li>{% endif %}
+              <li><a class="dropdown-item" href="{{ url_for('views.settings') }}">{% trans %}Settings{% endtrans %}</a></li>
+              {% if is_admin() %}<li><a class="dropdown-item" href="{{ url_for('admin.view') }}">{% trans %}Admin Panel{% endtrans %}</a></li>{% endif %}
+              <li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">{% trans %}Logout{% endtrans %}</a></li>
+            </ul>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">{% trans %}Login{% endtrans %}</a></li>
+          {% if registration_visible() %}<li class="nav-item"><a class="nav-link cd-register" href="{{ url_for('auth.register') }}">{% trans %}Register{% endtrans %} ↗</a></li>{% endif %}
+        {% endif %}
+        <li class="nav-item dropdown">
+          <button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Change language"><i class="fas fa-language" aria-hidden="true"></i><span class="d-xl-none"> Language</span></button>
+          <form x-data="LanguageForm"><ul class="dropdown-menu dropdown-menu-end">
+            {% set curr_lang = get_locale() %}{% for lang in [('en', 'English'), ('fr', 'Français'), ('ar', 'العربية')] %}<li><button type="button" class="dropdown-item {{ 'bg-primary' if curr_lang == lang[0] }}" @click="set" value="{{ lang[0] }}">{{ lang[1] }}</button></li>{% endfor %}
+          </ul></form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

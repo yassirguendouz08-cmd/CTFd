@@ -1,98 +1,159 @@
-# ![](https://github.com/CTFd/CTFd/blob/master/CTFd/themes/core/static/img/logo.png?raw=true)
+<img src="CTFd/themes/cyberdune/static/img/cyberdune-black.png" alt="CyberDune" width="180">
 
-![CTFd MySQL CI](https://github.com/CTFd/CTFd/workflows/CTFd%20MySQL%20CI/badge.svg?branch=master)
-![Linting](https://github.com/CTFd/CTFd/workflows/Linting/badge.svg?branch=master)
-[![MajorLeagueCyber Discourse](https://img.shields.io/discourse/status?server=https%3A%2F%2Fcommunity.majorleaguecyber.org%2F)](https://community.majorleaguecyber.org/)
-[![Documentation Status](https://api.netlify.com/api/v1/badges/6d10883a-77bb-45c1-a003-22ce1284190e/deploy-status)](https://docs.ctfd.io)
+# CyberDune CTF
 
-## What is CTFd?
+**Follow the clues. Find your flag.**
 
-CTFd is a Capture The Flag framework focusing on ease of use and customizability. It comes with everything you need to run a CTF and it's easy to customize with plugins and themes.
+The CyberDune club's Capture The Flag platform, built on **CTFd 3.8.8**.
+A custom black/red theme brings the club's identity to challenges, accounts,
+teams and standings, with English, French and Arabic copy.
 
-![CTFd is a CTF in a can.](https://github.com/CTFd/CTFd/blob/master/CTFd/themes/core/static/img/scoreboard.png?raw=true)
+[Club website](https://cyberdune.online) ·
+[Instagram](https://www.instagram.com/cyberdune_estg/) ·
+[LinkedIn](https://www.linkedin.com/company/cyberdune/) ·
+[Email](mailto:cyberdunecontact@gmail.com)
 
-## Features
+![CyberDune homepage preview](docs/images/home-desktop.png)
 
-- Create your own challenges, categories, hints, and flags from the Admin Interface
-  - Dynamic Scoring Challenges
-  - Unlockable challenge support
-  - Challenge plugin architecture to create your own custom challenges
-  - Static & Regex based flags
-    - Custom flag plugins
-  - Unlockable hints
-  - File uploads to the server or an Amazon S3-compatible backend
-  - Limit challenge attempts & hide challenges
-  - Automatic bruteforce protection
-- Individual and Team based competitions
-  - Have users play on their own or form teams to play together
-- Scoreboard with automatic tie resolution
-  - Hide Scores from the public
-  - Freeze Scores at a specific time
-- Scoregraphs comparing the top 10 teams and team progress graphs
-- Markdown content management system
-- SMTP + Mailgun email support
-  - Email confirmation support
-  - Forgot password support
-- Automatic competition starting and ending
-- Team management, hiding, and banning
-- Customize everything using the [plugin](https://docs.ctfd.io/docs/plugins/overview) and [theme](https://docs.ctfd.io/docs/themes/overview) interfaces
-- Importing and Exporting of CTF data for archival
-- And a lot more...
+## What is included
 
-## Install
+- Official CyberDune logo and responsive theme.
+- Animated terminal illustration, pause controls and reduced-motion support.
+- English, French and Arabic language choices, with RTL support for Arabic.
+- Challenge search and category/solve filters, using real CTFd data.
+- CTFd registration, teams, hints, flags, dynamic scoring and standings.
+- Codespaces configuration, startup/update scripts and VS Code tasks.
 
-The easiest way to get started is to use a [Hosted CTFd instance](https://ctfd.io/pricing/).
+The terminal is an illustration; it does not execute commands. Challenge content,
+event dates and registration rules are managed through the CTFd admin panel.
 
-For self-hosted installations, check out the [CTFd docs](https://docs.ctfd.io/) for [deployment options](https://docs.ctfd.io/docs/deployment/installation) and the [Getting Started](https://docs.ctfd.io/tutorials/getting-started/) guide.
+## Project layout
 
-Below is a summary of a few options for self-hosting CTFd:
-
-### Docker
-
-You can use Docker Compose with the following command from the source repository:
-
-`docker compose up`
-
-To use the auto-generated Docker images directly:
-
-`docker run -p 8000:8000 -it ctfd/ctfd`
-
-### Development
-
-1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and run `uv sync` to create a virtualenv with the dependencies installed.
-   - You can also install into an existing environment with `pip install -r requirements.txt`, which is generated from `uv.lock`.
-2. Modify [CTFd/config.ini](https://github.com/CTFd/CTFd/blob/master/CTFd/config.ini) to your liking.
-3. Use `uv run serve.py` or `uv run flask run` in a terminal to drop into debug mode.
-
-## Live Demo
-
-https://demo.ctfd.io/
-
-## Support
-
-To get basic support, you can join the [MajorLeagueCyber Community](https://community.majorleaguecyber.org/): [![MajorLeagueCyber Discourse](https://img.shields.io/discourse/status?server=https%3A%2F%2Fcommunity.majorleaguecyber.org%2F)](https://community.majorleaguecyber.org/)
-
-If you prefer commercial support or have a special project, feel free to [contact us](https://ctfd.io/contact/).
-
-## Managed Hosting
-
-Looking to use CTFd but don't want to deal with managing infrastructure? Check out [the CTFd website](https://ctfd.io/) for managed CTFd deployments.
-
-## MajorLeagueCyber
-
-CTFd is heavily integrated with [MajorLeagueCyber](https://majorleaguecyber.org/). MajorLeagueCyber (MLC) is a CTF stats tracker that provides event scheduling, team tracking, and single sign on for events.
-
-By registering your CTF event with MajorLeagueCyber users can automatically login, track their individual and team scores, submit writeups, and get notifications of important events.
-
-To integrate with MajorLeagueCyber, simply register an account, create an event, and install the client ID and client secret in the relevant portion in `CTFd/config.py` or in the admin panel:
-
-```python
-OAUTH_CLIENT_ID = None
-OAUTH_CLIENT_SECRET = None
+```text
+CTFd/                      CTFd application
+  themes/cyberdune/         CyberDune templates, CSS, JavaScript and logos
+  themes/core/              Upstream theme assets used by the custom theme
+conf/                      Nginx configuration
+migrations/                Database migrations
+scripts/                   Start, update and theme activation helpers
+.devcontainer/             GitHub Codespaces configuration
+.vscode/                   Editor tasks
+docs/                      Setup, theme and validation notes
+tests/                     Upstream CTFd tests
+docker-compose.yml         Local/Codespaces services
+.data/                     Runtime database, uploads and logs (ignored by Git)
 ```
 
-## Credits
+## Run in GitHub Codespaces
 
-- Logo by [Laura Barbera](http://www.laurabb.com/)
-- Theme by [Christopher Thompson](https://github.com/breadchris)
-- Notification Sound by [Terrence Martin](https://soundcloud.com/tj-martin-composer)
+Docker runs **inside Codespaces**. You do not need Docker installed on your Windows PC.
+
+1. Open this repository on GitHub → **Code → Codespaces → Create codespace on master**.
+2. Wait for the dev container setup and initial application build. The startup
+   hook runs `bash scripts/start-cyberdune.sh` each time the Codespace starts.
+3. Open the **Ports** tab and open **port 80** in your browser. Keep it private
+   while configuring the event.
+4. For a new database, complete `/setup` and create your administrator account.
+5. Select the theme once:
+
+   ```bash
+   docker compose exec ctfd python scripts/activate-cyberdune.py
+   docker compose restart ctfd
+   ```
+
+If old CyberDune CSS is still pasted in Theme Header/Footer, follow the backed-up
+activation procedure in [the theme guide](docs/THEME.md).
+
+Your data lives in `.data/` inside this Codespace. GitHub stores source code, not
+your users, challenge records, flags, scores or database. Back up event data through
+**Admin → Config → Import & Export** before deleting or replacing a Codespace.
+Codespaces is the development environment; keep persistent public hosting separate.
+
+## Update your existing Codespace
+
+Before the **first pull**, save changes you already made in the Codespace:
+
+```bash
+cd /workspaces/CTFd
+git status --short
+git stash push --include-untracked -m "Before CyberDune repository update"
+git pull --ff-only origin master
+bash scripts/start-cyberdune.sh
+docker compose restart ctfd
+```
+
+Stashed files remain recoverable with `git stash list` / `git stash show`.
+Review them before restoring; the updated repository already contains the theme
+and startup fixes. `.data/` is ignored and is not included in that stash.
+If Git reports an untracked ignored theme file would be overwritten, see the
+[existing Codespace guide](docs/CODESPACES.md) before retrying.
+
+For later updates, use:
+
+```bash
+bash scripts/update-cyberdune.sh
+```
+
+Then refresh your browser with **Ctrl+Shift+R**. The update script stops if there
+are local edits, pulls without rewriting history, starts the services and restarts
+CTFd. It does not remove data or automatically apply stashed changes.
+
+If you want the new container configuration in an **existing** Codespace, use
+**Codespaces: Rebuild Container** after pulling. See [Codespaces notes](docs/CODESPACES.md).
+
+## Edit on your PC and publish to GitHub
+
+Open the local **`platform`** folder in VS Code. Use PowerShell in that folder:
+
+```powershell
+git status
+git add CTFd/themes/cyberdune README.md docs scripts .devcontainer .vscode
+git diff --cached --stat
+git commit -m "Update CyberDune platform"
+git push origin master
+```
+
+Review the staged files before committing. Never commit actual flags, passwords,
+tokens, database exports, uploads or `.data/`.
+For the first local commit, Git may ask for your identity; set your own name and
+GitHub no-reply email with `git config user.name` and `git config user.email`.
+GitHub sign-in for pushing is handled by your Git credential manager or VS Code.
+
+Then run `bash scripts/update-cyberdune.sh` in the Codespace. You no longer need
+to upload a theme ZIP for each edit.
+
+## Where to make changes
+
+| Change | File or interface |
+| --- | --- |
+| Colors, spacing and responsive layout | `CTFd/themes/cyberdune/static/css/cyberdune.css` |
+| Branded text in all three languages | `CTFd/themes/cyberdune/templates/components/copy.html` |
+| Homepage layout | `CTFd/themes/cyberdune/templates/components/landing.html` |
+| Navigation | `CTFd/themes/cyberdune/templates/components/navbar.html` |
+| Official contact links | `CTFd/themes/cyberdune/templates/components/contacts.html` |
+| Terminal animation and UI behavior | `CTFd/themes/cyberdune/static/js/cyberdune.js` |
+| CSS/JS cache version | `CTFd/themes/cyberdune/templates/base.html` |
+| Challenges, flags, hints and dates | CTFd admin panel |
+
+Keep the core theme installed: CyberDune reuses its compiled assets and fallback
+templates. No npm build is needed for edits to the custom CSS, JS or templates.
+Changing Python dependencies or the Dockerfile requires a container image rebuild:
+`docker compose up -d --build`.
+
+## Documentation and validation
+
+- [Existing Codespace update and troubleshooting](docs/CODESPACES.md)
+- [Theme installation, backup and rollback](docs/THEME.md)
+- [Completed checks and validation limits](docs/VALIDATION.md)
+- [Original upstream CTFd README](docs/CTFD-UPSTREAM.md)
+- [CTFd documentation](https://docs.ctfd.io/)
+
+Theme checks used an isolated local CTFd database and browser tests. The new
+Codespace container configuration must be verified in GitHub Codespaces; it was
+not built on the Windows PC.
+
+## Credits and license
+
+CTFd is developed by [CTFd](https://github.com/CTFd/CTFd) and distributed under
+the [Apache License 2.0](LICENSE). This repository retains the upstream code,
+license and history. CyberDune supplies the club branding and custom theme.

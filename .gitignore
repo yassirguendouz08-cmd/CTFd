@@ -63,6 +63,10 @@ flask_profiler.sql
 # Editors / OS
 .idea/
 .vscode/
+!.vscode/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/extensions.json
 .*.swp
 .DS_Store
 
@@ -93,3 +97,19 @@ CTFd/themes/*
 !CTFd/themes/admin/
 !CTFd/themes/core/
 !CTFd/themes/core-deprecated/
+
+# CYBERDUNE custom theme must survive commits and upgrades.
+!CTFd/themes/cyberdune/
+!CTFd/themes/cyberdune/**
+
+# Local runtime/configuration, credentials and packaged releases
+.env
+.env.*
+!.env.example
+*.sql
+*.sql.gz
+*.sqlite
+*.sqlite3
+CTFd/logs/
+.development/
+releases/

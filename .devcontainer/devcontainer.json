@@ -1,0 +1,20 @@
+{
+  "name": "CyberDune CTF",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:4": {}
+  },
+  "remoteUser": "vscode",
+  "forwardPorts": [80],
+  "portsAttributes": {
+    "80": {"label": "CyberDune CTF", "onAutoForward": "notify"},
+    "8000": {"label": "CTFd backend", "onAutoForward": "ignore"}
+  },
+  "postStartCommand": "bash scripts/start-cyberdune.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "redhat.vscode-yaml"],
+      "settings": {"files.eol": "\n"}
+    }
+  }
+}

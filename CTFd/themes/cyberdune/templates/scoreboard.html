@@ -1,0 +1,23 @@
+{% from "components/copy.html" import cd_copy with context %}
+{% extends 'base.html' %}
+{% block content %}
+<header class="container cd-page-head"><p class="cd-eyebrow">CYBERDUNE CTF</p><div class="cd-head-row"><div><h1>{{ cd_copy("Scoreboard") }}</h1><p>{{ cd_copy("Let your solves speak. Every correct flag leaves its mark.") }}</p></div><span class="cd-status" data-event-status>{{ cd_copy("Checking schedule") }}</span></div></header>
+<div class="container">
+  {% include 'components/errors.html' %}
+  <p class="cd-score-note">{% if Configs.freeze %}{{ cd_copy("Scores may be frozen according to the event schedule.") }}{% else %}<span>●</span> {{ cd_copy("Standings refresh every 60 seconds.") }}{% endif %}</p>
+  <div id="score-graph" class="align-items-center" :class="{'d-flex': show, 'd-none': !show}" x-data="ScoreboardDetail" x-ref="scoregraph" @bracket-change.window="activeBracket=$event.detail; update();"><div class="col-md-12 text-center"><i class="fas fa-circle-notch fa-spin spinner" aria-hidden="true"></i><span class="visually-hidden">Loading score history</span></div></div>
+  <div id="scoreboard" x-data="ScoreboardList">
+    <template x-if="brackets.length && standings.length"><nav class="nav nav-pills mb-4" aria-label="Scoreboard brackets"><button type="button" :class="{'nav-link': true, 'active': !activeBracket}" @click="activeBracket=null">{% trans %}All{% endtrans %}</button><template x-for="bracket in brackets" :key="bracket.id"><button type="button" :class="{'nav-link': true, 'active': activeBracket == bracket.id}" x-text="bracket.name" @click="activeBracket=bracket.id"></button></template></nav></template>
+    <div class="cd-podium" x-show="standings.length" x-cloak>
+      <template x-for="(standing, index) in standings.filter(i => activeBracket ? i.bracket_id == activeBracket : true).slice(0,3)" :key="standing.account_id"><article class="cd-podium-card"><span x-text="'0' + (index + 1) + ' / RANK'"></span><a :href="standing.account_url" x-text="standing.name"></a><div><strong x-text="standing.score"></strong><small>POINTS</small></div></article></template>
+    </div>
+    <div class="cd-table-scroll" role="region" aria-label="Competition standings" tabindex="0" x-show="standings.length" x-cloak>
+      <table class="table table-striped align-middle cd-score-table"><thead><tr><th scope="col">Rank</th><th scope="col">{{ get_mode_as_word(capitalize=True) }}</th><th scope="col" class="text-end">Points</th></tr></thead><tbody>
+        <template x-for="(standing, index) in standings.filter(i => activeBracket ? i.bracket_id == activeBracket : true)" :key="standing.account_id"><tr :class="{'cd-standing-first': index === 0, 'cd-standing-top': index < 3, 'cd-standing-me': standing.account_id == (window.init.userMode === 'teams' ? window.init.teamId : window.init.userId)}"><th scope="row" x-text="String(index + 1).padStart(2,'0')"></th><td><a :href="standing.account_url" x-text="standing.name"></a><span class="cd-you" x-show="standing.account_id == (window.init.userMode === 'teams' ? window.init.teamId : window.init.userId)">YOU</span><template x-if="standing.bracket_name"><span class="badge bg-secondary ms-2" x-text="standing.bracket_name"></span></template></td><td class="text-end" x-text="standing.score"></td></tr></template>
+      </tbody></table>
+    </div>
+    <div class="cd-empty" x-show="!standings.length"><h2>{{ cd_copy("The first flag is still up for grabs.") }}</h2><p>{{ cd_copy("Land a correct flag to start the standings. Your name could be the first on the board.") }}</p><a class="btn btn-primary" href="{{ url_for('challenges.listing') }}">{{ cd_copy("Go find that flag ↗") }}</a></div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}{{ Assets.js('assets/js/scoreboard.js', theme='core') }}{% endblock %}

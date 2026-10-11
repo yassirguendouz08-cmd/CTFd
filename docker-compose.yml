@@ -72,6 +72,12 @@ services:
         internal:
 
 networks:
-    default:
-    internal:
-        internal: true
+  default:
+    ipam:
+      config:
+        - subnet: 10.203.0.0/24
+  internal:
+    internal: false
+    ipam:
+      config:
+        - subnet: 10.203.1.0/24

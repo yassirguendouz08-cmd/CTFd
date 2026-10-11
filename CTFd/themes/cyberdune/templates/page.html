@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if request.path.rstrip('/') == request.script_root.rstrip('/') %}
+  {% include 'components/landing.html' %}
+  {% if content and 'A cool CTF platform from' not in content %}
+  <section class="container cd-editorial cd-home-content" aria-label="Event information">{{ content | safe }}</section>
+  {% endif %}
+{% else %}
+  <section class="container cd-editorial">{{ content | safe }}</section>
+{% endif %}
+{% endblock %}

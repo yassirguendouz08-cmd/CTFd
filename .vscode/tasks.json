@@ -1,0 +1,21 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Cyberdune CTF",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/start-cyberdune.sh"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    },
+    {
+      "label": "Update Cyberdune CTF",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/update-cyberdune.sh"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    }
+  ]
+}
