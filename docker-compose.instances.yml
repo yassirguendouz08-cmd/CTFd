@@ -10,6 +10,9 @@ services:
   chall-manager:
     image: ctferio/chall-manager:v0.6.6@sha256:34b5ca4b9e02db171cd58f148f927c0955c106427e97e4525e0376c2512c3959
     restart: unless-stopped
+    depends_on:
+      instance-state-init:
+        condition: service_completed_successfully
     environment:
       DIR: /var/lib/chall-manager
       CACHE: /var/cache/chall-manager
@@ -26,6 +29,14 @@ services:
     networks:
       instance_control:
       instance_egress:
+
+  instance-state-init:
+    image: alpine:3.23
+    restart: "no"
+    command: ["mkdir", "-p", "/state/pulumi-state"]
+    volumes:
+      - instance_state:/state
+    network_mode: none
 
   chall-manager-janitor:
     image: ctferio/chall-manager-janitor:v0.6.6@sha256:69ee55e6ad10f25b6c454c70b4de49350c82e5dde9c681a3e1c3ac623a6e0970

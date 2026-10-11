@@ -1,6 +1,10 @@
 {% extends "chall_manager_base.html" %}
 
 {% block menu %}
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('ctfd-chall-manager.new_zip_challenge') }}">Upload instance ZIP</a></li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ script_root }}/plugins/ctfd-chall-manager/admin/web/new">New web challenge</a>
+    </li>
     <li class="nav-item">
         <a class="nav-link active" data-toggle="pill" href="#settings">Settings</a>
     </li>

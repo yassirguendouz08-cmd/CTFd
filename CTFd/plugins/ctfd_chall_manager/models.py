@@ -120,8 +120,13 @@ class DynamicIaCValueChallenge(DynamicValueChallenge):
         :param request:
         :return:
         """
+        return cls.create_from_data(dict(request.form or request.get_json()))
+
+    @classmethod
+    def create_from_data(cls, data):
+        """Create through the same backend/rollback path for API and admin presets."""
         logger.debug("creating challenge on CTFd")
-        data = request.form or request.get_json()
+        data = dict(data)
 
         try:
             data = prepare_ctfdcm_database(data)

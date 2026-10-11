@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="jumbotron"><div class="container"><h1>New web instance challenge</h1></div></div>
+<div class="container"><div class="row"><div class="col-md-8 offset-md-2">
+    <p>Create a private web instance using the saved launcher. Each account gets its own flag and a 10-minute instance.</p>
+    {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+    <form method="POST">
+        <input type="hidden" name="nonce" value="{{ session.get('nonce') }}">
+        <div class="form-group"><label for="web-name">Challenge name</label>
+            <input id="web-name" class="form-control" name="name" required maxlength="128" value="{{ values.name }}" placeholder="Cookie Mirage">
+        </div>
+        <div class="form-group"><label for="web-image">Docker image</label>
+            <input id="web-image" class="form-control" name="image" required maxlength="255" value="{{ values.image }}">
+            <small class="form-text text-muted">Use an image already available on the worker. It must read FLAG and support a read-only filesystem.</small>
+        </div>
+        <details class="mb-4"><summary>Description and points</summary>
+            <div class="form-group mt-3"><label for="web-description">Description</label>
+                <textarea id="web-description" class="form-control" name="description" rows="4">{{ values.description }}</textarea>
+            </div>
+            <div class="form-group"><label for="web-points">Points</label>
+                <input id="web-points" class="form-control" type="number" min="1" max="1000000" name="points" value="{{ values.points }}">
+            </div>
+            <div class="form-group"><label for="web-port">Internal web port</label>
+                <input id="web-port" class="form-control" type="number" min="1" max="65535" name="port" value="{{ values.port }}">
+            </div>
+        </details>
+        <p class="text-muted">The challenge starts hidden so you can test it before making it visible. This launcher uses private access through SSH.</p>
+        <button type="submit" class="btn btn-primary">Create challenge</button>
+        <a href="{{ script_root }}/admin/challenges" class="btn btn-link">Cancel</a>
+    </form>
+</div></div></div>
+{% endblock %}

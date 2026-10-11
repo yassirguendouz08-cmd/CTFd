@@ -21,6 +21,11 @@ teams and standings, with English, French and Arabic copy.
 
 ## What is included
 
+Admin instance challenges can now be created from a ZIP through **Challenges →
+New Challenge → Upload instance ZIP**. The worker builds the included Dockerfile
+and registers the challenge automatically. See the
+[ZIP upload guide](docs/ZIP-INSTANCE-CHALLENGES.md).
+
 - Official CyberDune logo and responsive theme.
 - Ready platform landing with premium CYBERDUNE branding and explicit future Event Mode.
 - Clean club-branded hero, readable category cards and restrained red accents.

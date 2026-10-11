@@ -1,0 +1,28 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<div class="jumbotron"><div class="container"><h1>Upload instance challenge</h1></div></div>
+<div class="container"><div class="row"><div class="col-lg-8 offset-lg-2">
+  <p>Upload your challenge ZIP. We build it and configure each player's instance and flag automatically.</p>
+  {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+  {% if not worker_ready %}<div class="alert alert-warning">The builder is currently offline. Please try again when it is available.</div>{% endif %}
+  <form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="nonce" value="{{ session.get('nonce') }}">
+    <div class="form-group"><label for="archive">Challenge ZIP</label>
+      <input id="archive" name="archive" type="file" class="form-control-file" accept=".zip" required>
+      <small class="form-text text-muted">Up to 50 MB. Include one Dockerfile and your app files, at the root or inside one folder. The app must read its flag from FLAG.</small>
+    </div>
+    <div class="form-group"><label for="name">Challenge name</label><input id="name" name="name" class="form-control" maxlength="128" value="{{ values.name }}" placeholder="Use the ZIP filename if left empty"></div>
+    <div class="row"><div class="col-md-6 form-group"><label for="category">Category</label><input id="category" name="category" class="form-control" maxlength="128" value="{{ values.category }}"></div>
+      <div class="col-md-6 form-group"><label for="points">Points</label><input id="points" name="points" type="number" min="1" max="1000000" class="form-control" value="{{ values.points }}" required></div></div>
+    <div class="form-group"><label for="description">Description</label><textarea id="description" name="description" class="form-control" rows="4">{{ values.description }}</textarea></div>
+    <details class="mb-4"><summary>Advanced</summary><div class="form-group mt-3"><label for="port">Internal app port</label><input id="port" name="port" type="number" min="1" max="65535" class="form-control" value="{{ values.port }}" placeholder="Detect from Dockerfile EXPOSE, otherwise 8080"></div></details>
+    <p class="text-muted">The challenge is created hidden, ready for you to preview and publish. Instances last 10 minutes.</p>
+    <button type="submit" class="btn btn-primary" {% if not worker_ready %}disabled{% endif %}>Build and create challenge</button>
+    <a href="{{ url_for('admin.challenges_listing') }}" class="btn btn-link">Cancel</a>
+  </form>
+  {% if recent_builds %}
+  <h3 class="mt-5">Recent uploads</h3>
+  <ul class="list-group mb-4">{% for build in recent_builds %}<li class="list-group-item d-flex justify-content-between"><a href="{{ url_for('ctfd-chall-manager.zip_build', job_id=build.id) }}">{{ build.name }}</a><span>{{ build.state }}</span></li>{% endfor %}</ul>
+  {% endif %}
+</div></div></div>
+{% endblock %}

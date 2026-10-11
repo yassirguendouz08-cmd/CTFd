@@ -27,6 +27,8 @@ from CTFd.plugins.ctfd_chall_manager.utils.helpers import (
 from CTFd.plugins.ctfd_chall_manager.utils.instance_manager import query_instance
 from CTFd.plugins.ctfd_chall_manager.utils.logger import configure_logger
 from CTFd.plugins.ctfd_chall_manager.utils.setup import setup_default_configs
+from CTFd.plugins.ctfd_chall_manager.web_preset import register_web_preset
+from CTFd.plugins.ctfd_chall_manager.zip_upload import register_zip_upload
 from CTFd.plugins.migrations import upgrade
 from CTFd.utils import get_config, set_config
 from CTFd.utils import user as current_user
@@ -80,6 +82,8 @@ def load(app):  # pylint: disable=too-many-statements
     )
 
     register_api_endpoints()
+    register_web_preset(page_blueprint)
+    register_zip_upload(page_blueprint)
 
     # Route to configure Chall-manager plugins
     @page_blueprint.route("/admin/settings")

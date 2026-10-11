@@ -16,6 +16,12 @@ CYBERDUNE changes:
   browser cache; connection information is rendered as text, not HTML.
 - Instance controls use the existing CYBERDUNE styling.
 - Invalid numeric startup settings fall back cleanly.
+- Admin-only quick web creation uses the saved reusable scenario, generates a
+  fresh flag seed per challenge and supplies private-instance/scoring defaults.
+  The normal creation form and backend rollback path remain available.
+- Admin ZIP uploads build through a private file queue on the Docker worker;
+  CTFd gets no Docker socket. Automatic creation reuses the web scenario and
+  supports build logs, failure recovery and idempotent registration.
 
 Upgrades should compare these changes against the pinned upstream revision.
 See docs/INSTANCES.md for installation, backend activation and validation limits.
