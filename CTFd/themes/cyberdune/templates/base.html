@@ -6,7 +6,7 @@
   <title>{{ title or (cd_presentation.name if cd_presentation.mode == 'event' else 'CYBERDUNE CTF PLATFORM') }} · CYBERDUNE</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  {% if Configs.ctf_small_icon %}<link rel="icon" href="{{ Configs.ctf_small_icon }}">{% endif %}
+  <link rel="icon" type="image/png" sizes="128x128" href="{{ url_for('views.themes_beta', theme='cyberdune', path='img/favicon.png') }}?v=1">
   {{ meta | safe }}
   {% block stylesheets %}{{ Assets.css("assets/scss/main.scss", theme="core") }}{% endblock %}
   {{ Plugins.styles }}
