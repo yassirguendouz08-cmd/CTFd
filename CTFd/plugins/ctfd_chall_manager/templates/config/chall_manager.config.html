@@ -8,6 +8,7 @@
     {% for config, val in {
         "API URL": ("chall-manager_api_url", "Chall-Manager API to connect to", "text"),
         "Mana total": ("chall-manager_mana_total", "Maximum mana that teams/users are allowed to use (0 = unlimited)", "number"),
+        "Web scenario": ("web_scenario", "Saved launcher for New web challenge. Leave empty to use the installed web-container:v1-amd64 preset.", "text"),
     }.items() %}
         {% set value = get_config('chall-manager:' + val[0]) %}
         <div class="form-group">

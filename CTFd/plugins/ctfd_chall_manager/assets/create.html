@@ -2,6 +2,7 @@
 
 {% block header %}
 <div class="alert alert-secondary" role="alert">
+    <p><a class="btn btn-primary" href="{{ script_root }}/plugins/ctfd-chall-manager/admin/web/new">Quick web instance</a></p>
     IaC challenges are special challenge that allows the Player to deploy his personnal challenges Instance.
     Challmakers provides the Scenario, which is the IaC Pulumi package to be execute by Chall-Manager.
     This type is based on dynamic challenge type.
@@ -122,7 +123,7 @@
             Scenario reference (e.g registry.lan/category/challenge-scenario:v0.1.0@sha256:a0b1...c2d3)
         </small>
     </label>
-    <input type="text" id="timeout-input" data-test-id="scenario-create-id" class="form-control" name="scenario" required>
+    <input type="text" id="scenario-input" data-test-id="scenario-create-id" class="form-control" name="scenario" required>
 </div>
 
 

@@ -26,3 +26,15 @@ func TestAccountFlags(t *testing.T) {
 		t.Fatal("empty identity accepted")
 	}
 }
+
+func TestPublishedPort(t *testing.T) {
+	port, err := publishedPort(strings.NewReader(`{"NetworkSettings":{"Ports":{"8080/tcp":[{"HostIp":"127.0.0.1","HostPort":"32771"}]}}}`), 8080)
+	if err != nil || port != 32771 {
+		t.Fatal("cannot read the allocated host port", port, err)
+	}
+	for _, body := range []string{`{}`, `{"NetworkSettings":{"Ports":{"8080/tcp":[{"HostIp":"0.0.0.0","HostPort":"32771"}]}}}`, `{"NetworkSettings":{"Ports":{"8080/tcp":[{"HostIp":"127.0.0.1","HostPort":"0"}]}}}`} {
+		if _, err := publishedPort(strings.NewReader(body), 8080); err == nil {
+			t.Fatal("invalid binding accepted")
+		}
+	}
+}

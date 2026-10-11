@@ -40,7 +40,10 @@ limit and 10 MB log limit. Uploaded sources and bounded logs are retained in the
 private queue; extracted build contexts are removed after a build. The generated
 images live in the worker's Docker daemon, shared with the existing manager.
 The one-time publication helper saves the digest-pinned v2 launcher for future
-uploads. It includes explicit random host-port allocation. The Compose init
+uploads. A dedicated, restricted TCP gateway publishes a random loopback port
+for each target; the target itself remains on its private internal network.
+IP forwarding is disabled in the gateway. Docker's actual port binding is
+inspected before connection information is returned. The Compose init
 service creates the file-backed Pulumi state directory before the manager starts.
 
 Service status and operational logs:
