@@ -51,4 +51,3 @@ screens must bind real authorized CTFd data.
 ## Stitch project
 Project ID: 10465941215322521387
 Controls have subtly rounded 6px corners; cards 10px; modals 12px. Use precise thin borders and restrained elevation. Keep a spacious hero and compact task surfaces.
-
