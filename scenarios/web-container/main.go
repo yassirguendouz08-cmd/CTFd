@@ -74,13 +74,25 @@ func inspectTargetAddress(id string) (string, error) {
 	defer transport.CloseIdleConnections()
 	client := &http.Client{Transport: transport, Timeout: 10 * time.Second}
 	response, err := client.Get("http://docker/containers/" + url.PathEscape(id) + "/json")
-	if err != nil { return "", err }
+	if err != nil {
+		return "", err
+	}
 	defer response.Body.Close()
-	if response.StatusCode != http.StatusOK { return "", fmt.Errorf("Docker inspection returned %d", response.StatusCode) }
-	var inspection struct { NetworkSettings struct { Networks map[string]struct { IPAddress string } } }
-	if err := json.NewDecoder(io.LimitReader(response.Body, 1024*1024)).Decode(&inspection); err != nil { return "", err }
+	if response.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("Docker inspection returned %d", response.StatusCode)
+	}
+	var inspection struct {
+		NetworkSettings struct {
+			Networks map[string]struct{ IPAddress string }
+		}
+	}
+	if err := json.NewDecoder(io.LimitReader(response.Body, 1024*1024)).Decode(&inspection); err != nil {
+		return "", err
+	}
 	for _, network := range inspection.NetworkSettings.Networks {
-		if ip := net.ParseIP(network.IPAddress); ip != nil && ip.To4() != nil && ip.IsPrivate() { return ip.String(), nil }
+		if ip := net.ParseIP(network.IPAddress); ip != nil && ip.To4() != nil && ip.IsPrivate() {
+			return ip.String(), nil
+		}
 	}
 	return "", fmt.Errorf("target has no private network address")
 }
@@ -132,25 +144,29 @@ func main() {
 		}
 		// Only the TCP gateway has an ingress network. The target keeps its internal network.
 		ingress, err := docker.NewNetwork(req.Ctx, "gateway-network", &docker.NetworkArgs{}, opts...)
-		if err != nil { return err }
+		if err != nil {
+			return err
+		}
 		address := container.ID().ApplyT(func(id pulumi.ID) (string, error) { return inspectTargetAddress(string(id)) }).(pulumi.StringOutput)
 		gateway, err := docker.NewContainer(req.Ctx, "gateway", &docker.ContainerArgs{
-			Image: pulumi.String("cyberdune/instance-gateway:v1"),
+			Image:   pulumi.String("cyberdune/instance-gateway:v1"),
 			Command: pulumi.StringArray{pulumi.String("TCP-LISTEN:8080,fork,reuseaddr"), address.ApplyT(func(ip string) string { return fmt.Sprintf("TCP:%s:%d", ip, port) }).(pulumi.StringOutput)},
-			Memory: pulumi.Int(32), MemorySwap: pulumi.Int(32),
+			Memory:  pulumi.Int(32), MemorySwap: pulumi.Int(32),
 			CpuPeriod: pulumi.Int(100000), CpuQuota: pulumi.Int(25000),
-			ReadOnly: pulumi.Bool(true),
+			ReadOnly:     pulumi.Bool(true),
 			Capabilities: &docker.ContainerCapabilitiesArgs{Drops: pulumi.StringArray{pulumi.String("ALL")}},
 			SecurityOpts: pulumi.StringArray{pulumi.String("no-new-privileges:true")},
-			Sysctls: pulumi.StringMap{"net.ipv4.ip_forward": pulumi.String("0")},
+			Sysctls:      pulumi.StringMap{"net.ipv4.ip_forward": pulumi.String("0")},
 			NetworksAdvanced: docker.ContainerNetworksAdvancedArray{
 				docker.ContainerNetworksAdvancedArgs{Name: network.Name},
 				docker.ContainerNetworksAdvancedArgs{Name: ingress.Name},
 			},
 			Ports: docker.ContainerPortArray{docker.ContainerPortArgs{Internal: pulumi.Int(8080), External: pulumi.Int(0), Ip: pulumi.String("127.0.0.1"), Protocol: pulumi.String("tcp")}},
-			Rm: pulumi.Bool(true),
+			Rm:    pulumi.Bool(true),
 		}, opts...)
-		if err != nil { return err }
+		if err != nil {
+			return err
+		}
 		resp.Flags = pulumi.StringArray{pulumi.String(flag)}.ToStringArrayOutput()
 		// Read the actual binding from Docker; provider Ports can retain input-only values.
 		resp.ConnectionInfo = gateway.ID().ApplyT(func(id pulumi.ID) (string, error) {
