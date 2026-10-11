@@ -2,8 +2,8 @@
 
 The theme from `core-theme.zip` is installed in `CTFd/themes/core-theme`.
 It includes the supplied glass navigation, red challenge cards, homepage,
-profile pages, compiled assets and animated images. Its original license and
-designer credits are preserved. The archive's Git history and maintenance
+profile pages, compiled assets and animated images. Its original license is
+preserved; the visible footer credit is Yassir Guendouz, as requested. The archive's Git history and maintenance
 scripts are not installed.
 
 Activate it in your running Codespace or Docker host after updating the source:

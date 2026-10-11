@@ -223,7 +223,7 @@
 
     <div class="ht-tm-navbar-left">
       <a href="{{ url_for('views.static_html', route='/') }}">
-        <img src="{{ Configs.ctf_logo or url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-white.png') }}" width="50" height="50" alt="CyberDune" style="display:block;object-fit:contain;" />
+        <img src="{{ url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-white.png') }}" width="50" height="50" alt="CyberDune" style="display:block;object-fit:contain;" />
       </a>
     </div>
 
