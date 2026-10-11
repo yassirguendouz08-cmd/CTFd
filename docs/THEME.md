@@ -84,16 +84,15 @@ Validate registration, login, settings, teams, files, hints, flag attempts, solv
 states, scores, profiles, languages, notifications and logout. See
 [validation notes](VALIDATION.md) for completed checks and live limits.
 
-## Operations visual layer
+## Professional visual refinement
 
-`static/css/operations.css` adds HUD corners, subtle card motifs, category icons,
-input focus and standings highlights to the existing theme.
-`templates/components/network.html` supplies the decorative hero SVG;
-`static/js/operations.js` manages one-pass typing, motion preferences and finite
-highlights on actual score/solve changes. The illustration is hidden from screen
-readers; the terminal label has a stable accessible equivalent.
+`static/css/operations.css` refines the existing theme with readable labels,
+consistent card spacing, restrained red accents and clean surfaces. The hero
+keeps the real event briefing and useful actions. Decorative network art, typing
+labels, HUD corners, scan lines and redundant club chips were removed.
 
-Colors and page grids remain in `cyberdune.css`. To adjust intensity, tune signal
-opacity/timing in `operations.css`; do not modify challenge state or score APIs.
-The hero pause button remembers its preference locally and reduced motion takes
-priority. Cache version 10 loads the enhancement after the original CSS.
+`static/js/operations.js` only adds finite highlights to real score/solve updates.
+No animation loop, motion preference control or extra API polling is needed.
+Reduced motion suppresses those highlights. Category icons use existing fonts.
+The authoritative palette and page grids remain in `cyberdune.css`; cache version
+11 loads the refinement after the baseline stylesheet. Auth and scoring stay CTFd.

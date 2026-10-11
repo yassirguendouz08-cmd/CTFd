@@ -1,68 +1,70 @@
-/* Visual enhancement only. Layout, CTFd state and existing palette stay authoritative. */
-.cd-hero { position: relative; isolation: isolate; }
-.cd-network { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
-.cd-network .cd-trace { fill: none; stroke: var(--cd-border); stroke-width: 1; opacity: .55; }
-.cd-network .cd-signal { fill: none; stroke: var(--cd-red); stroke-width: 1.5; stroke-dasharray: 12 680; animation: cd-signal 16s linear infinite; opacity: .42; }
-.cd-network .cd-node { fill: var(--cd-bg); stroke: var(--cd-red); stroke-width: 1; opacity: .5; }
-.cd-network .cd-pulse { fill: var(--cd-red); opacity: .5; transform-box: fill-box; transform-origin: center; animation: cd-pulse 6s ease-in-out infinite; }
-.cd-network .cd-grid { stroke: var(--cd-border); stroke-width: .5; opacity: .17; }
-.cd-network text { fill: var(--cd-muted); font: 9px var(--cd-mono); opacity: .45; }
-.cd-network .cd-scan { stroke: var(--cd-red); stroke-width: 1; opacity: .12; animation: cd-scan 14s ease-in-out infinite; }
-.cd-operation-label { font: 10px/1.8 var(--cd-mono); letter-spacing: .08em; color: var(--cd-muted); margin: 0 0 18px; direction: ltr; }
-.cd-operation-label::before { content: '> '; color: var(--cd-red); }
-.cd-operation-label [data-operation-copy] { color: var(--cd-text); }
-.cd-operation-label .cd-cursor { display: inline-block; width: 5px; height: 11px; background: var(--cd-red); vertical-align: -1px; margin-inline-start: 5px; animation: cd-cursor 1.5s steps(1) 4; }
-.cd-motion-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; }
-.cd-motion-tools small { font: 9px var(--cd-mono); color: var(--cd-muted); }
-.cd-motion-toggle { color: var(--cd-muted); border: 1px solid var(--cd-border); background: transparent; border-radius: 4px; padding: 8px 10px; font: 10px var(--cd-mono); min-height: 44px; }
-.cd-motion-toggle:hover { color: var(--cd-text); border-color: var(--cd-red); }
-.cd-motion-toggle[hidden] { display: none !important; }
-.cd-briefing, .cd-challenge-card, .cd-home-category, .cd-auth-card, .cd-podium-card, .cd-profile-metrics h2 { position: relative; }
-.cd-briefing::before, .cd-auth-card::before { content: ''; position: absolute; pointer-events: none; inset: 7px; border: solid var(--cd-red); border-width: 1px 0 0 1px; width: 13px; height: 13px; opacity: .55; }
-.cd-briefing::after, .cd-auth-card::after { content: ''; position: absolute; pointer-events: none; inset-inline-end: 7px; bottom: 7px; border: solid var(--cd-red); border-width: 0 1px 1px 0; width: 13px; height: 13px; opacity: .55; }
-.cd-challenge-card, .cd-home-category { background-image: linear-gradient(135deg, transparent 75%, #ff304f04); transition: border-color .2s, transform .2s, background-color .2s; }
-.cd-challenge-card::before, .cd-home-category::before { content: ''; position: absolute; inset-inline-end: 8px; top: 8px; width: 10px; height: 10px; border-top: 1px solid var(--cd-muted); border-inline-end: 1px solid var(--cd-muted); opacity: .4; pointer-events: none; }
-.cd-challenge-card:hover::before, .cd-home-category:hover::before { border-color: var(--cd-red); opacity: 1; }
-.cd-challenge-card:hover, .cd-home-category:hover { transform: translateY(-3px); border-color: var(--cd-red); }
-.cd-category-symbol { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin-inline-end: 8px; border: 1px solid var(--cd-border); border-radius: 4px; color: var(--cd-red); font-size: 12px; flex-shrink: 0; }
-.cd-card-category { display: inline-flex; align-items: center; }
-.cd-home-category strong { display: flex; align-items: center; }
-.challenge-solved .cd-category-symbol { color: var(--cd-green); border-color: #365b4b; }
-.challenge-solved::before { border-color: var(--cd-green); }
-.cd-podium-card::after { content: ''; display: block; position: absolute; bottom: 0; inset-inline: 20px; height: 2px; background: var(--cd-border); }
-.cd-podium-card:first-of-type { border-top: 2px solid var(--cd-red); }
-.cd-podium-card:first-of-type::after { background: var(--cd-red); }
-.cd-podium-card>span { color: var(--cd-text); }
-.cd-score-table tbody tr { transition: background-color .25s; }
-.cd-data-changed { animation: cd-data-change .7s ease-out; }
+/* CyberDune refinement: restrained brand accents, readable surfaces and useful feedback. */
+.cd-hero { padding-block: 88px 72px; gap: 72px; }
+.cd-brand-title { font-size: clamp(44px, 5.1vw, 72px); letter-spacing: -.045em; line-height: 1.08; }
+.cd-hero-description { line-height: 1.75; max-width: 490px; }
+.cd-eyebrow { font-family: Inter, system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .07em; }
+.cd-hero .cd-eyebrow { max-width: 440px; margin-bottom: 24px; }
+.cd-briefing { border-radius: 14px; border-color: #303745; box-shadow: 0 16px 40px #00000018; }
+.cd-briefing-head { padding: 24px; align-items: start; flex-wrap: wrap; }
+.cd-briefing-head h2 { font-size: 20px; }
+.cd-status { font: 11px/1.5 Inter, system-ui, sans-serif; border: 0; background: #ffffff04; padding: 6px 9px; border-radius: 6px; }
+.cd-briefing dt { font: 500 11px/1.5 Inter, system-ui, sans-serif; letter-spacing: .04em; }
+.cd-briefing dd { font-size: 13px; }
+.cd-briefing dl>div { padding-block: 20px; }
+.cd-briefing dl>div:last-child { border-bottom: 0; }
+.cd-briefing-foot { padding: 18px 24px; border-top: 1px solid var(--cd-border); font-size: 13px; }
+.cd-home-metrics { margin-bottom: 48px; padding-block: 28px; }
+.cd-home-metrics strong { font: 600 30px/1.3 "Space Grotesk", Inter, sans-serif; font-variant-numeric: tabular-nums; }
+.cd-home-metrics span { font: 12px/1.5 Inter, system-ui, sans-serif; }
+.cd-home-category { min-height: 144px; gap: 20px; padding: 26px; border-radius: 12px; transition: background-color .18s, border-color .18s; }
+.cd-home-category:hover { border-color: #596171; background: var(--cd-raised); }
+.cd-home-category strong { display: flex; align-items: center; gap: 12px; font-size: 20px; }
+.cd-home-category>span { font: 12px/1.5 Inter, system-ui, sans-serif; }
+.cd-category-symbol { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: var(--cd-red); font-size: 14px; flex-shrink: 0; }
+.cd-card-category { display: inline-flex; align-items: center; gap: 6px; font: 11px/1.5 Inter, system-ui, sans-serif; }
+.cd-challenge-card { padding: 24px; border-radius: 12px; transition: background-color .18s, border-color .18s; }
+.cd-challenge-card:hover { transform: none; border-color: #667184; background: var(--cd-raised); }
+.cd-card-state { font: 11px/1.5 Inter, system-ui, sans-serif; letter-spacing: 0; }
+.cd-card-tags>span { font: 11px/1.4 Inter, system-ui, sans-serif; padding: 4px 8px; }
+.cd-card-solves, .cd-card-bottom small { font: 11px/1.5 Inter, system-ui, sans-serif; }
+.challenge-solved .cd-category-symbol { color: var(--cd-green); }
+.cd-category-title span { font: 12px/1.5 Inter, system-ui, sans-serif; }
+.cd-board-summary span { font: 11px/1.5 Inter, system-ui, sans-serif; letter-spacing: .03em; }
+.cd-podium-card { border-radius: 12px; }
+.cd-podium-card:first-of-type { border-color: #63313f; background: #17131c; }
+.cd-podium-card>span, .cd-podium-card small { font: 12px/1.5 Inter, system-ui, sans-serif; }
+.cd-standing-me { box-shadow: inset 3px 0 var(--cd-red); }
 .cd-standing-me td a { color: #ff8792; }
-.cd-page-head .cd-eyebrow::before { content: '[ '; color: var(--cd-red); }
-.cd-page-head .cd-eyebrow::after { content: ' ]'; color: var(--cd-red); }
-.cd-auth-mark { border-inline-start: 2px solid var(--cd-red); padding-inline-start: 12px; }
-.cd-auth-card .form-control:focus, .challenge-input:focus { box-shadow: 0 0 0 3px #ff304f18; border-color: var(--cd-red); }
-.cd-empty { background-image: linear-gradient(90deg, #28303e10 1px, transparent 1px), linear-gradient(#28303e10 1px, transparent 1px); background-size: 32px 32px; }
-.cd-profile-metrics h2 { border-inline-start: 2px solid var(--cd-red); }
-.modal-content { border-inline-start: 1px solid #ff304f40; }
-.cd-nav { border-bottom: 1px solid #ff304f30; }
-.cd-hero-copy, .cd-briefing { animation: cd-enter .45s ease-out both; }
-.cd-briefing { animation-delay: .08s; }
-@keyframes cd-enter { from { opacity: .5; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes cd-signal { to { stroke-dashoffset: -1384; } }
-@keyframes cd-pulse { 0%, 100% { opacity: .2; transform: scale(.7); } 50% { opacity: .65; transform: scale(1.2); } }
-@keyframes cd-scan { 0%, 100% { transform: translateY(0); opacity: 0; } 20% { opacity: .12; } 80% { transform: translateY(440px); opacity: .12; } }
-@keyframes cd-cursor { 50% { opacity: 0; } }
-@keyframes cd-data-change { from { background-color: #ff304f24; } to { background-color: transparent; } }
-html[data-cd-motion=paused] .cd-app *, html[data-cd-motion=paused] .cd-app *::before, html[data-cd-motion=paused] .cd-app *::after { animation-play-state: paused !important; }
-/* Pausing during entry must never leave useful content faded or displaced. */
-html[data-cd-motion=paused] .cd-hero-copy, html[data-cd-motion=paused] .cd-briefing { animation: none; opacity: 1; transform: none; }
+.cd-data-changed { animation: cd-data-change .7s ease-out; }
+.cd-auth-card { padding: 36px; border-radius: 14px; }
+.cd-auth-mark { font: 600 11px/1.5 Inter, system-ui, sans-serif; letter-spacing: .06em; }
+.cd-empty { border-style: solid; background: #ffffff02; border-radius: 12px; }
+.cd-guide-grid article { background: transparent; border-radius: 12px; }
+.cd-guide-grid h3 { font-size: 21px; }
+.cd-guide-grid p { font-size: 14px; line-height: 1.75; }
+.cd-guide-grid .cd-step { font-size: 12px; }
+.cd-home-standings { margin-block: 48px; }
+.cd-app main { padding-bottom: 64px; }
+.cd-comms-links small { font: 500 11px/1.4 Inter, system-ui, sans-serif; letter-spacing: .04em; color: var(--cd-muted); }
+.cd-comms-links strong { font-size: 13px; }
+.cd-footer small, .cd-footer-links a { font: 12px/1.6 Inter, system-ui, sans-serif; }
+.modal-content { border-radius: 14px; }
+@keyframes cd-data-change { from { background-color: #ff304f20; } to { background-color: transparent; } }
+@media (max-width: 991px) {
+  .cd-hero { gap: 32px; padding-block: 56px; }
+  .cd-brand-title { font-size: clamp(42px, 5.5vw, 64px); }
+}
 @media (max-width: 767px) {
-  .cd-network { opacity: .6; }
-  .cd-network text, .cd-network .cd-scan { display: none; }
-  .cd-operation-label { font-size: 9px; letter-spacing: .02em; }
-  .cd-motion-tools { flex-wrap: wrap; }
+  .cd-hero { padding-block: 40px; gap: 32px; }
+  .cd-brand-title { font-size: clamp(40px, 10vw, 56px); }
+  .cd-home-metrics>div { padding-inline: 12px; }
+  .cd-home-metrics span { font-size: 11px; }
+  .cd-home-category { padding: 18px; min-height: 132px; gap: 16px; }
+  .cd-home-category strong { font-size: 17px; gap: 6px; }
+  .cd-home-category>span { font-size: 11px; }
+  .cd-auth-card { padding: 24px; }
+  .cd-app main { padding-bottom: 40px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cd-app *, .cd-app *::before, .cd-app *::after { animation: none !important; transition: none !important; }
-  .cd-challenge-card:hover, .cd-home-category:hover { transform: none; }
-  .cd-cursor { display: none !important; }
 }

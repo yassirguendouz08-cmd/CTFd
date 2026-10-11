@@ -74,3 +74,11 @@ upgrades, compare upstream templates and API contracts; see [THEME.md](THEME.md)
   reviewed. Existing backend, scoring, flag validation and databases are untouched.
 - CSS and SVG assets are local; existing Font Awesome category icons require no
   new dependency. Effects have no canvas, video, filters or oversized blur layers.
+
+## Professional refinement
+
+The operations enhancement above is a historical checkpoint. The current theme
+removes its decorative network SVG, typing cursor, motion toggle, HUD corners and
+redundant labels. Card, metadata, form and footer typography is more readable;
+real score/solve change feedback remains finite and honors reduced motion.
+Current screenshots replace the preceding animated design previews.
