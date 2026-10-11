@@ -62,15 +62,15 @@
         <hr class="w-50 mx-auto">
       {% endif %}
 
-      <div>
+      <div class="cd-profile-metrics">
         <h2 class="text-center">
           {% if account.place %}
-            {{ account.place }} <small>place</small>
+            {{ account.place }} <small>{{ cd_copy("Rank") }}</small>
           {% endif %}
         </h2>
         <h2 class="text-center">
           {% if account.place %}
-            {{ account.score }} <small>points</small>
+            {{ account.score }} <small>{{ cd_copy("Points") }}</small>
           {% endif %}
         </h2>
       </div>

@@ -11,18 +11,25 @@
     </div>
     <div class="cd-hero-note">{{ cd_copy("EST Guelmim · Moroccan Sahara") }}</div>
   </div>
+  <aside class="cd-briefing" aria-labelledby="cd-briefing-title">
+    <div class="cd-briefing-head"><h2 id="cd-briefing-title">{{ cd_copy("Mission briefing") }}</h2><span class="cd-status" data-event-status>{{ cd_copy("Checking schedule") }}</span></div>
+    <div class="cd-briefing-body"><dl>
+      <div><dt>{{ cd_copy("START") }}</dt><dd><time data-event-start>{{ cd_copy("Not scheduled") }}</time></dd></div>
+      <div><dt>{{ cd_copy("END") }}</dt><dd><time data-event-end>{{ cd_copy("Not scheduled") }}</time></dd></div>
+      <div><dt>{{ cd_copy("FORMAT") }}</dt><dd>{{ cd_copy('Team competition' if Configs.user_mode == 'teams' else 'Individual competition') }}</dd></div>
+    </dl><div class="cd-countdown" data-countdown hidden><span data-countdown-label></span><strong data-countdown-value></strong></div></div>
+    <div class="cd-briefing-foot"><a href="#event-guide">{{ cd_copy("Your first flag starts here") }} <span aria-hidden="true">↗</span></a></div>
+  </aside>
 </section>
-<section class="container cd-event-strip" aria-label="Competition schedule"><span class="cd-status" data-event-status>{{ cd_copy("Checking schedule") }}</span><div><span>{{ cd_copy("START") }}</span><time data-event-start>{{ cd_copy("Not scheduled") }}</time></div><div><span>{{ cd_copy("END") }}</span><time data-event-end>{{ cd_copy("Not scheduled") }}</time></div><div><span>{{ cd_copy("FORMAT") }}</span><strong>{{ cd_copy('Team competition' if Configs.user_mode == 'teams' else 'Individual competition') }}</strong></div><div class="cd-countdown" data-countdown hidden><span data-countdown-label></span><strong data-countdown-value></strong></div></section>
-<section class="container cd-terminal-section" aria-label="CyberDune command line illustration">
-  <div class="cd-terminal-intro"><p class="cd-eyebrow">{{ cd_copy("CURIOSITY IS YOUR BEST TOOL") }}</p><h2>{{ cd_copy("Every flag has a story.") }}<br><span>{{ cd_copy("Crack yours.") }}</span></h2><p>{{ cd_copy("Read between the bytes. Inspect the evidence, question the obvious, and keep digging until the pieces fit.") }}</p><a href="{{ url_for('challenges.listing') }}">{{ cd_copy("Find your next solve") }} <span aria-hidden="true">↗</span></a></div>
-  <div class="cd-terminal">
-    <div class="cd-terminal-bar"><span class="cd-terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span><span>challenger@cyberdune:~</span><span class="cd-terminal-demo">{{ cd_copy("DEMO") }}</span><button class="cd-motion-toggle" type="button" data-motion-toggle aria-pressed="false">{{ cd_copy("Pause effects") }}</button></div>
-    <div class="cd-terminal-screen" data-terminal aria-hidden="true"><div class="cd-terminal-line"><span class="cd-prompt">challenger@cyberdune:~$ </span><span>cat mission.txt</span></div><div class="cd-terminal-output">{{ cd_copy("Find the weakness. Follow the clues. Capture the flag.") }}</div><div class="cd-terminal-line"><span class="cd-prompt">challenger@cyberdune:~$ </span><span>./begin --mindset curious</span></div><div class="cd-terminal-output">{{ cd_copy("Curiosity loaded. Your next solve starts here.") }}</div><div class="cd-terminal-line"><span class="cd-prompt">challenger@cyberdune:~$ </span><span class="cd-terminal-cursor"></span></div></div>
-    <p class="visually-hidden">{{ cd_copy('Decorative terminal demo. Find the weakness, follow the clues, and capture the flag. No commands are executed.') }}</p>
-    <div class="cd-terminal-bottom"><span>{{ cd_copy("ILLUSTRATIVE SESSION / NO COMMANDS EXECUTED") }}</span><span aria-hidden="true">&gt;_ CD</span></div>
-  </div>
+<section class="container cd-home-workspace" data-home-workspace
+  data-load-challenges="{{ 'true' if Configs.challenge_visibility == 'public' or (Configs.challenge_visibility == 'private' and authed()) or is_admin() else 'false' }}"
+  data-load-scores="{{ 'true' if Configs.account_visibility != 'admins' and (Configs.score_visibility == 'public' or (Configs.score_visibility == 'private' and authed())) else 'false' }}">
+  <div class="cd-home-metrics"><div><strong data-visible-count>—</strong><span>{{ cd_copy("Visible challenges") }}</span></div><div><strong data-category-count>—</strong><span>{{ cd_copy("Challenge categories") }}</span></div><div><strong data-standing-count>—</strong><span>{{ cd_copy("Published standings") }}</span></div></div>
+  <div class="cd-section-heading"><div><p class="cd-eyebrow">{{ cd_copy("CHOOSE YOUR ANGLE OF ATTACK") }}</p><h2>{{ cd_copy("Pick your next lead.") }}</h2></div><a href="{{ url_for('challenges.listing') }}">{{ cd_copy("All challenges") }} ↗</a></div>
+  <div class="cd-home-categories" data-home-categories></div>
+  <p data-categories-empty class="cd-home-placeholder">{{ cd_copy("Open the challenge board to see available challenges.") }}</p>
+  <section class="cd-home-standings" aria-labelledby="cd-preview-title"><div><p class="cd-eyebrow">{{ cd_copy("Scoreboard") }}</p><h2 id="cd-preview-title">{{ cd_copy("Let your solves speak.") }}</h2><a href="{{ url_for('scoreboard.listing') }}">{{ cd_copy("View standings") }} ↗</a></div><div><ol data-home-leaders class="cd-home-leaders"></ol><p data-leaders-empty class="cd-home-placeholder">{{ cd_copy("Open the scoreboard for published standings.") }}</p></div></section>
 </section>
-<section class="container cd-disciplines" aria-label="Cybersecurity disciplines"><span>{{ cd_copy("CHOOSE YOUR ANGLE OF ATTACK") }}</span><div><span>Web</span><span>Cryptography</span><span>Forensics</span><span>Reverse engineering</span><span>Pwn</span><span>OSINT</span></div></section>
 <section id="event-guide" class="container cd-guide">
   <div class="cd-section-heading"><div><p class="cd-eyebrow">{{ cd_copy("FROM FIRST CLUE TO FIRST FLAG") }}</p><h2>{{ cd_copy("Your first solve is closer than you think.") }}</h2></div><p>{{ cd_copy("Bring your curiosity. We’ll bring the puzzles.") }}</p></div>
   <div class="cd-guide-grid">

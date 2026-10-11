@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CYBERDUNE CTF - Password Recovery</title>
+<!-- Google Fonts: Space Grotesk, JetBrains Mono, Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration verbatim from Design System -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#5c3f40",
+            "secondary-container": "#d60037",
+            "on-tertiary-fixed": "#002019",
+            "surface-container": "#2c1b1c",
+            "surface-dim": "#1f0f10",
+            "on-error-container": "#ffdad6",
+            "secondary": "#ffb3b3",
+            "on-primary": "#68001a",
+            "secondary-fixed": "#ffdad9",
+            "surface-variant": "#443030",
+            "primary-text": "#F8FAFC",
+            "tertiary-container": "#00836c",
+            "surface-container-high": "#382526",
+            "background": "#080A0F",
+            "inverse-surface": "#fbdbdb",
+            "error-container": "#93000a",
+            "on-tertiary": "#00382d",
+            "on-secondary-fixed-variant": "#920022",
+            "tertiary-fixed-dim": "#74d8bd",
+            "inverse-on-surface": "#3f2b2c",
+            "on-tertiary-container": "#eefff7",
+            "secondary-text": "#94A3B8",
+            "on-secondary": "#680016",
+            "on-secondary-fixed": "#40000a",
+            "surface-container-highest": "#443030",
+            "surface-bright": "#483435",
+            "primary-container": "#e11d48",
+            "surface-container-low": "#281718",
+            "on-tertiary-fixed-variant": "#005142",
+            "tertiary": "#74d8bd",
+            "on-surface-variant": "#e5bdbe",
+            "elevated-surface": "#191E29",
+            "on-error": "#690005",
+            "tertiary-fixed": "#90f5d9",
+            "on-background": "#fbdbdb",
+            "primary-fixed": "#ffdada",
+            "outline": "#ac8889",
+            "on-primary-fixed-variant": "#920028",
+            "secondary-fixed-dim": "#ffb3b3",
+            "surface-container-lowest": "#190a0b",
+            "on-surface": "#fbdbdb",
+            "primary-fixed-dim": "#ffb3b6",
+            "on-primary-container": "#fffaf9",
+            "primary": "#ffb3b6",
+            "inverse-primary": "#be0037",
+            "error": "#ffb4ab",
+            "surface-tint": "#ffb3b6",
+            "surface": "#11141C",
+            "on-secondary-container": "#ffe7e6",
+            "on-primary-fixed": "#40000c"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem",
+            "margin": "2rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "label-md": ["JetBrains Mono"],
+            "headline-sm": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-lg": ["Space Grotesk"],
+            "body-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "label-lg": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-primary-text min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar (Shared Component JSON Source of Truth) -->
+<header class="w-full bg-surface border-b border-outline-variant sticky top-0 z-50">
+<div class="w-full flex items-center justify-between px-6 py-3 max-w-7xl mx-auto">
+<!-- Brand Anchor -->
+<div class="flex items-center gap-6">
+<a class="font-headline-sm text-headline-sm tracking-tight font-semibold text-primary-text flex items-center gap-2.5" href="#">
+<span class="w-2.5 h-2.5 bg-primary-container rounded-sm inline-block"></span>
+<span>CYBERDUNE CTF</span>
+</a>
+<!-- Desktop Navigation Links from JSON -->
+<nav aria-label="Global" class="hidden md:flex items-center gap-6 ml-4">
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Home</a>
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Challenges</a>
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Scoreboard</a>
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Teams</a>
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Event Info</a>
+</nav>
+</div>
+<!-- Trailing Action Cluster (JSON Specified) -->
+<div class="flex items-center gap-3">
+<!-- Language Switcher Selector -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-elevated-surface border border-outline-variant text-secondary-text text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-[14px]">language</span>
+<span class="text-primary-text font-semibold">EN</span>
+<span class="text-outline-variant">/</span>
+<span class="hover:text-primary-text cursor-pointer transition-colors">FR</span>
+<span class="text-outline-variant">/</span>
+<span class="hover:text-primary-text cursor-pointer transition-colors">AR</span>
+</div>
+<a class="hidden sm:inline-flex px-3.5 py-1.5 rounded text-label-md font-label-md border border-outline-variant text-primary-text bg-elevated-surface hover:border-primary-container transition-colors duration-150" href="#">
+          Log In
+        </a>
+<a class="inline-flex px-4 py-1.5 rounded text-label-md font-label-md bg-primary-container text-on-primary-container hover:opacity-90 transition-opacity duration-150" href="#">
+          Register Squad
+        </a>
+</div>
+</div>
+</header>
+<!-- Main Recovery Workspace -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-6 py-10 flex flex-col justify-center">
+<!-- Security Context Meta Banner -->
+<div class="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant pb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-[18px]">verified_user</span>
+<span class="text-label-md font-label-md text-secondary-text">AUTHENTICATION TELEMETRY // GATE-04</span>
+<span class="text-outline-variant">•</span>
+<span class="text-label-sm font-label-sm text-tertiary">ESTG-AUTH-CLUSTER-SECURE</span>
+</div>
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-secondary-text">
+<span>SESSION:</span>
+<span class="text-primary-text font-label-md">TLS_1.3_STRICT</span>
+<span class="w-2 h-2 rounded-full bg-tertiary inline-block"></span>
+</div>
+</div>
+<!-- 12-Column Responsive Split Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT COLUMN: Recovery Procedures & Security Policy (5 Columns) -->
+<section class="lg:col-span-5 flex flex-col gap-6">
+<div>
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-elevated-surface border border-outline-variant text-label-sm font-label-sm text-secondary-text mb-3">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+            SYS_PROCEDURE: AUTH_FALLBACK
+          </div>
+<h1 class="font-headline-lg text-headline-lg text-primary-text font-semibold tracking-tight">
+            Account Recovery Protocol
+          </h1>
+<p class="mt-2 text-body-md font-body-md text-secondary-text">
+            Standard recovery procedure for verified competitors, team leaders, and platform auditors across the CYBERDUNE competition node.
+          </p>
+</div>
+<!-- Protocol Directives Cards -->
+<div class="flex flex-col gap-4">
+<!-- Policy Item 1: Token Validity -->
+<div class="p-4 bg-surface border border-outline-variant rounded-xl flex gap-3.5">
+<div class="mt-0.5 text-primary-container">
+<span class="material-symbols-outlined text-[20px]">timer</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-sm text-headline-sm text-primary-text text-[15px]">30-Minute Expiration Token</h2>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-elevated-surface text-primary-fixed border border-outline-variant">ENFORCED</span>
+</div>
+<p class="mt-1 text-body-sm font-body-sm text-secondary-text">
+                Password reset tokens generated by CTFd are single-use and self-invalidate after 30 minutes of generation. Incomplete resets will require generating a fresh cryptographic nonce.
+              </p>
+</div>
+</div>
+<!-- Policy Item 2: Institutional Inboxes -->
+<div class="p-4 bg-surface border border-outline-variant rounded-xl flex gap-3.5">
+<div class="mt-0.5 text-tertiary">
+<span class="material-symbols-outlined text-[20px]">school</span>
+</div>
+<div class="flex-1">
+<h2 class="font-headline-sm text-headline-sm text-primary-text text-[15px]">EST Guelmim / Ibn Zohr Mailboxes</h2>
+<p class="mt-1 text-body-sm font-body-sm text-secondary-text">
+                Academic relay nodes (<code class="font-label-sm text-primary-text bg-elevated-surface px-1 py-0.5 rounded border border-outline-variant">@uiz.ac.ma</code> / <code class="font-label-sm text-primary-text bg-elevated-surface px-1 py-0.5 rounded border border-outline-variant">@estg.uiz.ac.ma</code>) employ automated inbound filtering. Check the <em>Junk/Quarantine</em> quarantine pool if confirmation is delayed.
+              </p>
+</div>
+</div>
+<!-- Policy Item 3: Live Competition Support -->
+<div class="p-4 bg-surface border border-outline-variant rounded-xl flex gap-3.5">
+<div class="mt-0.5 text-secondary-text">
+<span class="material-symbols-outlined text-[20px]">support_agent</span>
+</div>
+<div class="flex-1">
+<h2 class="font-headline-sm text-headline-sm text-primary-text text-[15px]">CTF Marshals &amp; Live Helpdesk</h2>
+<p class="mt-1 text-body-sm font-body-sm text-secondary-text">
+                In the event of an active live round lockout, or if your registered institutional address is inaccessible, report to the verified <strong>#ctf-helpdesk</strong> on Discord or the encrypted Matrix room (<code class="font-label-sm text-primary-text bg-elevated-surface px-1 py-0.5 rounded border border-outline-variant">#support:cyberdune.ma</code>).
+              </p>
+<div class="mt-3 flex items-center gap-3">
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+                  Marshals On-Duty
+                </span>
+<span class="text-outline-variant">•</span>
+<span class="text-body-sm font-body-sm text-secondary-text">Avg response: &lt; 4 mins</span>
+</div>
+</div>
+</div>
+</div>
+<!-- System Architecture Footnote -->
+<div class="p-3.5 rounded bg-elevated-surface/50 border border-outline-variant text-label-sm font-label-sm text-secondary-text flex items-center justify-between">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px]">lock</span>
+            Argon2id Hash Pipeline
+          </span>
+<span class="text-primary-text font-mono">v2.5.1-estg</span>
+</div>
+</section>
+<!-- RIGHT COLUMN: Recovery & Reset Interactive State Panel (7 Columns) -->
+<section class="lg:col-span-7">
+<div class="bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-2xl">
+<!-- Mode Tabs: Direct Reset Request vs Token Verification Preview -->
+<div class="flex border-b border-outline-variant bg-elevated-surface px-6 pt-4 gap-6">
+<button class="text-primary-container border-b-2 border-primary-container font-label-md text-label-md pb-3 flex items-center gap-2 cursor-pointer transition-colors" id="tab-request-btn" onclick="switchState('request')">
+<span class="material-symbols-outlined text-[16px]">mail</span>
+<span>1. Request Reset Link</span>
+</button>
+<button class="text-secondary-text font-label-md text-label-md pb-3 flex items-center gap-2 hover:text-primary-text cursor-pointer transition-colors border-b-2 border-transparent" id="tab-token-btn" onclick="switchState('token')">
+<span class="material-symbols-outlined text-[16px]">key</span>
+<span>2. Enter Reset Token</span>
+</button>
+</div>
+<!-- STATE 1: Request Password Reset Form -->
+<div class="p-6 sm:p-8 flex flex-col gap-6" id="state-request">
+<div class="p-4 rounded bg-elevated-surface border border-outline-variant flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-container text-[20px] mt-0.5">info</span>
+<p class="text-body-md font-body-md text-secondary-text leading-relaxed">
+                Enter the email address associated with your operator profile or team handle. A secure recovery link containing an encrypted authorization token will be dispatched immediately.
+              </p>
+</div>
+<form class="space-y-5" onsubmit="event.preventDefault(); simulateResetRequest();">
+<!-- CSRF Hidden Input Representation -->
+<input name="csrf_token" type="hidden" value="cd_csrf_sec_994a821eef00c73b06"/>
+<div>
+<label class="block font-label-md text-label-md text-primary-text mb-2" for="recovery-email">
+                  REGISTERED OPERATOR EMAIL <span class="text-primary-container">*</span>
+</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-secondary-text">
+<span class="material-symbols-outlined text-[18px]">alternate_email</span>
+</div>
+<input class="w-full bg-surface border border-outline-variant rounded-lg pl-10 pr-4 py-3 text-body-md font-body-md text-primary-text placeholder:text-secondary-text/50 focus:border-primary-container focus:outline-none focus:ring-0 transition-colors" id="recovery-email" placeholder="operator@estg.uiz.ac.ma or personal@domain.com" required="" type="email"/>
+</div>
+<div class="mt-2 flex items-center justify-between text-body-sm font-body-sm text-secondary-text">
+<span>Authorized for student and guest accounts.</span>
+<span class="font-label-sm text-label-sm text-tertiary">RATE LIMIT: 3/HR</span>
+</div>
+</div>
+<!-- Primary Submit Action -->
+<button class="w-full py-3 px-5 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md hover:bg-secondary-container active:opacity-90 transition-all duration-150 flex items-center justify-center gap-2 font-semibold shadow-sm cursor-pointer" type="submit">
+<span class="material-symbols-outlined text-[18px]">send</span>
+<span>Send Password Reset Link</span>
+</button>
+</form>
+<div class="hidden p-4 rounded bg-tertiary-container/20 border border-tertiary text-on-tertiary-container text-body-sm font-body-sm" id="request-feedback">
+<div class="flex items-center gap-2 text-tertiary font-label-md text-label-md mb-1">
+<span class="material-symbols-outlined text-[18px]">mark_email_read</span>
+                DISPATCH SUCCESSFUL
+              </div>
+              If an active squad operator profile matches this address, a cryptographic validation link has been transmitted. Check institutional quarantine if not received within 180 seconds.
+            </div>
+<!-- Alternative / Contextual Navigation Links -->
+<div class="pt-4 border-t border-outline-variant flex flex-col sm:flex-row items-center justify-between gap-3 text-body-sm font-body-sm">
+<a class="text-secondary-text hover:text-primary-text flex items-center gap-1.5 transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+<span>Return to Log In</span>
+</a>
+<a class="text-primary-container hover:text-secondary font-medium transition-colors" href="#">
+                Need to register a new operator account?
+              </a>
+</div>
+</div>
+<!-- STATE 2: Interactive Token Reset Form -->
+<div class="hidden p-6 sm:p-8 flex flex-col gap-6" id="state-token">
+<div class="p-4 rounded bg-elevated-surface border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary text-[20px]">token</span>
+<div>
+<div class="font-label-md text-label-md text-primary-text">TOKEN VERIFICATION ACTIVE</div>
+<div class="text-body-sm font-body-sm text-secondary-text">Token payload: <code class="text-tertiary">#tk_estg_829f0a...</code> verified.</div>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary/10 text-tertiary border border-tertiary text-label-sm font-label-sm">VALID</span>
+</div>
+<form class="space-y-4" onsubmit="event.preventDefault(); simulateTokenUpdate();">
+<div>
+<label class="block font-label-md text-label-md text-primary-text mb-2" for="new-password">
+                  NEW PASSCODE <span class="text-primary-container">*</span>
+</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-secondary-text">
+<span class="material-symbols-outlined text-[18px]">lock_reset</span>
+</div>
+<input class="w-full bg-surface border border-outline-variant rounded-lg pl-10 pr-4 py-3 text-body-md font-body-md text-primary-text focus:border-primary-container focus:outline-none transition-colors" id="new-password" oninput="evaluateStrength(this.value)" placeholder="Min. 12 characters, mix of casing &amp; symbols" required="" type="password"/>
+</div>
+<!-- Strength Indicator Bar -->
+<div class="mt-2 flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-elevated-surface rounded-full overflow-hidden border border-outline-variant flex">
+<div class="w-1/4 h-full bg-outline-variant" id="bar-1"></div>
+<div class="w-1/4 h-full bg-outline-variant" id="bar-2"></div>
+<div class="w-1/4 h-full bg-outline-variant" id="bar-3"></div>
+<div class="w-1/4 h-full bg-outline-variant" id="bar-4"></div>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-text" id="strength-label">MIN 12 CHARS</span>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-primary-text mb-2" for="confirm-password">
+                  CONFIRM NEW PASSCODE <span class="text-primary-container">*</span>
+</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-secondary-text">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</div>
+<input class="w-full bg-surface border border-outline-variant rounded-lg pl-10 pr-4 py-3 text-body-md font-body-md text-primary-text focus:border-primary-container focus:outline-none transition-colors" id="confirm-password" placeholder="Repeat matching passcode" required="" type="password"/>
+</div>
+</div>
+<div class="pt-2">
+<button class="w-full py-3 px-5 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md hover:bg-secondary-container active:opacity-90 transition-all duration-150 flex items-center justify-center gap-2 font-semibold cursor-pointer" type="submit">
+<span class="material-symbols-outlined text-[18px]">security_update_good</span>
+<span>Update Password &amp; Invalidate Prior Tokens</span>
+</button>
+</div>
+</form>
+<div class="hidden p-4 rounded bg-tertiary-container/20 border border-tertiary text-on-tertiary-container text-body-sm font-body-sm" id="token-feedback">
+<div class="flex items-center gap-2 text-tertiary font-label-md text-label-md mb-1">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                CREDENTIALS COMMITTED
+              </div>
+              Your credentials have been securely stored in the cluster. Redirecting to platform login...
+            </div>
+<div class="pt-4 border-t border-outline-variant flex items-center justify-between text-body-sm font-body-sm">
+<a class="text-secondary-text hover:text-primary-text flex items-center gap-1.5 transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+<span>Return to Log In</span>
+</a>
+<button class="text-secondary-text hover:text-primary-text text-body-sm font-body-sm cursor-pointer underline underline-offset-4" onclick="switchState('request')">
+                Did not receive a token?
+              </button>
+</div>
+</div>
+</div>
+<!-- Terminal Diagnostic Banner -->
+<div class="mt-4 p-3 rounded-lg bg-elevated-surface border border-outline-variant text-secondary-text flex items-center justify-between text-label-sm font-label-sm">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>PUBLIC RELAY // GATEWAY 197.230.124.8</span>
+</div>
+<span class="text-outline-variant font-mono">ENCRYPTION: AES-256-GCM</span>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer (Shared Component JSON Source of Truth) -->
+<footer class="w-full bg-background border-t border-outline-variant mt-auto">
+<div class="w-full px-6 py-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+<!-- Brand & Copyright -->
+<div class="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+<span class="font-headline-sm text-headline-sm font-semibold text-primary-text">CYBERDUNE CTF</span>
+<span class="hidden sm:inline text-outline-variant">|</span>
+<span class="text-body-sm font-body-sm text-secondary-text">
+          © 2025 CYBERDUNE CTF. Founded at EST Guelmim, Moroccan Sahara. All rights reserved.
+        </span>
+</div>
+<!-- Links from JSON -->
+<div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">Rules of Engagement</a>
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">Platform Telemetry</a>
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">API Docs</a>
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">EST Guelmim</a>
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">Support</a>
+</div>
+</div>
+</footer>
+<!-- Vanilla JS micro-interactions for state toggling & strength evaluation -->
+<script>
+    function switchState(state) {
+      const stateRequest = document.getElementById('state-request');
+      const stateToken = document.getElementById('state-token');
+      const tabRequest = document.getElementById('tab-request-btn');
+      const tabToken = document.getElementById('tab-token-btn');
+
+      if (state === 'request') {
+        stateRequest.classList.remove('hidden');
+        stateToken.classList.add('hidden');
+        tabRequest.className = "text-primary-container border-b-2 border-primary-container font-label-md text-label-md pb-3 flex items-center gap-2 cursor-pointer transition-colors";
+        tabToken.className = "text-secondary-text font-label-md text-label-md pb-3 flex items-center gap-2 hover:text-primary-text cursor-pointer transition-colors border-b-2 border-transparent";
+      } else {
+        stateRequest.classList.add('hidden');
+        stateToken.classList.remove('hidden');
+        tabToken.className = "text-primary-container border-b-2 border-primary-container font-label-md text-label-md pb-3 flex items-center gap-2 cursor-pointer transition-colors";
+        tabRequest.className = "text-secondary-text font-label-md text-label-md pb-3 flex items-center gap-2 hover:text-primary-text cursor-pointer transition-colors border-b-2 border-transparent";
+      }
+    }
+
+    function simulateResetRequest() {
+      const feedback = document.getElementById('request-feedback');
+      feedback.classList.remove('hidden');
+    }
+
+    function simulateTokenUpdate() {
+      const feedback = document.getElementById('token-feedback');
+      feedback.classList.remove('hidden');
+    }
+
+    function evaluateStrength(val) {
+      const b1 = document.getElementById('bar-1');
+      const b2 = document.getElementById('bar-2');
+      const b3 = document.getElementById('bar-3');
+      const b4 = document.getElementById('bar-4');
+      const label = document.getElementById('strength-label');
+
+      // Reset
+      b1.className = 'w-1/4 h-full bg-outline-variant';
+      b2.className = 'w-1/4 h-full bg-outline-variant';
+      b3.className = 'w-1/4 h-full bg-outline-variant';
+      b4.className = 'w-1/4 h-full bg-outline-variant';
+
+      if (!val || val.length === 0) {
+        label.innerText = 'MIN 12 CHARS';
+        label.className = 'font-label-sm text-label-sm text-secondary-text';
+        return;
+      }
+
+      if (val.length < 8) {
+        b1.className = 'w-1/4 h-full bg-primary-container';
+        label.innerText = 'VULNERABLE';
+        label.className = 'font-label-sm text-label-sm text-primary-container';
+      } else if (val.length < 12) {
+        b1.className = 'w-1/4 h-full bg-primary-container';
+        b2.className = 'w-1/4 h-full bg-primary-container';
+        label.innerText = 'MODERATE';
+        label.className = 'font-label-sm text-label-sm text-secondary';
+      } else if (val.length >= 12 && (!/[A-Z]/.test(val) || !/[0-9]/.test(val) || !/[^a-zA-Z0-9]/.test(val))) {
+        b1.className = 'w-1/4 h-full bg-tertiary';
+        b2.className = 'w-1/4 h-full bg-tertiary';
+        b3.className = 'w-1/4 h-full bg-tertiary';
+        label.innerText = 'ACCEPTABLE';
+        label.className = 'font-label-sm text-label-sm text-tertiary';
+      } else {
+        b1.className = 'w-1/4 h-full bg-tertiary';
+        b2.className = 'w-1/4 h-full bg-tertiary';
+        b3.className = 'w-1/4 h-full bg-tertiary';
+        b4.className = 'w-1/4 h-full bg-tertiary';
+        label.innerText = 'ROBUST KEY';
+        label.className = 'font-label-sm text-label-sm text-tertiary';
+      }
+    }
+  </script>
+</body></html>

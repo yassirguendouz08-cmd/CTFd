@@ -1,0 +1,107 @@
+{
+  "projectId": "10465941215322521387",
+  "projectUrl": "https://stitch.withgoogle.com/projects/10465941215322521387",
+  "designSystemId": "4cd60b4296b84f7b87dc958737fa3ba4",
+  "baselineCommit": "7832aa34",
+  "generatedScreens": [
+    {
+      "id": "08cda9e80cc0433196f6e94e47a2f7c0",
+      "name": "projects/10465941215322521387/screens/08cda9e80cc0433196f6e94e47a2f7c0",
+      "title": "CYBERDUNE CTF — Official Competition Landing",
+      "reference": "landing",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "811c3aec8fb84afc94dcf715250386b5",
+      "name": "projects/10465941215322521387/screens/811c3aec8fb84afc94dcf715250386b5",
+      "title": "CYBERDUNE CTF — Operational Workspace (Variant 1)",
+      "reference": "landing-variant-1",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "4ae1b6df2d2242d2912c8a4ca5ad7fa7",
+      "name": "projects/10465941215322521387/screens/4ae1b6df2d2242d2912c8a4ca5ad7fa7",
+      "title": "CYBERDUNE CTF — Operational Workspace (Variant 2)",
+      "reference": "landing-variant-2",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "6eed556f040b4b7ea82f1f060579cf46",
+      "name": "projects/10465941215322521387/screens/6eed556f040b4b7ea82f1f060579cf46",
+      "title": "CYBERDUNE CTF — Challenge Board & Operational Workspace",
+      "reference": "board",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "46c4a31a66414d4dabb3da3a8bd35da3",
+      "name": "projects/10465941215322521387/screens/46c4a31a66414d4dabb3da3a8bd35da3",
+      "title": "CYBERDUNE CTF — Refined Challenge Workspace",
+      "reference": "board-variant",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "5c6846fe9f4b470389e02a7deeb5f04c",
+      "name": "projects/10465941215322521387/screens/5c6846fe9f4b470389e02a7deeb5f04c",
+      "title": "CYBERDUNE CTF — Player & Team Login",
+      "reference": "auth-1",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "5e145fe1ad8c41d3a2df6ccba074b428",
+      "name": "projects/10465941215322521387/screens/5e145fe1ad8c41d3a2df6ccba074b428",
+      "title": "CYBERDUNE CTF — Password Recovery",
+      "reference": "auth-2",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "382668072147482a921535a19b44f094",
+      "name": "projects/10465941215322521387/screens/382668072147482a921535a19b44f094",
+      "title": "CYBERDUNE CTF — Account Registration",
+      "reference": "auth-3",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "229b529ac5554f0480e974a01acc6d21",
+      "name": "projects/10465941215322521387/screens/229b529ac5554f0480e974a01acc6d21",
+      "title": "CYBERDUNE CTF — Let your solves speak (Scoreboard)",
+      "reference": "competition-1",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "8d1fefba82724125be8d266bcfe33e13",
+      "name": "projects/10465941215322521387/screens/8d1fefba82724125be8d266bcfe33e13",
+      "title": "CYBERDUNE CTF — Operator & Squad Profile",
+      "reference": "competition-2",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "bbcf5b071b5248b5a315df85ab9cd8b0",
+      "name": "projects/10465941215322521387/screens/bbcf5b071b5248b5a315df85ab9cd8b0",
+      "title": "CYBERDUNE CTF — Event Information & Operations Guide",
+      "reference": "competition-3",
+      "device": "DESKTOP",
+      "origin": "Google Stitch MCP generation"
+    },
+    {
+      "id": "83d1fdb34a2245d2b16f3750c2e1f7c7",
+      "name": "projects/10465941215322521387/screens/83d1fdb34a2245d2b16f3750c2e1f7c7",
+      "title": "CYBERDUNE CTF — Mobile Landing & Briefing",
+      "reference": "mobile",
+      "device": "MOBILE",
+      "origin": "Google Stitch MCP generation"
+    }
+  ],
+  "selectedLanding": "811c3aec8fb84afc94dcf715250386b5",
+  "selectedBoard": "46c4a31a66414d4dabb3da3a8bd35da3",
+  "notes": "Exported reference prototypes contain synthetic or generated example content. Production CTFd retains original policies, forms, permissions and actual authorized API data."
+}

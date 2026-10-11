@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CYBERDUNE CTF 2025 — Official Competition Platform</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Strict Tailwind Configuration derived from Design System Tokens -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "background": "#080A0F",
+            "inverse-primary": "#be0037",
+            "tertiary-fixed": "#90f5d9",
+            "elevated-surface": "#191E29",
+            "on-tertiary-fixed": "#002019",
+            "surface-container-high": "#382526",
+            "on-error": "#690005",
+            "surface-container": "#2c1b1c",
+            "error": "#ffb4ab",
+            "on-tertiary": "#00382d",
+            "outline-variant": "#5c3f40",
+            "surface-container-highest": "#443030",
+            "secondary": "#ffb3b3",
+            "secondary-text": "#94A3B8",
+            "surface-dim": "#1f0f10",
+            "inverse-on-surface": "#3f2b2c",
+            "on-tertiary-container": "#eefff7",
+            "on-tertiary-fixed-variant": "#005142",
+            "on-primary": "#68001a",
+            "surface-variant": "#443030",
+            "tertiary-container": "#00836c",
+            "primary-fixed": "#ffdada",
+            "on-primary-container": "#fffaf9",
+            "on-secondary-fixed": "#40000a",
+            "surface": "#11141C",
+            "surface-container-low": "#281718",
+            "primary-container": "#e11d48",
+            "tertiary": "#74d8bd",
+            "on-background": "#fbdbdb",
+            "primary-text": "#F8FAFC",
+            "secondary-container": "#d60037",
+            "tertiary-fixed-dim": "#74d8bd",
+            "primary": "#ffb3b6",
+            "outline": "#ac8889",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#920028",
+            "on-secondary-fixed-variant": "#920022",
+            "on-secondary-container": "#ffe7e6",
+            "surface-container-lowest": "#190a0b",
+            "primary-fixed-dim": "#ffb3b6",
+            "secondary-fixed-dim": "#ffb3b3",
+            "error-container": "#93000a",
+            "on-surface": "#fbdbdb",
+            "inverse-surface": "#fbdbdb",
+            "surface-tint": "#ffb3b6",
+            "on-surface-variant": "#e5bdbe",
+            "on-secondary": "#680016",
+            "on-primary-fixed": "#40000c",
+            "surface-bright": "#483435",
+            "secondary-fixed": "#ffdad9"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2.5rem",
+            "gutter": "1.5rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "label-sm": ["JetBrains Mono", "monospace"],
+            "body-sm": ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "label-lg": ["JetBrains Mono", "monospace"],
+            "label-md": ["JetBrains Mono", "monospace"],
+            "headline-sm": ["Space Grotesk", "sans-serif"],
+            "headline-md": ["Space Grotesk", "sans-serif"],
+            "headline-xl": ["Space Grotesk", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "headline-lg": ["Space Grotesk", "sans-serif"]
+          },
+          "fontSize": {
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+</script>
+<style>
+    body {
+      background-color: #080A0F;
+      color: #F8FAFC;
+      font-family: 'Inter', sans-serif;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::selection {
+      background-color: #e11d48;
+      color: #ffffff;
+    }
+    .border-subtle {
+      border-color: #191E29;
+    }
+    .hover-border-accent:hover {
+      border-color: rgba(225, 29, 72, 0.45);
+    }
+</style>
+</head>
+<body class="bg-background text-primary-text min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- ========================================================================= -->
+<!-- 1. STICKY COMPACT NAVIGATION                                            -->
+<!-- ========================================================================= -->
+<header class="sticky top-0 z-50 w-full bg-surface border-b border-subtle">
+<div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+<!-- Brand Anchor & Dunes Emblem -->
+<div class="flex items-center gap-3">
+<a class="flex items-center gap-2.5 group focus:outline-none" href="#">
+<div class="w-8 h-8 rounded-lg bg-surface border border-subtle flex items-center justify-center p-1.5 transition-colors group-hover:border-primary-container">
+<svg class="w-full h-full text-primary-container stroke-current" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M2 19c5-2 9-8 12-8s7 6 8 8"></path>
+<path d="M7 19c3-1 6-4 9-4 2 0 4 2 6 4" opacity="0.6"></path>
+<path class="fill-current stroke-none text-primary-container" d="M14 6l1.5 2.5L18 9l-2 2 .5 2.5L14 12l-2.5 1.5.5-2.5-2-2 2.5-.5L14 6z"></path>
+</svg>
+</div>
+<span class="font-headline-sm text-headline-sm tracking-tight font-semibold text-primary-text">CYBERDUNE CTF</span>
+</a>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-label-sm uppercase tracking-widest bg-elevated-surface text-secondary-text border border-subtle">
+        2025 EDITION
+      </span>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-primary-container border-b-2 border-primary-container font-label-md text-label-md pb-1 flex items-center gap-1.5" href="#">
+        Home
+      </a>
+<a class="text-secondary-text hover:text-primary-text font-label-md text-label-md transition-colors duration-150" href="#tracks">
+        Challenge Tracks
+      </a>
+<a class="text-secondary-text hover:text-primary-text font-label-md text-label-md transition-colors duration-150" href="#standings">
+        Standings Protocol
+      </a>
+<a class="text-secondary-text hover:text-primary-text font-label-md text-label-md transition-colors duration-150" href="#rules">
+        Rules &amp; Divisions
+      </a>
+</nav>
+<!-- Trailing Action Controls -->
+<div class="flex items-center gap-3">
+<!-- Language Switcher Pill -->
+<div class="hidden lg:flex items-center border border-subtle bg-elevated-surface px-1.5 py-1 rounded text-secondary-text font-label-sm text-label-sm gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary-text">language</span>
+<button class="px-1.5 py-0.5 rounded text-primary-text font-semibold hover:text-primary transition-colors">EN</button>
+<span class="text-slate-700">|</span>
+<button class="px-1.5 py-0.5 rounded hover:text-primary-text transition-colors">FR</button>
+<span class="text-slate-700">|</span>
+<button class="px-1.5 py-0.5 rounded hover:text-primary-text transition-colors" dir="rtl">عربي</button>
+</div>
+<!-- CTFd Gateway Status Indicator -->
+<div class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-elevated-surface border border-subtle text-[11px] font-label-sm text-secondary-text">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+<span>CTFd Sync Active</span>
+</div>
+<!-- Register Squad CTA -->
+<a class="inline-flex items-center justify-center px-4 py-2 rounded font-label-md text-label-md text-on-primary-container bg-primary-container hover:bg-secondary-container transition-colors duration-150 font-semibold min-h-[40px] shadow-sm" href="#terminal">
+        Join Competition
+      </a>
+</div>
+</div>
+</header>
+<main class="flex-grow">
+<!-- ========================================================================= -->
+<!-- 2. SPLIT HERO: SYMMETRICAL 50/50 DUAL-COLUMN LAYOUT                       -->
+<!-- ========================================================================= -->
+<section class="relative pt-12 pb-16 border-b border-subtle overflow-hidden">
+<!-- Grid overlay pattern -->
+<div class="absolute inset-0 pointer-events-none opacity-20 [background:radial-gradient(#191E29_1px,transparent_1px)] [background-size:24px_24px]"></div>
+<div class="max-w-7xl mx-auto px-6 relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
+<!-- Left Column (50%): Mission Statement, Dual CTAs & Community Attribution -->
+<div class="flex flex-col justify-between space-y-6">
+<div class="space-y-6">
+<!-- Academic Attribution & Region Seals -->
+<div class="flex flex-wrap items-center gap-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded bg-elevated-surface text-secondary-text font-label-sm text-label-sm border border-subtle">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container mr-2"></span>
+                EST GUELMIM — MOROCCAN SAHARA
+              </span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-surface text-secondary-text font-label-sm text-label-sm border border-subtle">
+                STUDENT CYBERSECURITY COMMUNITY
+              </span>
+</div>
+<!-- Primary Headline -->
+<h1 class="font-headline-xl text-headline-xl tracking-tight text-primary-text leading-tight">
+              Follow the clues. <br/>
+              Find your <span class="text-primary-container underline decoration-primary-container decoration-2 underline-offset-4">flag</span>.
+            </h1>
+<!-- Mission Statement -->
+<p class="font-body-lg text-body-lg text-secondary-text leading-relaxed max-w-xl">
+              The flagship capture-the-flag competition organized by the École Supérieure de Technologie de Guelmim (Ibn Zohr University) student cybersecurity community. Rigorous jeopardy tracks spanning hardened application stacks, low-level reverse engineering, and defensive analysis.
+            </p>
+<!-- Dual CTAs -->
+<div class="flex flex-wrap items-center gap-4 pt-2">
+<a class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded font-label-md text-label-md text-on-primary-container bg-primary-container hover:bg-secondary-container transition-all font-semibold min-h-[44px]" href="#terminal">
+<span>Join Competition</span>
+<span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+<a class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded font-label-md text-label-md text-primary-text bg-elevated-surface border border-subtle hover:border-slate-500 transition-all min-h-[44px]" href="#tracks">
+<span>Explore Tracks</span>
+<span class="material-symbols-outlined text-base text-secondary-text">terminal</span>
+</a>
+</div>
+</div>
+<!-- Bottom Authentic Status Verification -->
+<div class="pt-6 border-t border-subtle space-y-2">
+<div class="flex items-center gap-2 text-secondary-text font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-base text-tertiary">verified</span>
+<span>CTFd-Engineered Platform · Dual Academic &amp; Open Competitive Divisions</span>
+</div>
+<div class="flex items-center gap-2 text-slate-500 font-body-sm text-xs">
+<span class="font-label-sm text-[11px] uppercase tracking-wider text-slate-400">Host Campus:</span>
+<span>EST Guelmim, Route de Tan-Tan, Guelmim, Morocco</span>
+</div>
+</div>
+</div>
+<!-- Right Column (50%): Structured Event Operations Terminal -->
+<div class="flex flex-col" id="terminal">
+<div class="rounded-xl bg-surface border border-subtle p-6 flex flex-col justify-between h-full space-y-6 shadow-sm">
+<!-- Terminal Header -->
+<div class="flex items-center justify-between pb-4 border-b border-subtle">
+<div class="flex items-center gap-2">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+</span>
+<span class="font-label-sm text-label-sm font-semibold tracking-wider text-slate-200">
+                  EVENT OPERATIONS TERMINAL
+                </span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-text font-mono">SYS//CDUNE-25</span>
+</div>
+<!-- Countdown Timer Block -->
+<div class="space-y-2">
+<div class="flex items-center justify-between text-secondary-text font-label-sm text-label-sm uppercase tracking-wider">
+<span>Round Activation Timer</span>
+<span class="text-primary-container font-semibold">T-MINUS</span>
+</div>
+<div class="grid grid-cols-4 gap-2 text-center">
+<div class="bg-elevated-surface border border-subtle p-2.5 rounded">
+<span class="block font-label-lg text-label-lg font-bold text-primary-text">14</span>
+<span class="block font-label-sm text-[10px] text-secondary-text uppercase">DAYS</span>
+</div>
+<div class="bg-elevated-surface border border-subtle p-2.5 rounded">
+<span class="block font-label-lg text-label-lg font-bold text-primary-text">08</span>
+<span class="block font-label-sm text-[10px] text-secondary-text uppercase">HOURS</span>
+</div>
+<div class="bg-elevated-surface border border-subtle p-2.5 rounded">
+<span class="block font-label-lg text-label-lg font-bold text-primary-text">42</span>
+<span class="block font-label-sm text-[10px] text-secondary-text uppercase">MINS</span>
+</div>
+<div class="bg-elevated-surface border border-subtle p-2.5 rounded">
+<span class="block font-label-lg text-label-lg font-bold text-primary-container" id="countdown-sec">19</span>
+<span class="block font-label-sm text-[10px] text-secondary-text uppercase">SECS</span>
+</div>
+</div>
+</div>
+<!-- Real Event Configuration Parameters Table -->
+<div class="rounded-lg bg-background border border-subtle divide-y divide-subtle font-label-sm text-label-sm">
+<div class="p-2.5 flex items-center justify-between">
+<span class="text-secondary-text">Platform Environment:</span>
+<span class="text-slate-200 flex items-center gap-1 font-mono">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> CTFd v3.7 Native API
+                </span>
+</div>
+<div class="p-2.5 flex items-center justify-between">
+<span class="text-secondary-text">Competition Schedule:</span>
+<span class="text-slate-200 font-mono">May 16, 18:00 — May 18, 18:00 UTC+1</span>
+</div>
+<div class="p-2.5 flex items-center justify-between">
+<span class="text-secondary-text">Execution Mode:</span>
+<span class="text-slate-200">Hybrid (On-site EST Guelmim + Remote)</span>
+</div>
+<div class="p-2.5 flex items-center justify-between">
+<span class="text-secondary-text">Competition Divisions:</span>
+<span class="text-slate-200">1. Student (Accredited)  |  2. Open Division</span>
+</div>
+</div>
+<!-- Internationalization & Localization Terminal Status -->
+<div class="rounded bg-elevated-surface border border-subtle p-3 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base text-primary-container">translate</span>
+<span class="font-label-sm text-body-sm text-secondary-text">Platform Localization:</span>
+</div>
+<div class="flex items-center gap-1.5 font-label-sm text-xs">
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-primary-text font-semibold">EN (Primary)</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-slate-300">FR</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-slate-300" dir="rtl">العربية</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 3. REAL COMPETITION CONFIGURATION PARAMETERS MATRIX                       -->
+<!-- ========================================================================= -->
+<section class="border-b border-subtle bg-surface">
+<div class="max-w-7xl mx-auto px-6 py-6">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 divide-y md:divide-y-0 md:divide-x divide-subtle">
+<!-- Parameter 1: Format -->
+<div class="px-3 pt-3 md:pt-0">
+<div class="flex items-center gap-1.5 text-secondary-text mb-1">
+<span class="material-symbols-outlined text-[15px] text-primary-container">flag</span>
+<span class="font-label-sm text-[11px] uppercase tracking-wider">Format</span>
+</div>
+<span class="font-headline-sm text-headline-sm font-bold text-primary-text block font-mono">Jeopardy CTF</span>
+<span class="font-body-sm text-slate-400 block text-[11px] mt-0.5">Task-oriented progressive unlocking</span>
+</div>
+<!-- Parameter 2: Mode -->
+<div class="px-3 pt-3 md:pt-0">
+<div class="flex items-center gap-1.5 text-secondary-text mb-1">
+<span class="material-symbols-outlined text-[15px] text-tertiary">hub</span>
+<span class="font-label-sm text-[11px] uppercase tracking-wider">Mode</span>
+</div>
+<span class="font-headline-sm text-headline-sm font-bold text-primary-text block font-mono">Hybrid Protocol</span>
+<span class="font-body-sm text-slate-400 block text-[11px] mt-0.5">EST Guelmim Campus Lab &amp; Global VPN</span>
+</div>
+<!-- Parameter 3: Duration -->
+<div class="px-3 pt-3 md:pt-0">
+<div class="flex items-center gap-1.5 text-secondary-text mb-1">
+<span class="material-symbols-outlined text-[15px] text-primary-container">timer</span>
+<span class="font-label-sm text-[11px] uppercase tracking-wider">Duration</span>
+</div>
+<span class="font-headline-sm text-headline-sm font-bold text-primary-container block font-mono">48 Hours Non-Stop</span>
+<span class="font-body-sm text-slate-400 block text-[11px] mt-0.5">May 16, 18:00 to May 18, 18:00 UTC+1</span>
+</div>
+<!-- Parameter 4: Divisions -->
+<div class="px-3 pt-3 md:pt-0">
+<div class="flex items-center gap-1.5 text-secondary-text mb-1">
+<span class="material-symbols-outlined text-[15px] text-slate-400">group_work</span>
+<span class="font-label-sm text-[11px] uppercase tracking-wider">Divisions</span>
+</div>
+<span class="font-headline-sm text-headline-sm font-bold text-primary-text block font-mono">Student &amp; Open</span>
+<span class="font-body-sm text-slate-400 block text-[11px] mt-0.5">Separate ranked brackets &amp; podiums</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 4. TRACK-CENTRIC WORKSPACE: DOCKED OPERATIONAL MATRIX                     -->
+<!-- ========================================================================= -->
+<section class="py-16 border-b border-subtle bg-background" id="tracks">
+<div class="max-w-7xl mx-auto px-6">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-subtle gap-4">
+<div>
+<div class="flex items-center gap-2 text-primary-container font-label-sm text-label-sm uppercase tracking-wider mb-2">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<span>OPERATIONAL TRACK ARCHITECTURE</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary-text tracking-tight">
+            6 Core Competition Tracks
+          </h2>
+</div>
+<p class="font-body-md text-body-md text-secondary-text max-w-md">
+          Authored by the EST Guelmim cybersecurity team. Every track implements dynamic point decay, where values adjust proportionally as solve volume increases.
+        </p>
+</div>
+<!-- Ultra-Compact Horizontal Operational Track Matrix -->
+<div class="rounded-xl border border-subtle bg-surface overflow-hidden shadow-sm">
+<div class="p-4 bg-elevated-surface border-b border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-secondary-text font-label-sm text-label-sm">
+<span class="font-semibold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-container">view_column</span>
+            Curated Technical Scope &amp; Scoring Calibration
+          </span>
+<div class="flex items-center gap-2 text-xs">
+<span class="px-2 py-0.5 rounded bg-surface border border-subtle text-slate-300">Decay Range: 500 → 100 PTS</span>
+<span class="px-2 py-0.5 rounded bg-surface border border-subtle text-tertiary">Logarithmic Falloff Curve</span>
+</div>
+</div>
+<!-- Table / Docked Matrix Rows -->
+<div class="divide-y divide-subtle">
+<!-- Domain 1: Web -->
+<div class="p-5 hover:bg-elevated-surface/40 transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+<div class="md:col-span-3 flex items-center gap-3">
+<span class="font-mono text-xs font-bold text-primary-container bg-surface border border-subtle px-2 py-1 rounded">TRK-01</span>
+<div>
+<h3 class="font-headline-sm text-sm font-bold text-primary-text">Web Exploitation</h3>
+<span class="font-label-sm text-[11px] text-secondary-text">AppSec &amp; API Insecurities</span>
+</div>
+</div>
+<div class="md:col-span-5 font-body-sm text-secondary-text text-sm">
+              SSRF vectors, GraphQL introspection leaks, JWT desynchronization, prototype pollution, DOM clobbering, and OAuth flow abuses.
+            </div>
+<div class="md:col-span-2 flex items-center gap-2 font-label-sm text-xs">
+<span class="text-slate-400">Progression:</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-emerald-400">Easy</span>
+<span class="text-slate-500">→</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-rose-400">Insane</span>
+</div>
+<div class="md:col-span-2 text-right font-label-sm text-xs">
+<span class="text-slate-300 font-mono block">500 → 100 pts</span>
+<span class="text-[10px] text-tertiary uppercase">Dynamic Decay</span>
+</div>
+</div>
+<!-- Domain 2: Cryptography -->
+<div class="p-5 hover:bg-elevated-surface/40 transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+<div class="md:col-span-3 flex items-center gap-3">
+<span class="font-mono text-xs font-bold text-primary-container bg-surface border border-subtle px-2 py-1 rounded">TRK-02</span>
+<div>
+<h3 class="font-headline-sm text-sm font-bold text-primary-text">Cryptography</h3>
+<span class="font-label-sm text-[11px] text-secondary-text">Mathematical Primitives</span>
+</div>
+</div>
+<div class="md:col-span-5 font-body-sm text-secondary-text text-sm">
+              Elliptic curve discrete logarithms (ECDLP), lattice reduction (LLL attacks), flawed RSA padding, fault injection simulations, and zero-knowledge proofs.
+            </div>
+<div class="md:col-span-2 flex items-center gap-2 font-label-sm text-xs">
+<span class="text-slate-400">Progression:</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-slate-300">Medium</span>
+<span class="text-slate-500">→</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-rose-400">Hard</span>
+</div>
+<div class="md:col-span-2 text-right font-label-sm text-xs">
+<span class="text-slate-300 font-mono block">500 → 150 pts</span>
+<span class="text-[10px] text-tertiary uppercase">Dynamic Decay</span>
+</div>
+</div>
+<!-- Domain 3: Digital Forensics -->
+<div class="p-5 hover:bg-elevated-surface/40 transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+<div class="md:col-span-3 flex items-center gap-3">
+<span class="font-mono text-xs font-bold text-primary-container bg-surface border border-subtle px-2 py-1 rounded">TRK-03</span>
+<div>
+<h3 class="font-headline-sm text-sm font-bold text-primary-text">Digital Forensics</h3>
+<span class="font-label-sm text-[11px] text-secondary-text">Artifact Analysis &amp; Memory</span>
+</div>
+</div>
+<div class="md:col-span-5 font-body-sm text-secondary-text text-sm">
+              Volatile RAM triage via Volatility 3, raw pcap telemetry reconstruction, corrupted journal analysis, and embedded IoT filesystem extraction.
+            </div>
+<div class="md:col-span-2 flex items-center gap-2 font-label-sm text-xs">
+<span class="text-slate-400">Progression:</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-emerald-400">Easy</span>
+<span class="text-slate-500">→</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-slate-300">Medium</span>
+</div>
+<div class="md:col-span-2 text-right font-label-sm text-xs">
+<span class="text-slate-300 font-mono block">450 → 100 pts</span>
+<span class="text-[10px] text-tertiary uppercase">Dynamic Decay</span>
+</div>
+</div>
+<!-- Domain 4: Reverse Engineering -->
+<div class="p-5 hover:bg-elevated-surface/40 transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+<div class="md:col-span-3 flex items-center gap-3">
+<span class="font-mono text-xs font-bold text-primary-container bg-surface border border-subtle px-2 py-1 rounded">TRK-04</span>
+<div>
+<h3 class="font-headline-sm text-sm font-bold text-primary-text">Reverse Engineering</h3>
+<span class="font-label-sm text-[11px] text-secondary-text">Binary Decompilation</span>
+</div>
+</div>
+<div class="md:col-span-5 font-body-sm text-secondary-text text-sm">
+              Stripped x86_64/ARM64 ELF binaries, anti-debugging tricks, custom VM bytecode interpreters, and obfuscated Android DEX binaries.
+            </div>
+<div class="md:col-span-2 flex items-center gap-2 font-label-sm text-xs">
+<span class="text-slate-400">Progression:</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-slate-300">Medium</span>
+<span class="text-slate-500">→</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-rose-400">Insane</span>
+</div>
+<div class="md:col-span-2 text-right font-label-sm text-xs">
+<span class="text-slate-300 font-mono block">500 → 150 pts</span>
+<span class="text-[10px] text-tertiary uppercase">Dynamic Decay</span>
+</div>
+</div>
+<!-- Domain 5: Binary Exploitation (Pwn) -->
+<div class="p-5 hover:bg-elevated-surface/40 transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+<div class="md:col-span-3 flex items-center gap-3">
+<span class="font-mono text-xs font-bold text-primary-container bg-surface border border-subtle px-2 py-1 rounded">TRK-05</span>
+<div>
+<h3 class="font-headline-sm text-sm font-bold text-primary-text">Binary Exploitation (Pwn)</h3>
+<span class="font-label-sm text-[11px] text-secondary-text">Memory Corruption</span>
+</div>
+</div>
+<div class="md:col-span-5 font-body-sm text-secondary-text text-sm">
+              Modern glibc heap structures (tcache poisoning, fastbins), ret2dlresolve, return-oriented programming chains (ROP), and user-fault kernel modules.
+            </div>
+<div class="md:col-span-2 flex items-center gap-2 font-label-sm text-xs">
+<span class="text-slate-400">Progression:</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-slate-300">Medium</span>
+<span class="text-slate-500">→</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-rose-400">Insane</span>
+</div>
+<div class="md:col-span-2 text-right font-label-sm text-xs">
+<span class="text-slate-300 font-mono block">500 → 200 pts</span>
+<span class="text-[10px] text-tertiary uppercase">Dynamic Decay</span>
+</div>
+</div>
+<!-- Domain 6: OSINT -->
+<div class="p-5 hover:bg-elevated-surface/40 transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+<div class="md:col-span-3 flex items-center gap-3">
+<span class="font-mono text-xs font-bold text-primary-container bg-surface border border-subtle px-2 py-1 rounded">TRK-06</span>
+<div>
+<h3 class="font-headline-sm text-sm font-bold text-primary-text">OSINT &amp; Reconnaissance</h3>
+<span class="font-label-sm text-[11px] text-secondary-text">Open Source Intelligence</span>
+</div>
+</div>
+<div class="md:col-span-5 font-body-sm text-secondary-text text-sm">
+              Terrain &amp; topographical satellite matching, Certificate Transparency monitoring, corporate registry parsing, and digital footprint correlation.
+            </div>
+<div class="md:col-span-2 flex items-center gap-2 font-label-sm text-xs">
+<span class="text-slate-400">Progression:</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-emerald-400">Easy</span>
+<span class="text-slate-500">→</span>
+<span class="px-1.5 py-0.5 rounded bg-surface border border-subtle text-slate-300">Medium</span>
+</div>
+<div class="md:col-span-2 text-right font-label-sm text-xs">
+<span class="text-slate-300 font-mono block">350 → 100 pts</span>
+<span class="text-[10px] text-tertiary uppercase">Dynamic Decay</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 5. STANDING & BRIEFING MODULES                                            -->
+<!-- ========================================================================= -->
+<section class="py-16 border-b border-subtle bg-surface" id="standings">
+<div class="max-w-7xl mx-auto px-6">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+<!-- Left: Pre-Competition Status Board (Scoreboard Standby Protocol) -->
+<div class="lg:col-span-6 space-y-6">
+<div>
+<div class="flex items-center gap-2 text-primary-container font-label-sm text-label-sm uppercase tracking-wider mb-2">
+<span class="material-symbols-outlined text-sm">leaderboard</span>
+<span>STANDINGS PROTOCOL</span>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-primary-text tracking-tight">
+              Pre-Competition Status Board
+            </h2>
+</div>
+<!-- Standby Status Banner -->
+<div class="flex items-center justify-between p-3.5 rounded-lg bg-elevated-surface border border-subtle text-secondary-text font-label-sm text-label-sm">
+<span class="flex items-center gap-2 text-slate-200">
+<span class="material-symbols-outlined text-sm text-primary-container">lock_clock</span>
+<span>LIVE SCOREBOARD LOCKED UNTIL ROUND INITIATION</span>
+</span>
+<span class="text-[11px] font-mono px-2 py-0.5 bg-surface rounded border border-subtle text-tertiary">STANDBY // READY</span>
+</div>
+<!-- Authentic Standby Fixture Table -->
+<div class="rounded-xl border border-subtle overflow-hidden bg-background">
+<div class="p-3.5 bg-elevated-surface border-b border-subtle flex items-center justify-between text-secondary-text font-label-sm text-label-sm">
+<span>PODIUM POSITION &amp; BRACKET</span>
+<span>STATUS</span>
+</div>
+<!-- Pos 1 -->
+<div class="p-4 border-b border-subtle flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="w-6 h-6 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center justify-center font-label-sm text-xs font-bold font-mono">01</span>
+<div>
+<span class="font-label-md text-label-md text-slate-200 block font-semibold">Challenger Lead Seat</span>
+<span class="text-[11px] font-body-sm text-secondary-text block">Awaiting First Blood on Category Opener</span>
+</div>
+</div>
+<span class="font-mono text-xs px-2 py-1 rounded bg-elevated-surface border border-subtle text-slate-400">UNSOLVED</span>
+</div>
+<!-- Pos 2 -->
+<div class="p-4 border-b border-subtle flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="w-6 h-6 rounded bg-slate-400/10 text-slate-300 border border-slate-400/30 flex items-center justify-center font-label-sm text-xs font-bold font-mono">02</span>
+<div>
+<span class="font-label-md text-label-md text-slate-200 block font-semibold">Runner-up Position</span>
+<span class="text-[11px] font-body-sm text-secondary-text block">Student &amp; Open Division Tracking</span>
+</div>
+</div>
+<span class="font-mono text-xs px-2 py-1 rounded bg-elevated-surface border border-subtle text-slate-400">UNSOLVED</span>
+</div>
+<!-- Pos 3 -->
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="w-6 h-6 rounded bg-amber-700/10 text-amber-600 border border-amber-700/30 flex items-center justify-center font-label-sm text-xs font-bold font-mono">03</span>
+<div>
+<span class="font-label-md text-label-md text-slate-200 block font-semibold">Third Contender Seat</span>
+<span class="text-[11px] font-body-sm text-secondary-text block">Scoreboard graph unfreezes on May 16, 18:00</span>
+</div>
+</div>
+<span class="font-mono text-xs px-2 py-1 rounded bg-elevated-surface border border-subtle text-slate-400">UNSOLVED</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text">
+            Official CTFd solve timeline and score progression matrices will stream live data instantly upon qualification round launch.
+          </p>
+</div>
+<!-- Right: Verified Division Protocols & Scoring Logic -->
+<div class="lg:col-span-6 space-y-6">
+<div>
+<div class="flex items-center gap-2 text-primary-container font-label-sm text-label-sm uppercase tracking-wider mb-2">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+<span>DIVISION PROTOCOLS</span>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-primary-text tracking-tight">
+              Verified Student &amp; Open Tracks
+            </h2>
+</div>
+<!-- Division 1 Card -->
+<div class="p-5 rounded-xl bg-background border border-subtle space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-primary-text">
+<span class="material-symbols-outlined text-base text-primary-container">school</span>
+<span class="font-label-md text-label-md font-bold uppercase tracking-wider">Student Academic Division</span>
+</div>
+<span class="font-mono text-[11px] text-tertiary bg-surface px-2 py-0.5 rounded border border-subtle">ACCREDITED</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text">
+              Reserved exclusively for currently enrolled students (university, EST, higher institute). Valid academic institutional email or student ID verification required prior to award distribution.
+            </p>
+</div>
+<!-- Division 2 Card -->
+<div class="p-5 rounded-xl bg-background border border-subtle space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-primary-text">
+<span class="material-symbols-outlined text-base text-slate-300">public</span>
+<span class="font-label-md text-label-md font-bold uppercase tracking-wider">Global Open Division</span>
+</div>
+<span class="font-mono text-[11px] text-slate-400 bg-surface px-2 py-0.5 rounded border border-subtle">OPEN WORLDWIDE</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text">
+              Accessible to all security practitioners, industry professionals, alumni, and independent international CTF teams. Separate rank tracking on the master scoreboard.
+            </p>
+</div>
+<!-- Technical Scoring Decay Rule -->
+<div class="p-4 rounded-xl bg-elevated-surface border border-subtle flex items-start gap-3">
+<span class="material-symbols-outlined text-base text-primary-container shrink-0 mt-0.5">analytics</span>
+<div class="space-y-1">
+<span class="font-label-md text-xs font-semibold text-slate-200 block uppercase tracking-wider">Dynamic Scoring Decay Function</span>
+<p class="font-body-sm text-body-sm text-secondary-text leading-relaxed">
+                Points diminish automatically as more squads submit valid solves: harder challenges retain elevated point weight, and solve decay stabilizes at each domain's specified points floor.
+              </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 6. RULES OF ENGAGEMENT & ETHICAL BOUNDARIES                               -->
+<!-- ========================================================================= -->
+<section class="py-16 border-b border-subtle bg-background" id="rules">
+<div class="max-w-7xl mx-auto px-6">
+<div class="rounded-xl border border-subtle bg-surface p-8 space-y-6">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-subtle">
+<div>
+<span class="font-label-sm text-label-sm text-primary-container uppercase tracking-widest font-semibold block mb-1">
+              ETHICAL BOUNDARIES &amp; INTEGRITY
+            </span>
+<h2 class="font-headline-md text-headline-md font-bold text-primary-text">
+              Rules of Engagement
+            </h2>
+</div>
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-elevated-surface text-secondary-text font-label-sm text-label-sm border border-subtle">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+            ENFORCED BY CTF MARSHALS
+          </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Rule 1 -->
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-primary-text font-headline-sm text-headline-sm">
+<span class="font-label-md text-primary-container font-mono">01.</span>
+<span>Scope Strictness</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text leading-relaxed">
+              Designated challenge targets strictly in scope. Scoring infrastructure, judging instances, hosting clusters, and fellow participants are strictly off-limits.
+            </p>
+</div>
+<!-- Rule 2 -->
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-primary-text font-headline-sm text-headline-sm">
+<span class="font-label-md text-primary-container font-mono">02.</span>
+<span>Zero Denial of Service</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text leading-relaxed">
+              Denial of service (DoS/DDoS) against platform services, challenge network daemons, or internet uplinks results in immediate disqualification.
+            </p>
+</div>
+<!-- Rule 3 -->
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-primary-text font-headline-sm text-headline-sm">
+<span class="font-label-md text-primary-container font-mono">03.</span>
+<span>No Flag Sharing</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text leading-relaxed">
+              Sharing flags, solutions, hints, or exploit scripts between squads prior to the official round closure is strictly prohibited.
+            </p>
+</div>
+</div>
+<!-- Help Notice -->
+<div class="pt-6 border-t border-subtle flex flex-col sm:flex-row items-center justify-between text-secondary-text font-label-sm text-label-sm gap-4">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-secondary-text">help_outline</span>
+            Notice infrastructure anomalies or unreachable services? Reach out directly via the organizer helpdesk.
+          </span>
+<span class="text-slate-400 font-mono text-xs">
+            EST Guelmim Academic Supervision © 2025
+          </span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- ========================================================================= -->
+<!-- 7. FOOTER                                                                 -->
+<!-- ========================================================================= -->
+<footer class="w-full bg-background border-t border-subtle">
+<div class="w-full px-6 py-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="space-y-1.5 text-center md:text-left">
+<div class="flex items-center justify-center md:justify-start gap-2">
+<span class="font-headline-sm text-headline-sm font-semibold text-primary-text">CYBERDUNE CTF</span>
+<span class="font-label-sm text-label-sm text-secondary-text">EST Guelmim</span>
+</div>
+<p class="text-secondary-text font-body-sm text-body-sm">
+        © 2025 CYBERDUNE CTF. Organized by EST Guelmim Student Cybersecurity Community, Moroccan Sahara.
+      </p>
+</div>
+<div class="flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-2 text-secondary-text font-label-sm text-label-sm">
+<a class="hover:text-primary-text transition-colors duration-150" href="#rules">Rules of Engagement</a>
+<a class="hover:text-primary-text transition-colors duration-150" href="#standings">Division Protocols</a>
+<a class="hover:text-primary-text transition-colors duration-150" href="#tracks">Tracks Matrix</a>
+<a class="hover:text-primary-text transition-colors duration-150" href="#">EST Guelmim Portal</a>
+</div>
+</div>
+</footer>
+<!-- Countdown Decrement Simulation -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const secEl = document.getElementById('countdown-sec');
+    if (secEl) {
+      let currentSec = 19;
+      setInterval(() => {
+        currentSec = currentSec <= 0 ? 59 : currentSec - 1;
+        secEl.textContent = currentSec < 10 ? '0' + currentSec : currentSec;
+      }, 1000);
+    }
+  });
+</script>
+</body></html>

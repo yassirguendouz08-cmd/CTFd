@@ -18,7 +18,9 @@ teams and standings, with English, French and Arabic copy.
 ## What is included
 
 - Official CyberDune logo and responsive theme.
-- Animated terminal illustration, pause controls and reduced-motion support.
+- Google Stitch-informed competition workspace with an actual event briefing.
+- Live authorized homepage metrics, category links and standings preview.
+- Local typography, recovery page and rank-preserving scoreboard search.
 - English, French and Arabic language choices, with RTL support for Arabic.
 - Challenge search and category/solve filters, using real CTFd data.
 - CTFd registration, teams, hints, flags, dynamic scoring and standings.
@@ -131,7 +133,7 @@ to upload a theme ZIP for each edit.
 | Homepage layout | `CTFd/themes/cyberdune/templates/components/landing.html` |
 | Navigation | `CTFd/themes/cyberdune/templates/components/navbar.html` |
 | Official contact links | `CTFd/themes/cyberdune/templates/components/contacts.html` |
-| Terminal animation and UI behavior | `CTFd/themes/cyberdune/static/js/cyberdune.js` |
+| Schedule, live metrics and UI behavior | `CTFd/themes/cyberdune/static/js/cyberdune.js` |
 | CSS/JS cache version | `CTFd/themes/cyberdune/templates/base.html` |
 | Challenges, flags, hints and dates | CTFd admin panel |
 
@@ -141,6 +143,9 @@ Changing Python dependencies or the Dockerfile requires a container image rebuil
 `docker compose up -d --build`.
 
 ## Documentation and validation
+
+- [Actual Google Stitch project, screen IDs and exported designs](docs/stitch/README.md)
+- [Local Stitch reference gallery](docs/stitch/gallery.html)
 
 - [Existing Codespace update and troubleshooting](docs/CODESPACES.md)
 - [Theme installation, backup and rollback](docs/THEME.md)

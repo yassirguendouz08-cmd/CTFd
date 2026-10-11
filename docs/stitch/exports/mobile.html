@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CYBERDUNE CTF | Mobile Landing</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container": "#2c1b1c",
+            "on-error-container": "#ffdad6",
+            "on-secondary-container": "#ffe7e6",
+            "on-surface-variant": "#e5bdbe",
+            "on-tertiary-fixed": "#002019",
+            "primary-fixed": "#ffdada",
+            "error": "#ffb4ab",
+            "elevated-surface": "#191E29",
+            "tertiary-fixed-dim": "#74d8bd",
+            "surface-variant": "#443030",
+            "secondary": "#ffb3b3",
+            "on-surface": "#fbdbdb",
+            "on-tertiary-container": "#eefff7",
+            "secondary-container": "#d60037",
+            "inverse-primary": "#be0037",
+            "surface-bright": "#483435",
+            "outline-variant": "#5c3f40",
+            "on-secondary-fixed": "#40000a",
+            "secondary-fixed-dim": "#ffb3b3",
+            "tertiary": "#74d8bd",
+            "on-secondary-fixed-variant": "#920022",
+            "on-tertiary-fixed-variant": "#005142",
+            "primary-container": "#e11d48",
+            "surface": "#11141C",
+            "surface-container-low": "#281718",
+            "primary-text": "#F8FAFC",
+            "tertiary-container": "#00836c",
+            "on-primary-fixed-variant": "#920028",
+            "on-tertiary": "#00382d",
+            "surface-container-lowest": "#190a0b",
+            "inverse-surface": "#fbdbdb",
+            "tertiary-fixed": "#90f5d9",
+            "surface-tint": "#ffb3b6",
+            "on-secondary": "#680016",
+            "secondary-fixed": "#ffdad9",
+            "inverse-on-surface": "#3f2b2c",
+            "on-primary-container": "#fffaf9",
+            "error-container": "#93000a",
+            "background": "#080A0F",
+            "on-primary-fixed": "#40000c",
+            "outline": "#ac8889",
+            "primary": "#ffb3b6",
+            "surface-container-highest": "#443030",
+            "on-primary": "#68001a",
+            "on-error": "#690005",
+            "secondary-text": "#94A3B8",
+            "surface-dim": "#1f0f10",
+            "primary-fixed-dim": "#ffb3b6",
+            "surface-container-high": "#382526",
+            "on-background": "#fbdbdb"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "2.5rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.5rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "label-md": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "headline-lg": ["Space Grotesk"],
+            "label-lg": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-sm": ["Space Grotesk"]
+          },
+          "fontSize": {
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-primary-text min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Mobile Compact Navigation Bar -->
+<header class="sticky top-0 z-50 w-full bg-surface border-b border-outline-variant">
+<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2">
+<!-- Brand & Provenance Tag -->
+<a class="flex flex-col items-start focus:outline-none" href="#">
+<span class="font-headline-sm text-headline-sm tracking-tight font-semibold text-primary-text flex items-center gap-1.5">
+          CYBERDUNE CTF
+        </span>
+<span class="font-label-sm text-label-sm text-secondary-text">EST Guelmim, Moroccan Sahara</span>
+</a>
+<!-- Trailing Controls Cluster -->
+<div class="flex items-center gap-2 sm:gap-3">
+<!-- Language Switcher Chip Dropdown -->
+<div class="relative" id="lang-wrapper">
+<button aria-label="Select Language" class="min-h-[44px] min-w-[44px] px-2 py-1.5 flex items-center justify-center gap-1 rounded bg-elevated-surface border border-outline-variant text-secondary-text hover:text-primary-text text-label-sm font-label-sm transition-colors duration-150" id="lang-btn" type="button">
+<span class="material-symbols-outlined text-base">language</span>
+<span class="font-label-sm text-label-sm" id="current-lang">EN</span>
+</button>
+<div class="hidden absolute right-0 mt-1 w-24 bg-surface border border-outline-variant rounded shadow-lg py-1 z-50" id="lang-menu">
+<button class="w-full text-left px-3 py-2 text-label-sm font-label-sm text-primary-text hover:bg-elevated-surface" onclick="setLang('EN')">EN (English)</button>
+<button class="w-full text-left px-3 py-2 text-label-sm font-label-sm text-secondary-text hover:text-primary-text hover:bg-elevated-surface" onclick="setLang('FR')">FR (Français)</button>
+<button class="w-full text-left px-3 py-2 text-label-sm font-label-sm text-secondary-text hover:text-primary-text hover:bg-elevated-surface" onclick="setLang('AR')">AR (العربية)</button>
+</div>
+</div>
+<!-- Trailing Primary Action (Min 44px touch target) -->
+<a class="min-h-[44px] px-3.5 flex items-center justify-center rounded bg-primary-container text-primary-text font-label-md text-label-md font-medium hover:bg-secondary-container transition-colors duration-150" href="#workspace">
+          Enter Workspace
+        </a>
+<!-- Drawer Toggle Button -->
+<button aria-label="Toggle navigation drawer" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded border border-outline-variant text-secondary-text hover:text-primary-text hover:border-primary-container transition-colors duration-150" id="drawer-toggle" type="button">
+<span class="material-symbols-outlined text-xl" id="drawer-icon">menu</span>
+</button>
+</div>
+</div>
+<!-- Mobile Slide-Down Navigation Drawer -->
+<div class="hidden border-t border-outline-variant bg-surface px-4 py-4 space-y-3" id="mobile-drawer">
+<nav class="flex flex-col space-y-1">
+<a class="min-h-[44px] flex items-center px-3 rounded text-primary-container font-label-md text-label-md border-b-2 border-primary-container" href="#hero">Home</a>
+<a class="min-h-[44px] flex items-center px-3 rounded text-secondary-text hover:text-primary-text font-label-md text-label-md transition-colors" href="#categories">Challenges</a>
+<a class="min-h-[44px] flex items-center px-3 rounded text-secondary-text hover:text-primary-text font-label-md text-label-md transition-colors" href="#standings">Scoreboard</a>
+<a class="min-h-[44px] flex items-center px-3 rounded text-secondary-text hover:text-primary-text font-label-md text-label-md transition-colors" href="#rules">Rules of Engagement</a>
+</nav>
+<div class="pt-3 border-t border-outline-variant flex flex-col gap-2">
+<a class="min-h-[44px] flex items-center justify-center rounded border border-outline-variant text-primary-text font-label-md text-label-md hover:bg-elevated-surface transition-colors" href="#signin">Log In</a>
+<a class="min-h-[44px] flex items-center justify-center rounded bg-primary-container text-primary-text font-label-md text-label-md font-medium hover:bg-secondary-container transition-colors" href="#register">Register Squad</a>
+</div>
+</div>
+</header>
+<!-- Main Content Container -->
+<main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-10 sm:space-y-16">
+<!-- Hero Section: Stacked Mobile Focus -->
+<section class="flex flex-col items-start gap-4 sm:gap-6 pt-2" id="hero">
+<!-- Host Campus Chip -->
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-elevated-surface border border-outline-variant">
+<span class="material-symbols-outlined text-primary-container text-sm">school</span>
+<span class="font-label-sm text-label-sm text-secondary-text">
+          École Supérieure de Technologie de Guelmim, Ibn Zohr University
+        </span>
+</div>
+<!-- Main Headline with Accent Red Styling -->
+<h1 class="font-headline-xl text-headline-xl text-primary-text tracking-tight font-bold leading-tight">
+        Follow the clues. <br class="hidden sm:inline"/>
+<span class="text-primary-container">Find your flag.</span>
+</h1>
+<!-- Mission Briefing Text -->
+<p class="font-body-lg text-body-lg text-secondary-text max-w-2xl leading-relaxed">
+        The flagship capture-the-flag competition organized by the EST Guelmim student cybersecurity community (Ibn Zohr University). Engineered for functional clarity, offensive strategy, and forensic investigation.
+      </p>
+<!-- Thumb-Friendly Primary Actions -->
+<div class="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+<a class="min-h-[44px] w-full sm:w-auto px-6 py-3 rounded flex items-center justify-center gap-2 bg-primary-container text-primary-text font-label-md text-label-md font-medium hover:bg-secondary-container active:opacity-90 transition-all duration-150" href="#workspace">
+<span>Enter Workspace</span>
+<span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+<a class="min-h-[44px] w-full sm:w-auto px-6 py-3 rounded flex items-center justify-center gap-2 bg-elevated-surface border border-outline-variant text-primary-text font-label-md text-label-md hover:border-primary-container active:opacity-90 transition-all duration-150" href="#categories">
+<span>Explore Categories</span>
+<span class="material-symbols-outlined text-base">grid_view</span>
+</a>
+</div>
+</section>
+<!-- Schedule Status: Authentic Empty State -->
+<section class="w-full">
+<div class="p-4 sm:p-5 rounded bg-surface border border-outline-variant flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-start sm:items-center gap-3">
+<div class="min-w-[36px] h-9 rounded flex items-center justify-center bg-elevated-surface border border-outline-variant text-secondary-text">
+<span class="material-symbols-outlined text-lg">event_upcoming</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-primary-text">Schedule: Standby</span>
+<span class="px-2 py-0.5 rounded bg-elevated-surface text-secondary-text font-label-sm text-label-sm border border-outline-variant">Awaiting organizer activation</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text mt-0.5">
+              Round duration and operational windows are unannounced. Official timings will be locked prior to round commencement.
+            </p>
+</div>
+</div>
+<div class="self-start sm:self-auto shrink-0 font-label-sm text-label-sm text-secondary-text font-medium px-3 py-1.5 rounded bg-background border border-outline-variant">
+          STATUS: INACTIVE
+        </div>
+</div>
+</section>
+<!-- Challenge Categories: Strict Two-Column Mobile Grid -->
+<section class="space-y-4" id="categories">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-1 border-b border-outline-variant pb-3">
+<div>
+<h2 class="font-headline-md text-headline-md font-semibold text-primary-text">Challenge Domains</h2>
+<p class="font-body-sm text-body-sm text-secondary-text">Standardized problem sets configured for dynamic score decay.</p>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-text">6 DOMAINS ACTIVE</span>
+</div>
+<div class="grid grid-cols-2 gap-3 sm:gap-4">
+<!-- 1. Web Exploitation -->
+<article class="p-3.5 sm:p-4 rounded bg-surface border border-outline-variant flex flex-col justify-between hover:border-primary-container transition-colors duration-150">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-primary-container text-xl">language</span>
+<span class="font-label-sm text-label-sm text-secondary-text">DECAY ON</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary-text leading-snug">Web Exploitation</h3>
+<p class="font-body-sm text-body-sm text-secondary-text line-clamp-2">SSRF, authentication bypasses, template injections &amp; API flaws.</p>
+</div>
+<div class="pt-3 mt-3 border-t border-outline-variant flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary-text">RANGE</span>
+<span class="font-label-sm text-label-sm text-primary-text font-medium">100 - 500 PTS</span>
+</div>
+</article>
+<!-- 2. Binary Exploitation -->
+<article class="p-3.5 sm:p-4 rounded bg-surface border border-outline-variant flex flex-col justify-between hover:border-primary-container transition-colors duration-150">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-primary-container text-xl">memory</span>
+<span class="font-label-sm text-label-sm text-secondary-text">DECAY ON</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary-text leading-snug">Binary Exploitation</h3>
+<p class="font-body-sm text-body-sm text-secondary-text line-clamp-2">Buffer overflows, ROP chain synthesis, format strings &amp; heap corruption.</p>
+</div>
+<div class="pt-3 mt-3 border-t border-outline-variant flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary-text">RANGE</span>
+<span class="font-label-sm text-label-sm text-primary-text font-medium">100 - 500 PTS</span>
+</div>
+</article>
+<!-- 3. Reverse Engineering -->
+<article class="p-3.5 sm:p-4 rounded bg-surface border border-outline-variant flex flex-col justify-between hover:border-primary-container transition-colors duration-150">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-primary-container text-xl">terminal</span>
+<span class="font-label-sm text-label-sm text-secondary-text">DECAY ON</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary-text leading-snug">Reverse Engineering</h3>
+<p class="font-body-sm text-body-sm text-secondary-text line-clamp-2">Disassembly analysis, bytecode decompilation, anti-debug bypassing.</p>
+</div>
+<div class="pt-3 mt-3 border-t border-outline-variant flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary-text">RANGE</span>
+<span class="font-label-sm text-label-sm text-primary-text font-medium">100 - 500 PTS</span>
+</div>
+</article>
+<!-- 4. Cryptography -->
+<article class="p-3.5 sm:p-4 rounded bg-surface border border-outline-variant flex flex-col justify-between hover:border-primary-container transition-colors duration-150">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-primary-container text-xl">vpn_key</span>
+<span class="font-label-sm text-label-sm text-secondary-text">DECAY ON</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary-text leading-snug">Cryptography</h3>
+<p class="font-body-sm text-body-sm text-secondary-text line-clamp-2">Lattice attacks, RSA vulnerabilities, elliptic curves &amp; stream ciphers.</p>
+</div>
+<div class="pt-3 mt-3 border-t border-outline-variant flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary-text">RANGE</span>
+<span class="font-label-sm text-label-sm text-primary-text font-medium">100 - 500 PTS</span>
+</div>
+</article>
+<!-- 5. Digital Forensics -->
+<article class="p-3.5 sm:p-4 rounded bg-surface border border-outline-variant flex flex-col justify-between hover:border-primary-container transition-colors duration-150">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-primary-container text-xl">find_in_page</span>
+<span class="font-label-sm text-label-sm text-secondary-text">DECAY ON</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary-text leading-snug">Digital Forensics</h3>
+<p class="font-body-sm text-body-sm text-secondary-text line-clamp-2">Memory dumps, PCAP network captures, file carvers &amp; hidden artifacts.</p>
+</div>
+<div class="pt-3 mt-3 border-t border-outline-variant flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary-text">RANGE</span>
+<span class="font-label-sm text-label-sm text-primary-text font-medium">100 - 500 PTS</span>
+</div>
+</article>
+<!-- 6. OSINT & Reconnaissance -->
+<article class="p-3.5 sm:p-4 rounded bg-surface border border-outline-variant flex flex-col justify-between hover:border-primary-container transition-colors duration-150">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-primary-container text-xl">radar</span>
+<span class="font-label-sm text-label-sm text-secondary-text">DECAY ON</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary-text leading-snug">OSINT &amp; Recon</h3>
+<p class="font-body-sm text-body-sm text-secondary-text line-clamp-2">Public intelligence correlation, geolocation, infrastructure profiling.</p>
+</div>
+<div class="pt-3 mt-3 border-t border-outline-variant flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary-text">RANGE</span>
+<span class="font-label-sm text-label-sm text-primary-text font-medium">100 - 500 PTS</span>
+</div>
+</article>
+</div>
+</section>
+<!-- Standings / Scoreboard Preview (Authentic Empty State) -->
+<section class="space-y-4" id="standings">
+<div class="flex items-center justify-between border-b border-outline-variant pb-3">
+<div>
+<h2 class="font-headline-md text-headline-md font-semibold text-primary-text">Live Scoreboard</h2>
+<p class="font-body-sm text-body-sm text-secondary-text">Official squad rankings and telemetry.</p>
+</div>
+<span class="px-2 py-1 rounded bg-elevated-surface text-secondary-text font-label-sm text-label-sm border border-outline-variant">LOCKED</span>
+</div>
+<!-- Authentic Empty State Container -->
+<div class="rounded bg-surface border border-outline-variant p-6 sm:p-8 flex flex-col items-center justify-center text-center space-y-3">
+<div class="w-12 h-12 rounded flex items-center justify-center bg-elevated-surface border border-outline-variant text-secondary-text">
+<span class="material-symbols-outlined text-2xl">leaderboard</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary-text">Standings Locked</h3>
+<p class="font-body-sm text-body-sm text-secondary-text max-w-sm">
+          Standings locked until competition round commencement. Telemetry matrix and point tallies will initialize upon first blood.
+        </p>
+<div class="font-label-sm text-label-sm text-secondary-text bg-background px-3 py-1.5 rounded border border-outline-variant">
+          SQUADS REGISTERED: PENDING COMMENCEMENT
+        </div>
+</div>
+</section>
+<!-- Rules & Conduct: 3-Item Card Grid -->
+<section class="space-y-4" id="rules">
+<div class="border-b border-outline-variant pb-3">
+<h2 class="font-headline-md text-headline-md font-semibold text-primary-text">Rules of Engagement</h2>
+<p class="font-body-sm text-body-sm text-secondary-text">Zero-tolerance operational standards enforced by the review committee.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+<!-- Rule 1: Scope Strictness -->
+<div class="p-4 rounded bg-surface border border-outline-variant space-y-2">
+<div class="flex items-center gap-2 text-primary-container">
+<span class="material-symbols-outlined text-lg">crisis_alert</span>
+<span class="font-label-md text-label-md font-medium text-primary-text">01. Scope Strictness</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text leading-relaxed">
+            Attacking targets outside assigned challenge ranges or target domains is strictly prohibited. Subnet boundary violations trigger immediate squad disqualification.
+          </p>
+</div>
+<!-- Rule 2: Infrastructure Protection -->
+<div class="p-4 rounded bg-surface border border-outline-variant space-y-2">
+<div class="flex items-center gap-2 text-primary-container">
+<span class="material-symbols-outlined text-lg">shield</span>
+<span class="font-label-md text-label-md font-medium text-primary-text">02. Infrastructure Protection</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text leading-relaxed">
+            Denial of service (DoS), deliberate exhaustion of resources, and attacks against the central scoring engine or challenge orchestrator will result in an instant ban.
+          </p>
+</div>
+<!-- Rule 3: No Flag Sharing -->
+<div class="p-4 rounded bg-surface border border-outline-variant space-y-2">
+<div class="flex items-center gap-2 text-primary-container">
+<span class="material-symbols-outlined text-lg">share_off</span>
+<span class="font-label-md text-label-md font-medium text-primary-text">03. No Flag Sharing</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text leading-relaxed">
+            Flags are strictly unique tokens. Exchanging writeups, clues, or flags between separate squads during live competition windows is strictly forbidden.
+          </p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Component adhering strictly to Shared Components JSON -->
+<footer class="w-full bg-background border-t border-outline-variant">
+<div class="w-full px-6 py-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+<!-- Brand & Copyright from JSON -->
+<div class="flex flex-col items-center md:items-start gap-1 text-center md:text-left">
+<span class="font-headline-sm text-headline-sm font-semibold text-primary-text">CYBERDUNE CTF</span>
+<p class="font-body-sm text-body-sm text-secondary-text">
+          © 2025 CYBERDUNE CTF. Founded at EST Guelmim, Moroccan Sahara. All rights reserved.
+        </p>
+</div>
+<!-- Links adhering exactly to JSON labels -->
+<nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="#rules">Rules of Engagement</a>
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="#terms">Terms of Service</a>
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="#telemetry">Platform Telemetry</a>
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="#api">API Docs</a>
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="https://estg.uiz.ac.ma" rel="noopener noreferrer" target="_blank">EST Guelmim</a>
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="#support">Support</a>
+</nav>
+</div>
+</footer>
+<!-- Inline Vanilla JS for Micro-Interactions -->
+<script>
+    // Drawer Toggle Logic
+    const drawerToggle = document.getElementById('drawer-toggle');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const drawerIcon = document.getElementById('drawer-icon');
+
+    drawerToggle.addEventListener('click', () => {
+      const isHidden = mobileDrawer.classList.toggle('hidden');
+      drawerIcon.textContent = isHidden ? 'menu' : 'close';
+    });
+
+    // Language Dropdown Logic
+    const langBtn = document.getElementById('lang-btn');
+    const langMenu = document.getElementById('lang-menu');
+    const currentLangText = document.getElementById('current-lang');
+
+    langBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      langMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!langMenu.classList.contains('hidden') && !e.target.closest('#lang-wrapper')) {
+        langMenu.classList.add('hidden');
+      }
+    });
+
+    function setLang(lang) {
+      currentLangText.textContent = lang;
+      langMenu.classList.add('hidden');
+      if (lang === 'AR') {
+        document.documentElement.setAttribute('dir', 'rtl');
+      } else {
+        document.documentElement.removeAttribute('dir');
+      }
+    }
+  </script>
+</body></html>

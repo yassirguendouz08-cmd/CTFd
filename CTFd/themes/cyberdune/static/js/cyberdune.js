@@ -11,56 +11,50 @@
   window.Cyberdune = { matches };
 
   document.addEventListener('DOMContentLoaded', () => {
-    // Decorative effects never issue network requests or execute displayed commands.
-    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-    const motionButtons = [...document.querySelectorAll('[data-motion-toggle]')];
-    const terminal = document.querySelector('[data-terminal]');
-    const staticTerminal = terminal ? terminal.innerHTML : '';
-    let userPaused = false, timer, step = 0, letter = 0, commandText;
-    try { userPaused = localStorage.getItem('cyberdune-effects-paused') === 'true'; } catch (_) { /* Storage is optional. */ }
-    const steps = [
-      {command: 'cat mission.txt', output: copy('Find the weakness. Follow the clues. Capture the flag.')},
-      {command: './begin --mindset curious', output: copy('Curiosity loaded. Your next solve starts here.')},
-      {command: 'printf "stay curious\\n"', output: copy('stay curious')}
-    ];
-    const paused = () => userPaused || reducedMotion.matches;
-    const schedule = delay => { clearTimeout(timer); if (!paused() && !document.hidden && terminal) timer = setTimeout(type, delay); };
-    function type() {
-      if (paused() || document.hidden || !terminal) return;
-      if (!commandText) {
-        if (step === 0) terminal.replaceChildren();
-        const row = document.createElement('div'); row.className = 'cd-terminal-line';
-        const prompt = document.createElement('span'); prompt.className = 'cd-prompt'; prompt.textContent = 'challenger@cyberdune:~$ ';
-        commandText = document.createElement('span'); commandText.className = 'cd-terminal-typing';
-        row.append(prompt, commandText); terminal.append(row); letter = 0;
-      }
-      const current = steps[step];
-      if (letter < current.command.length) { commandText.textContent += current.command[letter++]; schedule(65); return; }
-      commandText.classList.remove('cd-terminal-typing');
-      const output = document.createElement('div'); output.className = 'cd-terminal-output'; output.textContent = current.output;
-      terminal.append(output); commandText = null; step = (step + 1) % steps.length;
-      schedule(step === 0 ? 5500 : 1200);
-    }
-    function updateMotion() {
-      clearTimeout(timer);
-      document.body.classList.toggle('cd-effects-paused', paused());
-      motionButtons.forEach(button => {
-        button.textContent = reducedMotion.matches ? copy('Reduced motion') : userPaused ? copy('Resume effects') : copy('Pause effects');
-        button.setAttribute('aria-pressed', String(paused()));
-        button.disabled = reducedMotion.matches;
-      });
-      if (reducedMotion.matches && terminal) { terminal.innerHTML = staticTerminal; commandText = null; step = 0; }
-      schedule(700);
-    }
-    motionButtons.forEach(button => button.addEventListener('click', () => {
-      userPaused = !userPaused;
-      try { localStorage.setItem('cyberdune-effects-paused', String(userPaused)); } catch (_) { /* Continue without persistence. */ }
-      updateMotion();
-    }));
-    reducedMotion.addEventListener('change', updateMotion);
-    document.addEventListener('visibilitychange', () => { if (document.hidden) clearTimeout(timer); else schedule(700); });
-    updateMotion();
     const root = window.init || {};
+    const home = document.querySelector('[data-home-workspace]');
+    if (home) {
+      const get = async route => {
+        try {
+          const response = await fetch(`${root.urlRoot || ''}/api/v1/${route}`, {credentials: 'same-origin'});
+          if (!response.ok) return null;
+          const payload = await response.json();
+          return payload.success && Array.isArray(payload.data) ? payload.data : null;
+        } catch (_) { return null; }
+      };
+      if (home.dataset.loadChallenges === 'true') get('challenges').then(challenges => {
+        if (!challenges) return;
+        const visible = challenges.filter(challenge => !challenge.state || challenge.state === 'visible');
+        const categories = [...new Set(visible.map(challenge => challenge.category))];
+        home.querySelector('[data-visible-count]').textContent = visible.length;
+        home.querySelector('[data-category-count]').textContent = categories.length;
+        const grid = home.querySelector('[data-home-categories]');
+        categories.forEach(category => {
+          const link = document.createElement('a'); link.className = 'cd-home-category';
+          link.href = `${root.urlRoot || ''}/challenges?category=${encodeURIComponent(category)}`;
+          const title = document.createElement('strong'); title.textContent = category;
+          const detail = document.createElement('span');
+          detail.textContent = `${visible.filter(challenge => challenge.category === category).length} · ${copy('Available challenges')} ↗`;
+          link.append(title, detail); grid.append(link);
+        });
+        home.querySelector('[data-categories-empty]').hidden = categories.length > 0;
+      });
+      if (home.dataset.loadScores === 'true') get('scoreboard').then(standings => {
+        if (!standings) return;
+        home.querySelector('[data-standing-count]').textContent = standings.length;
+        const leaders = home.querySelector('[data-home-leaders]');
+        standings.slice(0, 3).forEach((standing, index) => {
+          const row = document.createElement('li');
+          const rank = document.createElement('span'); rank.textContent = String(index + 1).padStart(2, '0');
+          const link = document.createElement('a'); link.textContent = standing.name;
+          const destination = new URL(standing.account_url, location.origin);
+          link.href = destination.origin === location.origin ? destination.href : `${root.urlRoot || ''}/scoreboard`;
+          const points = document.createElement('strong'); points.textContent = standing.score;
+          row.append(rank, link, points); leaders.append(row);
+        });
+        home.querySelector('[data-leaders-empty]').hidden = standings.length > 0;
+      });
+    }
     const statusNodes = document.querySelectorAll('[data-event-status]');
     const stamp = value => value && Number.isFinite(Number(value)) ? Number(value) * 1000 : null;
     const start = stamp(root.start), end = stamp(root.end);
@@ -92,12 +86,18 @@
     if (statusNodes.length) { tick(); setInterval(() => { if (!document.hidden) tick(); }, 1000); }
 
     // Link highlighting respects reverse-proxy prefixes and admin-created pages.
-    const path = location.pathname.replace(/\/$/, '');
-    document.querySelectorAll('.cd-nav a.nav-link').forEach(link => {
-      if (new URL(link.href, location.href).pathname.replace(/\/$/, '') === path) {
-        link.classList.add('active'); link.setAttribute('aria-current', 'page');
-      }
-    });
+    const highlightNavigation = () => {
+      const path = location.pathname.replace(/\/$/, '');
+      document.querySelectorAll('.cd-nav a.nav-link').forEach(link => {
+        const target = new URL(link.href, location.href);
+        const active = target.pathname.replace(/\/$/, '') === path && target.hash === location.hash;
+        link.classList.toggle('active', active);
+        if (active) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      });
+    };
+    highlightNavigation();
+    window.addEventListener('hashchange', highlightNavigation);
 
     // Keep CTFd's original labels, form fields, validation and CSRF token.
     let passwordIndex = 0;

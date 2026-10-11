@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CYBERDUNE CTF - Register Operator</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#5c3f40",
+            "secondary-container": "#d60037",
+            "on-tertiary-fixed": "#002019",
+            "surface-container": "#2c1b1c",
+            "surface-dim": "#1f0f10",
+            "on-error-container": "#ffdad6",
+            "secondary": "#ffb3b3",
+            "on-primary": "#68001a",
+            "secondary-fixed": "#ffdad9",
+            "surface-variant": "#443030",
+            "primary-text": "#F8FAFC",
+            "tertiary-container": "#00836c",
+            "surface-container-high": "#382526",
+            "background": "#080A0F",
+            "inverse-surface": "#fbdbdb",
+            "error-container": "#93000a",
+            "on-tertiary": "#00382d",
+            "on-secondary-fixed-variant": "#920022",
+            "tertiary-fixed-dim": "#74d8bd",
+            "inverse-on-surface": "#3f2b2c",
+            "on-tertiary-container": "#eefff7",
+            "secondary-text": "#94A3B8",
+            "on-secondary": "#680016",
+            "on-secondary-fixed": "#40000a",
+            "surface-container-highest": "#443030",
+            "surface-bright": "#483435",
+            "primary-container": "#e11d48",
+            "surface-container-low": "#281718",
+            "on-tertiary-fixed-variant": "#005142",
+            "tertiary": "#74d8bd",
+            "on-surface-variant": "#e5bdbe",
+            "elevated-surface": "#191E29",
+            "on-error": "#690005",
+            "tertiary-fixed": "#90f5d9",
+            "on-background": "#fbdbdb",
+            "primary-fixed": "#ffdada",
+            "outline": "#ac8889",
+            "on-primary-fixed-variant": "#920028",
+            "secondary-fixed-dim": "#ffb3b3",
+            "surface-container-lowest": "#190a0b",
+            "on-surface": "#fbdbdb",
+            "primary-fixed-dim": "#ffb3b6",
+            "on-primary-container": "#fffaf9",
+            "primary": "#ffb3b6",
+            "inverse-primary": "#be0037",
+            "error": "#ffb4ab",
+            "surface-tint": "#ffb3b6",
+            "surface": "#11141C",
+            "on-secondary-container": "#ffe7e6",
+            "on-primary-fixed": "#40000c"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem",
+            "margin": "2rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "label-md": ["JetBrains Mono"],
+            "headline-sm": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-lg": ["Space Grotesk"],
+            "body-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "label-lg": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-primary-text min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar (Shared Component) -->
+<header class="w-full bg-surface border-b border-outline-variant sticky top-0 z-50">
+<div class="sticky top-0 z-50 w-full flex items-center justify-between px-6 py-3 max-w-7xl mx-auto">
+<!-- Brand & Metadata Anchor -->
+<div class="flex items-center gap-6">
+<a class="font-headline-sm text-headline-sm tracking-tight font-semibold text-primary-text flex items-center gap-2.5" href="#">
+<span class="inline-block w-2.5 h-2.5 bg-primary-container rounded-sm"></span>
+          CYBERDUNE CTF
+        </a>
+<span class="hidden lg:inline-flex items-center px-2 py-0.5 rounded text-label-sm font-label-sm bg-elevated-surface text-secondary-text border border-outline-variant">
+          EST GUELMIM EDITION
+        </span>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Home</a>
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Challenges</a>
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Scoreboard</a>
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Teams</a>
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Event Info</a>
+</nav>
+<!-- Trailing Controls -->
+<div class="flex items-center gap-4">
+<!-- Language Selector -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-elevated-surface border border-outline-variant text-label-sm font-label-sm text-secondary-text">
+<span class="material-symbols-outlined text-[16px] leading-none" data-icon="language">language</span>
+<button class="text-primary-text font-semibold hover:text-primary-container transition-colors" type="button">EN</button>
+<span class="text-outline-variant">|</span>
+<button class="hover:text-primary-text transition-colors" type="button">FR</button>
+<span class="text-outline-variant">|</span>
+<button class="hover:text-primary-text transition-colors font-body-sm" type="button">العربية</button>
+</div>
+<div class="h-4 w-px bg-outline-variant hidden sm:block"></div>
+<a class="text-secondary-text hover:text-primary-text font-label-md text-label-md transition-colors duration-150" href="#">
+          Log In
+        </a>
+<!-- Trailing Primary Action matched to JSON label -->
+<a class="bg-primary-container text-on-primary-container px-3.5 py-1.5 rounded-lg font-label-md text-label-md font-medium hover:opacity-90 transition-opacity" href="#register-card">
+          Register Squad
+        </a>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-6 py-10 md:py-14">
+<!-- Breadcrumb & Context Header -->
+<div class="mb-8 flex items-center justify-between border-b border-outline-variant pb-4">
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-secondary-text">
+<span>CYBERDUNE 2025</span>
+<span>/</span>
+<span>OPERATOR REGISTRATION</span>
+<span>/</span>
+<span class="text-primary-container font-semibold">CTFD PROTOCOL</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-label-sm font-label-sm text-tertiary">SYSTEM DISPATCH ONLINE</span>
+</div>
+</div>
+<!-- 2-Column Split Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+<!-- Left Column: Registration Context & Division Requirements (5 cols) -->
+<section class="lg:col-span-5 space-y-6">
+<div>
+<span class="text-label-sm font-label-sm text-tertiary px-2 py-0.5 rounded bg-surface border border-outline-variant uppercase">
+            Ecole Supérieure de Technologie de Guelmim
+          </span>
+<h1 class="text-headline-xl font-headline-xl text-primary-text tracking-tight mt-3">
+            Create Operator Account
+          </h1>
+<p class="text-body-md font-body-md text-secondary-text mt-3 leading-relaxed">
+            Welcome to CYBERDUNE CTF, organized under the supervision of EST Guelmim and Ibn Zohr University. Please initialize your solo operator profile to unlock the challenge infrastructure, access target networks, and assemble or join your squad.
+          </p>
+</div>
+<!-- Competition Divisions Matrix -->
+<div class="bg-surface rounded-xl border border-outline-variant p-5 space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="text-headline-sm font-headline-sm text-primary-text">Competition Brackets</h2>
+<span class="text-label-sm font-label-sm text-secondary-text">RULEBOOK SEC. 02</span>
+</div>
+<div class="space-y-3">
+<!-- Academic Bracket -->
+<div class="p-3.5 rounded-lg bg-elevated-surface border border-outline-variant">
+<div class="flex items-center justify-between mb-1">
+<span class="text-label-md font-label-md text-primary-text font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-tertiary" data-icon="school">school</span>
+                  Student Academic Division
+                </span>
+<span class="text-label-sm font-label-sm text-tertiary px-1.5 py-0.2 rounded bg-background border border-outline-variant">QUALIFIED PRIZES</span>
+</div>
+<p class="text-body-sm font-body-sm text-secondary-text leading-normal">
+                Reserved for enrolled students at EST Guelmim, Ibn Zohr University, and accredited academic institutions across Morocco. Requires verification through an institutional (<code class="font-label-sm text-primary-text">@uiz.ac.ma</code> or educational) email address.
+              </p>
+</div>
+<!-- Open Bracket -->
+<div class="p-3.5 rounded-lg bg-elevated-surface border border-outline-variant">
+<div class="flex items-center justify-between mb-1">
+<span class="text-label-md font-label-md text-primary-text font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-secondary-text" data-icon="public">public</span>
+                  Global Open Division
+                </span>
+<span class="text-label-sm font-label-sm text-secondary-text px-1.5 py-0.2 rounded bg-background border border-outline-variant">GLOBAL LEADERBOARD</span>
+</div>
+<p class="text-body-sm font-body-sm text-secondary-text leading-normal">
+                Open to international industry practitioners, independent security researchers, and competitive CTF squads worldwide using commercial domain addresses.
+              </p>
+</div>
+</div>
+</div>
+<!-- Deployment Sequence / Guidelines List -->
+<div class="bg-surface rounded-xl border border-outline-variant p-5 space-y-3.5">
+<h2 class="text-headline-sm font-headline-sm text-primary-text flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container" data-icon="checklist">checklist</span>
+            Enrollment Directive
+          </h2>
+<ul class="space-y-2.5 text-body-sm font-body-sm text-secondary-text">
+<li class="flex items-start gap-2.5">
+<span class="font-label-sm text-label-sm text-primary-container bg-surface-container px-1.5 py-0.5 rounded mt-0.5">01</span>
+<span><strong>Individual Account First:</strong> Register your individual operator handle below. Do not register a team name as your individual username.</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="font-label-sm text-label-sm text-primary-container bg-surface-container px-1.5 py-0.5 rounded mt-0.5">02</span>
+<span><strong>Squad Cap (1-4 Members):</strong> Once logged in, either create a new squad secret or accept your squad captain's CTFd invite token.</span>
+</li>
+<li class="flex items-start gap-2.5">
+<span class="font-label-sm text-label-sm text-primary-container bg-surface-container px-1.5 py-0.5 rounded mt-0.5">03</span>
+<span><strong>VPN &amp; Instance Provisioning:</strong> Dynamic challenge containers will bind to your verified operator token post-registration.</span>
+</li>
+</ul>
+</div>
+<!-- Strict Rules Bylaw Callout -->
+<div class="p-4 rounded-xl bg-surface-dim border border-outline-variant flex items-start gap-3">
+<span class="material-symbols-outlined text-[20px] text-error flex-shrink-0 mt-0.5" data-icon="gavel">gavel</span>
+<div class="space-y-1">
+<h3 class="text-label-md font-label-md text-error uppercase">Strict Rule Enforcement</h3>
+<p class="text-body-sm font-body-sm text-secondary-text">
+              Multi-accounting, unauthorized brute forcing against platform servers, and flag sharing across squads are strictly prohibited under EST Guelmim competition bylaws. Offending teams face immediate disqualification and academic notification.
+            </p>
+</div>
+</div>
+</section>
+<!-- Right Column: Registration Form Panel (7 cols) -->
+<section class="lg:col-span-7" id="register-card">
+<div class="bg-surface rounded-xl border border-outline-variant p-6 sm:p-8 relative">
+<!-- Form Header -->
+<div class="border-b border-outline-variant pb-5 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<span class="text-label-sm font-label-sm text-secondary-text block">AUTHENTICATION GATEWAY</span>
+<h2 class="text-headline-md font-headline-md text-primary-text">Operator Credentials</h2>
+</div>
+<div class="flex items-center gap-1.5 self-start sm:self-auto text-label-sm font-label-sm bg-elevated-surface px-2.5 py-1 rounded border border-outline-variant text-secondary-text">
+<span class="material-symbols-outlined text-[14px] text-tertiary" data-icon="lock">lock</span>
+<span>TLS 1.3 ENCRYPTED</span>
+</div>
+</div>
+<!-- CTFd Registration Form -->
+<form action="#" autocomplete="off" class="space-y-5" method="POST" onsubmit="event.preventDefault();">
+<!-- Simulated CTFd CSRF Nonce Token -->
+<input name="nonce" type="hidden" value="c8f192aa0c4768393e18a0024f2b1d0a"/>
+<!-- Field 1: Operator Username -->
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<label class="text-label-md font-label-md text-primary-text flex items-center gap-1" for="username">
+                  Operator Handle <span class="text-primary-container">*</span>
+</label>
+<span class="text-label-sm font-label-sm text-secondary-text" id="username-counter">3-20 Alphanumeric chars</span>
+</div>
+<div class="relative">
+<input class="w-full bg-elevated-surface border border-outline-variant rounded-lg px-3.5 py-2.5 font-label-md text-label-md text-primary-text placeholder:text-secondary-text placeholder:opacity-50 focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" id="username" maxlength="20" minlength="3" name="name" pattern="^[a-zA-Z0-9_\-]+$" placeholder="e.g. desert_recon" required="" type="text"/>
+<div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-secondary-text">
+<span class="material-symbols-outlined text-[18px]" data-icon="badge">badge</span>
+</div>
+</div>
+<p class="text-body-sm font-body-sm text-secondary-text mt-1.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="info">info</span>
+                This will appear on public solves, scoreboard feeds, and first-blood announcements.
+              </p>
+</div>
+<!-- Field 2: Email Address -->
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<label class="text-label-md font-label-md text-primary-text flex items-center gap-1" for="email">
+                  Email Address <span class="text-primary-container">*</span>
+</label>
+<span class="text-label-sm font-label-sm text-tertiary bg-elevated-surface px-1.5 py-0.5 rounded border border-outline-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="verified">verified</span>
+                  Use @uiz.ac.ma for Student Division
+                </span>
+</div>
+<div class="relative">
+<input class="w-full bg-elevated-surface border border-outline-variant rounded-lg px-3.5 py-2.5 font-label-md text-label-md text-primary-text placeholder:text-secondary-text placeholder:opacity-50 focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors" id="email" name="email" placeholder="operator@edu.uiz.ac.ma or personal@domain.com" required="" type="email"/>
+<div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-secondary-text">
+<span class="material-symbols-outlined text-[18px]" data-icon="mail">mail</span>
+</div>
+</div>
+<p class="text-body-sm font-body-sm text-secondary-text mt-1.5">
+                A verification link will be dispatched immediately to confirm bracket eligibility.
+              </p>
+</div>
+<!-- Field 3: Password with Structured Checklist -->
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<label class="text-label-md font-label-md text-primary-text flex items-center gap-1" for="password">
+                  Master Password <span class="text-primary-container">*</span>
+</label>
+<span class="text-label-sm font-label-sm text-secondary-text">Min. 10 chars</span>
+</div>
+<div class="relative">
+<input class="w-full bg-elevated-surface border border-outline-variant rounded-lg px-3.5 py-2.5 font-label-md text-label-md text-primary-text placeholder:text-secondary-text placeholder:opacity-50 focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors pr-10" id="password" minlength="10" name="password" placeholder="••••••••••••••••" required="" type="password"/>
+<button class="absolute inset-y-0 right-0 flex items-center pr-3 text-secondary-text hover:text-primary-text transition-colors" title="Toggle password visibility" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="visibility">visibility</span>
+</button>
+</div>
+<!-- Password Requirements Checklist -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2.5 p-3 rounded-lg bg-elevated-surface border border-outline-variant">
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-secondary-text" id="req-length">
+<span class="material-symbols-outlined text-[14px] text-tertiary" data-icon="check_circle">check_circle</span>
+<span>10+ Characters</span>
+</div>
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-secondary-text" id="req-case">
+<span class="material-symbols-outlined text-[14px] text-tertiary" data-icon="check_circle">check_circle</span>
+<span>Upper &amp; Lowercase</span>
+</div>
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-secondary-text" id="req-symbol">
+<span class="material-symbols-outlined text-[14px] text-tertiary" data-icon="check_circle">check_circle</span>
+<span>Number or Symbol</span>
+</div>
+</div>
+</div>
+<!-- Field 4: Confirm Password -->
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<label class="text-label-md font-label-md text-primary-text flex items-center gap-1" for="confirm-password">
+                  Confirm Password <span class="text-primary-container">*</span>
+</label>
+</div>
+<div class="relative">
+<input class="w-full bg-elevated-surface border border-outline-variant rounded-lg px-3.5 py-2.5 font-label-md text-label-md text-primary-text placeholder:text-secondary-text placeholder:opacity-50 focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors pr-10" id="confirm-password" name="confirm" placeholder="••••••••••••••••" required="" type="password"/>
+<div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-secondary-text">
+<span class="material-symbols-outlined text-[18px]" data-icon="check">check</span>
+</div>
+</div>
+</div>
+<!-- Event Terms Checkbox -->
+<div class="pt-2">
+<label class="flex items-start gap-3 cursor-pointer group">
+<input class="mt-1 h-4 w-4 rounded bg-elevated-surface border-outline-variant text-primary-container focus:ring-0 focus:ring-offset-0 checked:bg-primary-container" id="terms-agreement" required="" type="checkbox"/>
+<span class="text-body-sm font-body-sm text-secondary-text select-none group-hover:text-primary-text transition-colors">
+                  I agree to the <a class="text-primary-text underline hover:text-primary-container transition-colors" href="#">CyberDune CTF Rules of Engagement</a> and <a class="text-primary-text underline hover:text-primary-container transition-colors" href="#">Academic Code of Conduct</a>. I acknowledge that unauthorized outside assistance or infrastructure disruption results in immediate blacklist.
+                </span>
+</label>
+</div>
+<!-- Submit Button (#E11D48 Primary Container) -->
+<div class="pt-3">
+<button class="w-full bg-primary-container text-on-primary-container py-3 px-6 rounded-lg font-label-lg text-label-lg font-semibold flex items-center justify-center gap-2 hover:bg-[#FF304F] transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-primary-container focus:ring-offset-surface cursor-pointer shadow-none" type="submit">
+<span>Complete Registration</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Switch Helper Link -->
+<div class="text-center pt-2 border-t border-outline-variant mt-6">
+<p class="text-body-sm font-body-sm text-secondary-text">
+                Already registered?
+                <a class="text-primary-text font-semibold hover:text-primary-container transition-colors inline-flex items-center gap-1 ml-1" href="#">
+                  Log in to your account
+                  <span class="material-symbols-outlined text-[14px]" data-icon="login">login</span>
+</a>
+</p>
+</div>
+</form>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full bg-background border-t border-outline-variant mt-auto">
+<div class="w-full px-6 py-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+<!-- Brand & Copyright from JSON -->
+<div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+<span class="font-headline-sm text-headline-sm font-semibold text-primary-text">CYBERDUNE CTF</span>
+<span class="hidden sm:inline-block text-outline-variant">•</span>
+<p class="text-secondary-text font-label-sm text-label-sm">
+          © 2025 CYBERDUNE CTF. Founded at EST Guelmim, Moroccan Sahara. All rights reserved.
+        </p>
+</div>
+<!-- Links verbatim from JSON -->
+<nav class="flex flex-wrap items-center justify-center gap-5">
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">Rules of Engagement</a>
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">Platform Telemetry</a>
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">API Docs</a>
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">EST Guelmim</a>
+<a class="text-secondary-text font-label-sm text-label-sm hover:text-primary-text transition-colors duration-150" href="#">Support</a>
+</nav>
+</div>
+</footer>
+<!-- Micro-interaction JS for Password Checklist & Dynamic Validation -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const pwdInput = document.getElementById('password');
+      const reqLength = document.getElementById('req-length');
+      const reqCase = document.getElementById('req-case');
+      const reqSymbol = document.getElementById('req-symbol');
+
+      if (pwdInput) {
+        pwdInput.addEventListener('input', (e) => {
+          const val = e.target.value;
+
+          // Length test
+          if (val.length >= 10) {
+            reqLength.classList.remove('text-secondary-text');
+            reqLength.classList.add('text-tertiary');
+          } else {
+            reqLength.classList.add('text-secondary-text');
+            reqLength.classList.remove('text-tertiary');
+          }
+
+          // Case test
+          if (/[a-z]/.test(val) && /[A-Z]/.test(val)) {
+            reqCase.classList.remove('text-secondary-text');
+            reqCase.classList.add('text-tertiary');
+          } else {
+            reqCase.classList.add('text-secondary-text');
+            reqCase.classList.remove('text-tertiary');
+          }
+
+          // Number or Symbol test
+          if (/[0-9!@#$%^&*(),.?":{}|<>]/.test(val)) {
+            reqSymbol.classList.remove('text-secondary-text');
+            reqSymbol.classList.add('text-tertiary');
+          } else {
+            reqSymbol.classList.add('text-secondary-text');
+            reqSymbol.classList.remove('text-tertiary');
+          }
+        });
+      }
+    });
+  </script>
+</body></html>

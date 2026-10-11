@@ -4,14 +4,14 @@
 <header class="cd-page-head container"><p class="cd-eyebrow">CYBERDUNE CTF</p><div class="cd-head-row"><div><h1>{{ cd_copy("Challenges") }}</h1><p>{{ cd_copy("Pick your next breakthrough. Follow the evidence. Leave with a flag.") }}</p></div><span class="cd-status" data-event-status>{{ cd_copy("Checking schedule") }}</span></div></header>
 <div class="container">
   {% include 'components/errors.html' %}
-  <div x-data="{ query: '', category: '', state: 'all' }">
+  <div x-data="{ query: '', category: new URLSearchParams(location.search).get('category') || '', state: 'all' }">
     <div x-data="ChallengeBoard" @load-challenges.window="loadChallenges()" @load-challenge.window="loadChallenge($event.detail)">
       <div x-ref="challengeWindow" id="challenge-window" class="modal fade" tabindex="-1" role="dialog" aria-label="Challenge details" x-data="" x-html="$store.challenge.data.view"></div>
       <div class="cd-board-summary" x-show="loaded" x-cloak><div><span>{{ cd_copy("AVAILABLE") }}</span><strong x-text="challenges.length"></strong></div><div><span>{{ cd_copy("SOLVED BY YOU") }}</span><strong x-text="challenges.filter(c => c.solved_by_me).length"></strong></div><div><span>{{ cd_copy("CATEGORIES") }}</span><strong x-text="getCategories().length"></strong></div><div class="cd-summary-progress"><label for="cd-progress">{{ cd_copy("Your progress") }}</label><progress id="cd-progress" :value="challenges.filter(c => c.solved_by_me).length" :max="challenges.length || 1"></progress></div></div>
       <div class="cd-board-toolbar">
         <div class="cd-search"><label for="cd-search" class="visually-hidden">{{ cd_copy("Search challenges") }}</label><span aria-hidden="true">⌕</span><input id="cd-search" type="search" class="form-control" placeholder='{{ cd_copy("Search challenges\u2026") }}' x-model="query"></div>
-        <div><label for="cd-category" class="visually-hidden">Category</label><select id="cd-category" class="form-select" x-model="category"><option value="">{{ cd_copy("All categories") }}</option><template x-for="cat in getCategories()" :key="cat"><option :value="cat" x-text="cat"></option></template></select></div>
-        <div><label for="cd-state" class="visually-hidden">Solve status</label><select id="cd-state" class="form-select" x-model="state"><option value="all">{{ cd_copy("All challenges") }}</option><option value="unsolved">{{ cd_copy("Unsolved") }}</option><option value="solved">{{ cd_copy("Solved") }}</option></select></div>
+        <div><label for="cd-category" class="visually-hidden">{{ cd_copy("Category") }}</label><select id="cd-category" class="form-select" x-model="category" x-effect="getCategories(); $nextTick(() => { $el.value = category })"><option value="">{{ cd_copy("All categories") }}</option><template x-for="cat in getCategories()" :key="cat"><option :value="cat" x-text="cat"></option></template></select></div>
+        <div><label for="cd-state" class="visually-hidden">{{ cd_copy("Solve status") }}</label><select id="cd-state" class="form-select" x-model="state"><option value="all">{{ cd_copy("All challenges") }}</option><option value="unsolved">{{ cd_copy("Unsolved") }}</option><option value="solved">{{ cd_copy("Solved") }}</option></select></div>
       </div>
       <div x-show="!loaded" class="cd-empty" role="status"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i><p>{{ cd_copy("Loading the challenge board\u2026") }}</p></div>
       <div x-show="loaded" x-cloak>
@@ -21,10 +21,10 @@
             <div class="cd-challenge-grid">
               <template x-for="c in getChallenges(cat).filter(c => Cyberdune.matches(c, query, category, state))" :key="c.id">
                 <button type="button" class="cd-challenge-card challenge-button" :class="[c.solved_by_me ? 'challenge-solved' : '', ...c.tags.map(tag => `tag-${tag.value.replace(/ /g, '-')}`)]" :value="c.id" @click="loadChallenge(c.id)">
-                  <span class="cd-card-top"><span class="cd-card-category" x-text="c.category"></span><span class="cd-card-state" x-text="c.solved_by_me ? '✓ SOLVED' : 'OPEN'"></span></span>
+                  <span class="cd-card-top"><span class="cd-card-category" x-text="c.category"></span><span class="cd-card-state" x-text='c.solved_by_me ? "✓ " + {{ cd_copy("Solved") | tojson }} : {{ cd_copy("Open") | tojson }}' ></span></span>
                   <span class="cd-card-name" x-text="c.name"></span>
                   <span class="cd-card-tags"><template x-for="tag in c.tags" :key="tag.id"><span x-text="tag.value"></span></template></span>
-                  <span class="cd-card-bottom"><span><strong x-text="c.value"></strong> <small>PTS</small></span><span class="cd-card-solves" x-show="c.solves !== null && c.solves !== undefined" x-text="c.solves + ' solves'"></span><span aria-hidden="true">↗</span></span>
+                  <span class="cd-card-bottom"><span><strong x-text="c.value"></strong> <small>{{ cd_copy("Points") }}</small></span><span class="cd-card-solves" x-show="c.solves !== null && c.solves !== undefined" x-text='c.solves + " " + {{ cd_copy("solves") | tojson }}' ></span><span aria-hidden="true">↗</span></span>
                 </button>
               </template>
             </div>

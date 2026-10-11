@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CYBERDUNE CTF - Player &amp; Team Profile</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-container": "#00836c",
+            "on-tertiary-fixed-variant": "#005142",
+            "on-surface-variant": "#e5bdbe",
+            "primary-text": "#F8FAFC",
+            "inverse-primary": "#be0037",
+            "surface-container-highest": "#443030",
+            "surface": "#11141C",
+            "on-primary-container": "#fffaf9",
+            "primary-container": "#e11d48",
+            "on-tertiary-fixed": "#002019",
+            "secondary-fixed": "#ffdad9",
+            "primary": "#ffb3b6",
+            "surface-tint": "#ffb3b6",
+            "secondary-container": "#d60037",
+            "on-primary-fixed": "#40000c",
+            "error-container": "#93000a",
+            "on-secondary-fixed-variant": "#920022",
+            "surface-container-lowest": "#190a0b",
+            "on-secondary-container": "#ffe7e6",
+            "secondary-text": "#94A3B8",
+            "on-tertiary-container": "#eefff7",
+            "on-secondary": "#680016",
+            "on-primary": "#68001a",
+            "primary-fixed-dim": "#ffb3b6",
+            "tertiary-fixed": "#90f5d9",
+            "error": "#ffb4ab",
+            "inverse-surface": "#fbdbdb",
+            "surface-container-low": "#281718",
+            "on-surface": "#fbdbdb",
+            "primary-fixed": "#ffdada",
+            "on-tertiary": "#00382d",
+            "surface-dim": "#1f0f10",
+            "on-error": "#690005",
+            "tertiary": "#74d8bd",
+            "tertiary-fixed-dim": "#74d8bd",
+            "surface-variant": "#443030",
+            "background": "#080A0F",
+            "on-secondary-fixed": "#40000a",
+            "on-background": "#fbdbdb",
+            "outline-variant": "#5c3f40",
+            "surface-container-high": "#382526",
+            "surface-bright": "#483435",
+            "elevated-surface": "#191E29",
+            "inverse-on-surface": "#3f2b2c",
+            "on-primary-fixed-variant": "#920028",
+            "outline": "#ac8889",
+            "on-error-container": "#ffdad6",
+            "secondary-fixed-dim": "#ffb3b3",
+            "surface-container": "#2c1b1c",
+            "secondary": "#ffb3b3"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin": "2rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.5rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "label-md": ["JetBrains Mono"],
+            "headline-sm": ["Space Grotesk"],
+            "body-sm": ["Inter"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "label-lg": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Space Grotesk"],
+            "body-md": ["Inter"],
+            "headline-lg": ["Space Grotesk"]
+          },
+          "fontSize": {
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-primary-text min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar (Shared Component from JSON) -->
+<header class="bg-surface border-b border-outline-variant sticky top-0 z-50 w-full">
+<div class="sticky top-0 z-50 w-full flex items-center justify-between px-6 py-3 max-w-7xl mx-auto">
+<div class="flex items-center gap-8">
+<a class="font-headline-sm text-headline-sm tracking-tight font-semibold text-primary-text flex items-center gap-2" href="#">
+<span class="inline-block w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+          CYBERDUNE CTF
+        </a>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Home</a>
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Challenges</a>
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Scoreboard</a>
+<a class="text-primary-container border-b-2 border-primary-container font-label-md text-label-md pb-1" href="#">Teams</a>
+<a class="text-secondary-text font-label-md text-label-md transition-colors hover:text-primary-text" href="#">Event Info</a>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 text-secondary-text hover:text-primary-text transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 20px;">language</span>
+</button>
+<button class="hidden sm:inline-flex items-center justify-center px-3 py-1.5 rounded-lg border border-outline-variant text-secondary-text hover:text-primary-text font-label-md text-label-md transition-colors">
+          Log In
+        </button>
+<button class="inline-flex items-center gap-1.5 bg-primary-container text-on-primary-container px-3.5 py-1.5 rounded-lg font-label-md text-label-md font-semibold hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" style="font-size: 16px;">shield</span>
+          Register Squad
+        </button>
+</div>
+</div>
+</header>
+<!-- Main Content Container -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+<!-- System Telemetry Alert / Fixture Status -->
+<div class="flex items-center justify-between px-4 py-2.5 rounded-xl bg-elevated-surface border border-outline-variant text-secondary-text font-label-sm text-label-sm">
+<div class="flex items-center gap-2">
+<span class="inline-block w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span>TELEMETRY ACTIVE: MOCKUP FIXTURE DATA • Production binds to authorized CTFd user session</span>
+</div>
+<div class="hidden sm:flex items-center gap-4 text-secondary-text">
+<span>LOC: EST GUELMIM (28.9864° N, 10.0574° W)</span>
+<span class="text-outline">|</span>
+<span>GATEWAY: LIVE-SYNC</span>
+</div>
+</div>
+<!-- Header Banner: Operator & Squad Entity -->
+<section class="bg-surface rounded-xl border border-outline-variant p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex items-start sm:items-center gap-5">
+<!-- Avatar Initials Badge -->
+<div class="relative flex-shrink-0">
+<div class="w-16 h-16 rounded-xl bg-elevated-surface border border-outline-variant flex items-center justify-center text-primary-text font-headline-md text-headline-md tracking-wider">
+            AS
+          </div>
+<span class="absolute -bottom-1 -right-1 bg-tertiary-container text-on-tertiary-container w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-label-sm border border-background">
+<span class="material-symbols-outlined" style="font-size: 13px;">verified</span>
+</span>
+</div>
+<!-- Identity & Metadata -->
+<div class="space-y-1.5">
+<div class="flex flex-wrap items-center gap-2.5">
+<h1 class="font-headline-lg text-headline-lg text-primary-text tracking-tight">Atlas_Sec</h1>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-primary-container text-on-primary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined" style="font-size: 12px;">military_tech</span>
+              Team Captain
+            </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-elevated-surface border border-outline-variant text-secondary-text font-label-sm text-label-sm">
+<span class="material-symbols-outlined" style="font-size: 12px;">account_balance</span>
+              EST Guelmim
+            </span>
+</div>
+<div class="flex flex-wrap items-center gap-3 text-secondary-text font-body-sm text-body-sm">
+<span>Squad: <strong class="text-primary-text font-label-md text-label-md">DesertFalcons</strong></span>
+<span class="text-outline">•</span>
+<span>Role Permissions: <span class="font-label-sm text-label-sm text-tertiary">ROOT_LEAD</span> (Full Access)</span>
+<span class="text-outline">•</span>
+<span>ID: <code class="font-label-sm text-label-sm text-secondary-text">#UID-0941</code></span>
+</div>
+</div>
+</div>
+<!-- Action Controls -->
+<div class="flex flex-wrap items-center gap-2.5 pt-2 md:pt-0">
+<button class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-elevated-surface border border-outline-variant text-primary-text hover:border-primary font-label-md text-label-md transition-colors">
+<span class="material-symbols-outlined" style="font-size: 16px;">edit</span>
+          Edit Profile
+        </button>
+<button class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-elevated-surface border border-outline-variant text-primary-text hover:border-primary font-label-md text-label-md transition-colors">
+<span class="material-symbols-outlined" style="font-size: 16px;">key</span>
+          Manage Security / Keys
+        </button>
+<button class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md font-medium hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" style="font-size: 16px;">person_add</span>
+          Invite Teammate
+        </button>
+<button class="p-2 rounded-lg bg-elevated-surface border border-outline-variant text-secondary-text hover:text-error transition-colors title='Leave Squad'">
+<span class="material-symbols-outlined" style="font-size: 18px;">logout</span>
+</button>
+</div>
+</section>
+<!-- Key Telemetry Metrics Grid (Bento Grid) -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Metric 1: Rank -->
+<div class="bg-surface rounded-xl border border-outline-variant p-5 flex flex-col justify-between">
+<div class="flex items-center justify-between text-secondary-text mb-3">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Competition Standing</span>
+<span class="material-symbols-outlined text-secondary-text" style="font-size: 18px;">leaderboard</span>
+</div>
+<div>
+<div class="font-label-lg text-headline-md text-primary-text font-semibold flex items-baseline gap-2">
+<span>#4</span>
+<span class="font-label-md text-label-md text-secondary-text font-normal">of 312 squads</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text mt-1 flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined" style="font-size: 14px;">arrow_drop_up</span>
+            Top 1.2% Percentile
+          </p>
+</div>
+</div>
+<!-- Metric 2: Total Points -->
+<div class="bg-surface rounded-xl border border-outline-variant p-5 flex flex-col justify-between">
+<div class="flex items-center justify-between text-secondary-text mb-3">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Accumulated Score</span>
+<span class="material-symbols-outlined text-secondary-text" style="font-size: 18px;">toll</span>
+</div>
+<div>
+<div class="font-label-lg text-headline-md text-primary-text font-semibold">
+            2,450 <span class="font-label-md text-label-md text-primary-container">pts</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text mt-1">
+            +350 pts in last 3 hours
+          </p>
+</div>
+</div>
+<!-- Metric 3: Solves Ratio -->
+<div class="bg-surface rounded-xl border border-outline-variant p-5 flex flex-col justify-between">
+<div class="flex items-center justify-between text-secondary-text mb-3">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Verified Solves</span>
+<span class="material-symbols-outlined text-secondary-text" style="font-size: 18px;">task_alt</span>
+</div>
+<div>
+<div class="font-label-lg text-headline-md text-primary-text font-semibold">
+            19 <span class="font-label-md text-label-md text-secondary-text">/ 48 Challenges</span>
+</div>
+<div class="w-full bg-elevated-surface h-1.5 rounded-full mt-2 overflow-hidden border border-outline-variant">
+<div class="bg-primary-container h-full rounded-full" style="width: 39.5%;"></div>
+</div>
+</div>
+</div>
+<!-- Metric 4: First Bloods -->
+<div class="bg-surface rounded-xl border border-outline-variant p-5 flex flex-col justify-between">
+<div class="flex items-center justify-between text-secondary-text mb-3">
+<span class="font-label-sm text-label-sm uppercase tracking-wider">First Acquisitions</span>
+<span class="material-symbols-outlined text-primary-container" style="font-size: 18px;">local_fire_department</span>
+</div>
+<div>
+<div class="font-label-lg text-headline-md text-primary-text font-semibold flex items-baseline gap-2">
+<span>2</span>
+<span class="font-label-md text-label-md text-secondary-text font-normal">First Bloods</span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary-text mt-1 text-primary">
+            Crypto: DuneCipher • Web: SaharaOAuth
+          </p>
+</div>
+</div>
+</section>
+<!-- Mid Section: Progression Chart & Squad Roster -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Column: Squad Score Progression Timeline Chart (7 Cols) -->
+<section class="lg:col-span-7 bg-surface rounded-xl border border-outline-variant p-6 space-y-4">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary-text">Squad Score Progression</h2>
+<p class="font-body-sm text-body-sm text-secondary-text">Live points trajectory vs top 10 competition average</p>
+</div>
+<div class="flex items-center gap-3 font-label-sm text-label-sm">
+<span class="flex items-center gap-1.5 text-primary-text">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+              DesertFalcons
+            </span>
+<span class="flex items-center gap-1.5 text-secondary-text">
+<span class="w-2.5 h-2.5 rounded-full bg-outline"></span>
+              Top 10 Avg
+            </span>
+</div>
+</div>
+<!-- SVG Progression Chart Visualizer -->
+<div class="relative w-full h-56 bg-elevated-surface rounded-xl border border-outline-variant p-4 flex flex-col justify-between overflow-hidden">
+<!-- Background Grid lines -->
+<div class="absolute inset-0 grid grid-rows-4 pointer-events-none p-4 opacity-25">
+<div class="border-b border-outline"></div>
+<div class="border-b border-outline"></div>
+<div class="border-b border-outline"></div>
+<div></div>
+</div>
+<!-- Vector Paths for Trajectory -->
+<svg class="absolute inset-0 w-full h-full p-4 overflow-visible" preserveaspectratio="none" viewbox="0 0 500 160">
+<!-- Top Avg Line (Muted Gray) -->
+<path d="M 0 150 Q 120 130, 240 90 T 500 45" fill="none" opacity="0.6" stroke="#ac8889" stroke-dasharray="4 4" stroke-width="2"></path>
+<!-- Squad Line (Crimson) -->
+<path d="M 0 155 Q 80 145, 160 120 T 320 60 L 420 35 L 500 15" fill="none" stroke="#e11d48" stroke-width="3"></path>
+<!-- Solve Milestones -->
+<circle cx="160" cy="120" fill="#e11d48" r="3.5"></circle>
+<circle cx="320" cy="60" fill="#e11d48" r="3.5"></circle>
+<circle cx="420" cy="35" fill="#ffb3b6" r="4.5" stroke="#e11d48" stroke-width="2"></circle>
+<circle cx="500" cy="15" fill="#e11d48" r="4.5"></circle>
+</svg>
+<!-- Current Point Floating Callout -->
+<div class="relative z-10 flex justify-end">
+<div class="bg-surface/90 border border-outline-variant px-2.5 py-1 rounded-lg backdrop-blur text-right">
+<span class="font-label-sm text-label-sm text-secondary-text block">T+18h Current</span>
+<span class="font-label-md text-label-md text-primary-text font-bold">2,450 pts</span>
+</div>
+</div>
+<!-- Bottom Time Axis Labels -->
+<div class="relative z-10 flex justify-between text-secondary-text font-label-sm text-label-sm pt-2">
+<span>00:00 (START)</span>
+<span>06:00</span>
+<span>12:00</span>
+<span>18:00 (LIVE)</span>
+<span>24:00 (END)</span>
+</div>
+</div>
+<!-- Timeline Telemetry Details -->
+<div class="grid grid-cols-3 gap-3 pt-1 text-center font-label-sm text-label-sm">
+<div class="p-2.5 rounded-lg bg-elevated-surface border border-outline-variant">
+<span class="text-secondary-text block">Peak Solve Rate</span>
+<span class="font-label-md text-label-md text-primary-text font-semibold">3 Solves / hr</span>
+</div>
+<div class="p-2.5 rounded-lg bg-elevated-surface border border-outline-variant">
+<span class="text-secondary-text block">Avg Time-to-Solve</span>
+<span class="font-label-md text-label-md text-primary-text font-semibold">41.8 min</span>
+</div>
+<div class="p-2.5 rounded-lg bg-elevated-surface border border-outline-variant">
+<span class="text-secondary-text block">Remaining Target</span>
+<span class="font-label-md text-label-md text-primary-text font-semibold">3,100 pts (#1)</span>
+</div>
+</div>
+</section>
+<!-- Right Column: Team Member Management (5 Cols) -->
+<section class="lg:col-span-5 bg-surface rounded-xl border border-outline-variant p-6 space-y-4 flex flex-col justify-between">
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary-text">Team Roster (3/4)</h2>
+<p class="font-body-sm text-body-sm text-secondary-text">Authorized squad members &amp; contribution</p>
+</div>
+<span class="px-2 py-0.5 rounded-lg bg-elevated-surface text-secondary-text border border-outline-variant font-label-sm text-label-sm">
+              LEAD_CTRL
+            </span>
+</div>
+<!-- Squad Roster List -->
+<div class="space-y-2.5">
+<!-- Member 1: Captain -->
+<div class="p-3 rounded-lg bg-elevated-surface border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary-container/20 border border-primary-container text-primary flex items-center justify-center font-label-md text-label-md">
+                  AS
+                </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-primary-text font-semibold">Atlas_Sec</span>
+<span class="px-1.5 py-0.2 rounded bg-primary-container text-on-primary-container text-[10px] font-label-sm">Captain</span>
+</div>
+<span class="text-secondary-text font-label-sm text-label-sm">Joined Oct 12 • 1,150 pts</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-text">YOU</span>
+</div>
+<!-- Member 2: Gh0st_Rider -->
+<div class="p-3 rounded-lg bg-elevated-surface border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface border border-outline-variant text-secondary-text flex items-center justify-center font-label-md text-label-md">
+                  GR
+                </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-primary-text font-semibold">Gh0st_Rider</span>
+<span class="px-1.5 py-0.2 rounded bg-surface border border-outline-variant text-secondary-text text-[10px] font-label-sm">Member</span>
+</div>
+<span class="text-secondary-text font-label-sm text-label-sm">Joined Oct 12 • 850 pts</span>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded text-secondary-text hover:text-primary-text hover:bg-surface transition-colors" title="Transfer Leadership">
+<span class="material-symbols-outlined" style="font-size: 16px;">military_tech</span>
+</button>
+<button class="p-1.5 rounded text-secondary-text hover:text-error hover:bg-surface transition-colors" title="Revoke Access">
+<span class="material-symbols-outlined" style="font-size: 16px;">remove_circle_outline</span>
+</button>
+</div>
+</div>
+<!-- Member 3: Sarah_K -->
+<div class="p-3 rounded-lg bg-elevated-surface border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface border border-outline-variant text-secondary-text flex items-center justify-center font-label-md text-label-md">
+                  SK
+                </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-primary-text font-semibold">Sarah_K</span>
+<span class="px-1.5 py-0.2 rounded bg-surface border border-outline-variant text-secondary-text text-[10px] font-label-sm">Member</span>
+</div>
+<span class="text-secondary-text font-label-sm text-label-sm">Joined Oct 13 • 450 pts</span>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded text-secondary-text hover:text-primary-text hover:bg-surface transition-colors" title="Transfer Leadership">
+<span class="material-symbols-outlined" style="font-size: 16px;">military_tech</span>
+</button>
+<button class="p-1.5 rounded text-secondary-text hover:text-error hover:bg-surface transition-colors" title="Revoke Access">
+<span class="material-symbols-outlined" style="font-size: 16px;">remove_circle_outline</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Invite Token Link Box (Team Lead Exclusive) -->
+<div class="mt-4 pt-4 border-t border-outline-variant space-y-2">
+<label class="font-label-sm text-label-sm text-secondary-text flex items-center justify-between">
+<span>SQUAD INVITATION TOKEN</span>
+<span class="text-tertiary">1 SLOT REMAINING</span>
+</label>
+<div class="flex items-center gap-2">
+<div class="flex-1 bg-background border border-outline-variant rounded-lg px-3 py-2 font-label-sm text-label-sm text-secondary-text truncate select-all">
+              https://cyberdune.ctf/invite?token=cd25_squad_9fa28e83b1
+            </div>
+<button class="px-3 py-2 bg-elevated-surface hover:bg-surface border border-outline-variant rounded-lg text-primary-text font-label-sm text-label-sm flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 14px;">content_copy</span>
+              Copy
+            </button>
+</div>
+</div>
+</section>
+</div>
+<!-- Chronological Flag Solve History Table -->
+<section class="bg-surface rounded-xl border border-outline-variant p-6 space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary-text">Flag Acquisition &amp; Solve History</h2>
+<p class="font-body-sm text-body-sm text-secondary-text">Chronological telemetry audit log for Atlas_Sec &amp; squad</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-secondary-text">CATEGORY FILTER:</span>
+<select class="bg-elevated-surface border border-outline-variant rounded-lg px-2.5 py-1 text-primary-text font-label-sm text-label-sm focus:outline-none focus:border-primary-container">
+<option>All Categories (19 Solves)</option>
+<option>Pwn / Binary Exploit</option>
+<option>Web Security</option>
+<option>Cryptography</option>
+<option>Reverse Engineering</option>
+<option>Digital Forensics</option>
+<option>OSINT</option>
+</select>
+</div>
+</div>
+<!-- High Density Solve Audit Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant text-secondary-text font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-3 px-4">Challenge</th>
+<th class="py-3 px-4">Category</th>
+<th class="py-3 px-4">Points</th>
+<th class="py-3 px-4">Solved By</th>
+<th class="py-3 px-4">Status / Distinction</th>
+<th class="py-3 px-4 text-right">Timestamp (UTC)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-body-sm text-body-sm">
+<!-- Row 1: First Blood Crypto -->
+<tr class="hover:bg-elevated-surface/50 transition-colors">
+<td class="py-3.5 px-4 font-headline-sm text-body-md text-primary-text font-semibold flex items-center gap-2">
+<span>DuneCipher-v2</span>
+</td>
+<td class="py-3.5 px-4">
+<span class="px-2 py-0.5 rounded bg-elevated-surface border border-outline-variant text-secondary-text font-label-sm text-label-sm">
+                  Crypto
+                </span>
+</td>
+<td class="py-3.5 px-4 font-label-md text-label-md text-primary-container font-semibold">
+                +450 pts
+              </td>
+<td class="py-3.5 px-4 font-label-sm text-label-sm text-primary-text">
+                Atlas_Sec
+              </td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-primary-container/20 text-primary border border-primary-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined" style="font-size: 12px;">local_fire_department</span>
+                  FIRST BLOOD
+                </span>
+</td>
+<td class="py-3.5 px-4 text-right font-label-sm text-label-sm text-secondary-text">
+                14:28:19 UTC
+              </td>
+</tr>
+<!-- Row 2: First Blood Web -->
+<tr class="hover:bg-elevated-surface/50 transition-colors">
+<td class="py-3.5 px-4 font-headline-sm text-body-md text-primary-text font-semibold">
+                SaharaOAuth Leak
+              </td>
+<td class="py-3.5 px-4">
+<span class="px-2 py-0.5 rounded bg-elevated-surface border border-outline-variant text-secondary-text font-label-sm text-label-sm">
+                  Web
+                </span>
+</td>
+<td class="py-3.5 px-4 font-label-md text-label-md text-primary-container font-semibold">
+                +350 pts
+              </td>
+<td class="py-3.5 px-4 font-label-sm text-label-sm text-primary-text">
+                Gh0st_Rider
+              </td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-primary-container/20 text-primary border border-primary-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined" style="font-size: 12px;">local_fire_department</span>
+                  FIRST BLOOD
+                </span>
+</td>
+<td class="py-3.5 px-4 text-right font-label-sm text-label-sm text-secondary-text">
+                12:11:02 UTC
+              </td>
+</tr>
+<!-- Row 3: Rev Challenge -->
+<tr class="hover:bg-elevated-surface/50 transition-colors">
+<td class="py-3.5 px-4 font-headline-sm text-body-md text-primary-text font-semibold">
+                Guelmim Citadel Firmware
+              </td>
+<td class="py-3.5 px-4">
+<span class="px-2 py-0.5 rounded bg-elevated-surface border border-outline-variant text-secondary-text font-label-sm text-label-sm">
+                  Rev
+                </span>
+</td>
+<td class="py-3.5 px-4 font-label-md text-label-md text-primary-text font-semibold">
+                +300 pts
+              </td>
+<td class="py-3.5 px-4 font-label-sm text-label-sm text-primary-text">
+                Atlas_Sec
+              </td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-secondary-text font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-tertiary" style="font-size: 14px;">check_circle</span>
+                  Verified Solve (#3)
+                </span>
+</td>
+<td class="py-3.5 px-4 text-right font-label-sm text-label-sm text-secondary-text">
+                10:44:50 UTC
+              </td>
+</tr>
+<!-- Row 4: Pwn Challenge -->
+<tr class="hover:bg-elevated-surface/50 transition-colors">
+<td class="py-3.5 px-4 font-headline-sm text-body-md text-primary-text font-semibold">
+                Heap Mirage Sandbox
+              </td>
+<td class="py-3.5 px-4">
+<span class="px-2 py-0.5 rounded bg-elevated-surface border border-outline-variant text-secondary-text font-label-sm text-label-sm">
+                  Pwn
+                </span>
+</td>
+<td class="py-3.5 px-4 font-label-md text-label-md text-primary-text font-semibold">
+                +400 pts
+              </td>
+<td class="py-3.5 px-4 font-label-sm text-label-sm text-primary-text">
+                Sarah_K
+              </td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-secondary-text font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-tertiary" style="font-size: 14px;">check_circle</span>
+                  Verified Solve (#8)
+                </span>
+</td>
+<td class="py-3.5 px-4 text-right font-label-sm text-label-sm text-secondary-text">
+                08:15:33 UTC
+              </td>
+</tr>
+<!-- Row 5: Forensics Challenge -->
+<tr class="hover:bg-elevated-surface/50 transition-colors">
+<td class="py-3.5 px-4 font-headline-sm text-body-md text-primary-text font-semibold">
+                Memory Dump PCAP #02
+              </td>
+<td class="py-3.5 px-4">
+<span class="px-2 py-0.5 rounded bg-elevated-surface border border-outline-variant text-secondary-text font-label-sm text-label-sm">
+                  Forensics
+                </span>
+</td>
+<td class="py-3.5 px-4 font-label-md text-label-md text-primary-text font-semibold">
+                +200 pts
+              </td>
+<td class="py-3.5 px-4 font-label-sm text-label-sm text-primary-text">
+                Gh0st_Rider
+              </td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 text-secondary-text font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-tertiary" style="font-size: 14px;">check_circle</span>
+                  Verified Solve (#12)
+                </span>
+</td>
+<td class="py-3.5 px-4 text-right font-label-sm text-label-sm text-secondary-text">
+                04:52:10 UTC
+              </td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination / Footer info -->
+<div class="flex items-center justify-between pt-2 border-t border-outline-variant text-secondary-text font-label-sm text-label-sm">
+<span>Displaying latest 5 of 19 verified flags</span>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 rounded border border-outline-variant hover:text-primary-text transition-colors">Previous</button>
+<span class="text-primary-text">1 / 4</span>
+<button class="px-2.5 py-1 rounded border border-outline-variant hover:text-primary-text transition-colors">Next</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Shared Component from JSON) -->
+<footer class="bg-background border-t border-outline-variant mt-12 w-full">
+<div class="w-full px-6 py-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex flex-col items-center md:items-start gap-1">
+<span class="font-headline-sm text-headline-sm font-semibold text-primary-text">CYBERDUNE CTF</span>
+<p class="text-secondary-text font-label-sm text-label-sm">
+          © 2025 CYBERDUNE CTF. Founded at EST Guelmim, Moroccan Sahara. All rights reserved.
+        </p>
+</div>
+<nav class="flex flex-wrap items-center justify-center gap-6">
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="#">Rules of Engagement</a>
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="#">Terms of Service</a>
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="#">Platform Telemetry</a>
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="#">API Docs</a>
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="#">EST Guelmim</a>
+<a class="text-secondary-text hover:text-primary-text font-label-sm text-label-sm transition-colors duration-150" href="#">Support</a>
+</nav>
+</div>
+</footer>
+</body></html>

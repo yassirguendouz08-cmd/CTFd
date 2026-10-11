@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CYBERDUNE CTF • Challenges</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "background": "#080A0F",
+            "surface": "#11141C",
+            "elevated-surface": "#191E29",
+            "primary-container": "#E11D48",
+            "primary": "#FF304F",
+            "primary-text": "#F8FAFC",
+            "secondary-text": "#94A3B8",
+            "outline-variant": "#1E293B",
+            "tertiary": "#10B981"
+          },
+          borderRadius: {
+            "DEFAULT": "6px",
+            "control": "6px",
+            "card": "10px",
+            "modal": "12px"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"],
+            "body": ["Inter", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-primary-text font-body antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-white">
+<!-- ================= TOP NAVIGATION BAR ================= -->
+<header class="bg-surface border-b border-outline-variant sticky top-0 z-40">
+<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+<!-- Brand & Primary Nav -->
+<div class="flex items-center gap-8">
+<a class="font-headline font-bold text-lg text-primary-text uppercase tracking-tight flex items-center gap-2" href="#">
+<span class="w-2.5 h-2.5 bg-primary-container rounded-sm inline-block"></span>
+          CYBERDUNE CTF
+        </a>
+<nav class="hidden md:flex items-center space-x-6">
+<a class="text-primary-text font-mono text-sm font-semibold border-b-2 border-primary-container pb-0.5" href="#">
+            Challenges
+          </a>
+<a class="text-secondary-text hover:text-primary-text font-mono text-sm transition-colors" href="#">
+            Scoreboard
+          </a>
+<a class="text-secondary-text hover:text-primary-text font-mono text-sm transition-colors" href="#">
+            Event Info
+          </a>
+<a class="text-secondary-text hover:text-primary-text font-mono text-sm transition-colors" href="#">
+            Team Profile
+          </a>
+</nav>
+</div>
+<!-- User Team Summary & Actions -->
+<div class="flex items-center gap-3">
+<!-- Team Status Badge -->
+<div class="hidden sm:flex items-center gap-2.5 px-3 py-1.5 bg-elevated-surface rounded-[6px] border border-outline-variant">
+<span class="w-6 h-6 rounded bg-primary-container/20 text-primary border border-primary-container/40 flex items-center justify-center font-mono text-xs font-bold">
+            AS
+          </span>
+<div class="flex flex-col text-left">
+<span class="text-xs text-secondary-text font-mono leading-none">Atlas_Sec</span>
+<span class="text-xs text-primary-text font-mono font-semibold leading-tight">2,450 pts • Rank #4</span>
+</div>
+</div>
+<!-- Language Switcher -->
+<div class="flex items-center rounded-[6px] border border-outline-variant bg-surface text-secondary-text text-xs font-mono p-0.5">
+<button class="px-2 py-1 rounded-[4px] bg-elevated-surface text-primary-text font-semibold" type="button">EN</button>
+<button class="px-2 py-1 rounded-[4px] hover:text-primary-text transition-colors" type="button">FR</button>
+<button class="px-2 py-1 rounded-[4px] hover:text-primary-text transition-colors" type="button">AR</button>
+</div>
+<!-- Submit Flag Button -->
+<button class="bg-primary-container hover:bg-primary text-white px-3.5 py-1.5 font-mono text-xs font-semibold rounded-[6px] transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">flag</span>
+          Submit Flag
+        </button>
+</div>
+</div>
+</header>
+<!-- ================= MAIN OPERATIONAL WORKSPACE ================= -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+<!-- EVENT STATUS & PROGRESS OVERVIEW -->
+<section class="bg-surface rounded-card border border-outline-variant p-5 space-y-4">
+<!-- Real Event State Bar -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-outline-variant/60 pb-4">
+<div>
+<h1 class="font-headline text-xl font-bold text-primary-text">Challenge Workspace</h1>
+<p class="text-xs text-secondary-text mt-0.5">Solve challenges across security domains to earn points for your team.</p>
+</div>
+<div class="flex items-center gap-2 self-start sm:self-auto">
+<span class="px-2.5 py-1 rounded-[6px] bg-elevated-surface border border-outline-variant font-mono text-xs text-secondary-text flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary-text/60"></span>
+            Event Window: TBD — Standby for organizer announcement
+          </span>
+</div>
+</div>
+<!-- Solves Progress & Metrics -->
+<div class="space-y-3">
+<div class="flex flex-wrap items-center justify-between text-xs font-mono gap-2">
+<span class="text-secondary-text flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+            Progress: <strong class="text-primary-text font-bold">19 / 48 Solved (39.5%)</strong>
+</span>
+<span class="text-secondary-text">29 challenges remaining</span>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-2 bg-elevated-surface rounded-full overflow-hidden flex border border-outline-variant/50">
+<div class="h-full bg-primary-container" style="width: 39.5%;"></div>
+</div>
+<!-- Category Breakdown Chips -->
+<div class="flex items-center gap-2 overflow-x-auto pt-1 text-xs font-mono">
+<span class="px-2.5 py-1 rounded-[6px] bg-elevated-surface border border-outline-variant text-secondary-text whitespace-nowrap">
+            Web: <span class="text-primary-text font-semibold">5/10</span>
+</span>
+<span class="px-2.5 py-1 rounded-[6px] bg-elevated-surface border border-outline-variant text-secondary-text whitespace-nowrap">
+            Pwn: <span class="text-primary-text font-semibold">3/8</span>
+</span>
+<span class="px-2.5 py-1 rounded-[6px] bg-elevated-surface border border-outline-variant text-secondary-text whitespace-nowrap">
+            Rev: <span class="text-primary-text font-semibold">4/8</span>
+</span>
+<span class="px-2.5 py-1 rounded-[6px] bg-elevated-surface border border-outline-variant text-secondary-text whitespace-nowrap">
+            Crypto: <span class="text-primary-text font-semibold">3/8</span>
+</span>
+<span class="px-2.5 py-1 rounded-[6px] bg-elevated-surface border border-outline-variant text-secondary-text whitespace-nowrap">
+            Forensics: <span class="text-primary-text font-semibold">3/8</span>
+</span>
+<span class="px-2.5 py-1 rounded-[6px] bg-elevated-surface border border-outline-variant text-secondary-text whitespace-nowrap">
+            OSINT: <span class="text-primary-text font-semibold">1/6</span>
+</span>
+</div>
+</div>
+</section>
+<!-- SIMPLIFIED FILTER & SEARCH BAR -->
+<section class="space-y-3">
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+<!-- Search Input -->
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary-text text-[18px]">
+            search
+          </span>
+<input class="w-full bg-surface border border-outline-variant rounded-[6px] pl-9 pr-4 py-2 font-body text-sm text-primary-text placeholder:text-secondary-text focus:outline-none focus:border-primary-container" placeholder="Search challenges..." type="text"/>
+</div>
+<!-- Solved Status Dropdown -->
+<div class="sm:w-56">
+<select class="w-full bg-surface border border-outline-variant rounded-[6px] px-3 py-2 font-mono text-xs text-primary-text focus:outline-none focus:border-primary-container cursor-pointer">
+<option value="all">All Challenges</option>
+<option value="unsolved">Unsolved</option>
+<option value="solved">Solved</option>
+</select>
+</div>
+</div>
+<!-- Clean Category Filter Pills -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-mono">
+<button class="px-3 py-1.5 rounded-[6px] font-semibold bg-primary-container text-white" type="button">
+          All (48)
+        </button>
+<button class="px-3 py-1.5 rounded-[6px] bg-surface border border-outline-variant text-secondary-text hover:text-primary-text hover:bg-elevated-surface transition-colors" type="button">
+          Web Exploitation (10)
+        </button>
+<button class="px-3 py-1.5 rounded-[6px] bg-surface border border-outline-variant text-secondary-text hover:text-primary-text hover:bg-elevated-surface transition-colors" type="button">
+          Binary Exploitation (8)
+        </button>
+<button class="px-3 py-1.5 rounded-[6px] bg-surface border border-outline-variant text-secondary-text hover:text-primary-text hover:bg-elevated-surface transition-colors" type="button">
+          Reverse Engineering (8)
+        </button>
+<button class="px-3 py-1.5 rounded-[6px] bg-surface border border-outline-variant text-secondary-text hover:text-primary-text hover:bg-elevated-surface transition-colors" type="button">
+          Cryptography (8)
+        </button>
+<button class="px-3 py-1.5 rounded-[6px] bg-surface border border-outline-variant text-secondary-text hover:text-primary-text hover:bg-elevated-surface transition-colors" type="button">
+          Digital Forensics (8)
+        </button>
+<button class="px-3 py-1.5 rounded-[6px] bg-surface border border-outline-variant text-secondary-text hover:text-primary-text hover:bg-elevated-surface transition-colors" type="button">
+          OSINT (6)
+        </button>
+</div>
+</section>
+<!-- ================= 2-COLUMN SPLIT: CHALLENGE MATRIX & DETAILS MODAL ================= -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+<!-- LEFT: CHALLENGE GRID (7 Cols) -->
+<section class="xl:col-span-7">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Card 1: Selected / Solved -->
+<div class="bg-surface rounded-card border-2 border-primary-container p-4 flex flex-col justify-between gap-4 cursor-pointer hover:bg-elevated-surface transition-all">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-[6px] bg-primary-container/20 text-primary border border-primary-container/30 font-mono text-[11px] font-semibold">
+                  Binary Exploitation
+                </span>
+<span class="flex items-center gap-1 font-mono text-xs text-tertiary">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+                  Solved
+                </span>
+</div>
+<div class="flex items-baseline justify-between pt-0.5">
+<h3 class="font-headline font-bold text-base text-primary-text">Sandworm Gate</h3>
+<span class="font-mono font-bold text-sm text-primary-text">420 pts</span>
+</div>
+<p class="text-xs text-secondary-text line-clamp-2 leading-relaxed">
+                Linux heap exploitation target running glibc-2.35. Abuse chunk allocation table indexing to poison tcache bins.
+              </p>
+</div>
+<div class="pt-2 border-t border-outline-variant flex items-center justify-between font-mono text-xs text-secondary-text">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">groups</span>
+                18 solves
+              </span>
+<span class="text-primary font-medium flex items-center gap-0.5">
+                Active View
+                <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</span>
+</div>
+</div>
+<!-- Card 2: Reverse Engineering -->
+<div class="bg-surface rounded-card border border-outline-variant p-4 flex flex-col justify-between gap-4 hover:border-slate-700 hover:bg-elevated-surface transition-all cursor-pointer">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-[6px] bg-elevated-surface text-secondary-text border border-outline-variant font-mono text-[11px]">
+                  Reverse Engineering
+                </span>
+<span class="font-mono text-xs text-secondary-text">Unsolved</span>
+</div>
+<div class="flex items-baseline justify-between pt-0.5">
+<h3 class="font-headline font-bold text-base text-primary-text">Atlas Firmware v2</h3>
+<span class="font-mono font-bold text-sm text-primary-text">490 pts</span>
+</div>
+<p class="text-xs text-secondary-text line-clamp-2 leading-relaxed">
+                Embedded telemetric firmware image extracted from an automated weather buoy in Tarfaya. Contains layered ARM64 packing.
+              </p>
+</div>
+<div class="pt-2 border-t border-outline-variant flex items-center justify-between font-mono text-xs text-secondary-text">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">groups</span>
+                6 solves
+              </span>
+<span class="hover:text-primary-text flex items-center gap-0.5">
+                View
+                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</span>
+</div>
+</div>
+<!-- Card 3: Web Exploitation -->
+<div class="bg-surface rounded-card border border-outline-variant p-4 flex flex-col justify-between gap-4 hover:border-slate-700 hover:bg-elevated-surface transition-all cursor-pointer">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-[6px] bg-elevated-surface text-secondary-text border border-outline-variant font-mono text-[11px]">
+                  Web Exploitation
+                </span>
+<span class="font-mono text-xs text-secondary-text">Unsolved</span>
+</div>
+<div class="flex items-baseline justify-between pt-0.5">
+<h3 class="font-headline font-bold text-base text-primary-text">DuneScribe</h3>
+<span class="font-mono font-bold text-sm text-primary-text">380 pts</span>
+</div>
+<p class="text-xs text-secondary-text line-clamp-2 leading-relaxed">
+                Distributed journal system utilizing GraphQL batched mutations with an asymmetrical RSA-signed JWT validation flaw.
+              </p>
+</div>
+<div class="pt-2 border-t border-outline-variant flex items-center justify-between font-mono text-xs text-secondary-text">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">groups</span>
+                24 solves
+              </span>
+<span class="hover:text-primary-text flex items-center gap-0.5">
+                View
+                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</span>
+</div>
+</div>
+<!-- Card 4: Cryptography -->
+<div class="bg-surface rounded-card border border-outline-variant p-4 flex flex-col justify-between gap-4 hover:border-slate-700 hover:bg-elevated-surface transition-all cursor-pointer">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-[6px] bg-elevated-surface text-secondary-text border border-outline-variant font-mono text-[11px]">
+                  Cryptography
+                </span>
+<span class="font-mono text-xs text-secondary-text">Unsolved</span>
+</div>
+<div class="flex items-baseline justify-between pt-0.5">
+<h3 class="font-headline font-bold text-base text-primary-text">Sahara Mirage</h3>
+<span class="font-mono font-bold text-sm text-primary-text">450 pts</span>
+</div>
+<p class="text-xs text-secondary-text line-clamp-2 leading-relaxed">
+                Elliptic curve signature oracle leaking the top 4 bits of nonces across signatures. Solve via lattice reduction.
+              </p>
+</div>
+<div class="pt-2 border-t border-outline-variant flex items-center justify-between font-mono text-xs text-secondary-text">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">groups</span>
+                9 solves
+              </span>
+<span class="hover:text-primary-text flex items-center gap-0.5">
+                View
+                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</span>
+</div>
+</div>
+<!-- Card 5: Digital Forensics -->
+<div class="bg-surface rounded-card border border-outline-variant p-4 flex flex-col justify-between gap-4 hover:border-slate-700 hover:bg-elevated-surface transition-all cursor-pointer">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-[6px] bg-elevated-surface text-secondary-text border border-outline-variant font-mono text-[11px]">
+                  Digital Forensics
+                </span>
+<span class="flex items-center gap-1 font-mono text-xs text-tertiary">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+                  Solved
+                </span>
+</div>
+<div class="flex items-baseline justify-between pt-0.5">
+<h3 class="font-headline font-bold text-base text-primary-text">Guelmim Sensor Stream</h3>
+<span class="font-mono font-bold text-sm text-primary-text">280 pts</span>
+</div>
+<p class="text-xs text-secondary-text line-clamp-2 leading-relaxed">
+                Corrupted pcapng capture file containing exfiltrated telemetry over USB protocol packets from a remote sensor unit.
+              </p>
+</div>
+<div class="pt-2 border-t border-outline-variant flex items-center justify-between font-mono text-xs text-secondary-text">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">groups</span>
+                38 solves
+              </span>
+<span class="hover:text-primary-text flex items-center gap-0.5">
+                View
+                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</span>
+</div>
+</div>
+<!-- Card 6: OSINT -->
+<div class="bg-surface rounded-card border border-outline-variant p-4 flex flex-col justify-between gap-4 hover:border-slate-700 hover:bg-elevated-surface transition-all cursor-pointer">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-[6px] bg-elevated-surface text-secondary-text border border-outline-variant font-mono text-[11px]">
+                  OSINT
+                </span>
+<span class="flex items-center gap-1 font-mono text-xs text-tertiary">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+                  Solved
+                </span>
+</div>
+<div class="flex items-baseline justify-between pt-0.5">
+<h3 class="font-headline font-bold text-base text-primary-text">Ksar Outpost Exfil</h3>
+<span class="font-mono font-bold text-sm text-primary-text">150 pts</span>
+</div>
+<p class="text-xs text-secondary-text line-clamp-2 leading-relaxed">
+                Satellite transmission logs recorded over southern Morocco. Cross-reference shadow azimuth to locate outpost.
+              </p>
+</div>
+<div class="pt-2 border-t border-outline-variant flex items-center justify-between font-mono text-xs text-secondary-text">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">groups</span>
+                52 solves
+              </span>
+<span class="hover:text-primary-text flex items-center gap-0.5">
+                View
+                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</span>
+</div>
+</div>
+</div>
+</section>
+<!-- RIGHT: CHALLENGE DETAILS DIALOG / MODAL (5 Cols) -->
+<section class="xl:col-span-5 bg-surface rounded-modal border border-outline-variant overflow-hidden shadow-xl flex flex-col">
+<!-- Dialog Header -->
+<div class="bg-elevated-surface px-5 py-3.5 border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-[6px] bg-primary-container/20 text-primary border border-primary-container/40 font-mono text-xs font-semibold">
+              Binary Exploitation
+            </span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-xs px-2 py-0.5 rounded-[6px] bg-surface border border-outline-variant text-tertiary">
+              18 Solves
+            </span>
+<button class="text-secondary-text hover:text-primary-text p-1 rounded-[6px] hover:bg-surface transition-colors" title="Close" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+</div>
+<!-- Dialog Body -->
+<div class="p-5 space-y-5">
+<!-- Title & Points -->
+<div class="flex items-baseline justify-between">
+<h2 class="font-headline text-xl font-bold text-primary-text">Sandworm Gate</h2>
+<div class="text-right">
+<span class="font-mono text-lg font-bold text-primary">420 pts</span>
+<p class="font-mono text-[11px] text-secondary-text">Decay: 500 → 420</p>
+</div>
+</div>
+<!-- Description -->
+<div class="space-y-1.5">
+<h4 class="font-mono text-xs font-semibold text-secondary-text uppercase tracking-wider">
+              Description
+            </h4>
+<div class="text-sm text-primary-text/90 bg-elevated-surface/40 p-3.5 rounded-[6px] border border-outline-variant space-y-2 leading-relaxed">
+<p>
+                The automated gate router guarding the Tarfaya telemetry uplink runs a custom memory allocator bridge. A discrepancy in index validation allows requesting out-of-bound allocation offsets.
+              </p>
+<p class="text-xs text-secondary-text">
+                Target environment executes on Ubuntu 22.04 LTS (x86_64). ASLR, NX, Full RELRO, and Canary are strictly enforced. Bypassing Safe-Linking requires pointer demangling.
+              </p>
+</div>
+</div>
+<!-- Connection Vector -->
+<div class="space-y-1.5">
+<label class="font-mono text-xs font-semibold text-secondary-text uppercase tracking-wider">
+              Connection
+            </label>
+<div class="flex items-center bg-elevated-surface border border-outline-variant rounded-[6px] px-3 py-2 justify-between font-mono text-xs">
+<code class="text-primary-text font-bold">nc pwn.cyberdune.ma 31337</code>
+<button class="px-2 py-1 bg-surface border border-outline-variant rounded-[6px] hover:border-primary-container text-secondary-text hover:text-primary-text text-[11px] transition-colors flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+                Copy
+              </button>
+</div>
+</div>
+<!-- Attachments -->
+<div class="space-y-2">
+<h4 class="font-mono text-xs font-semibold text-secondary-text uppercase tracking-wider">
+              Provided Files
+            </h4>
+<div class="space-y-1.5">
+<div class="flex items-center justify-between p-2.5 bg-elevated-surface rounded-[6px] border border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-text text-[18px]">terminal</span>
+<span class="font-mono text-xs text-primary-text font-medium">sandworm_gate.elf (1.2 MB)</span>
+</div>
+<button class="p-1 text-secondary-text hover:text-primary-text hover:bg-surface rounded-[6px] border border-outline-variant transition-colors" title="Download" type="button">
+<span class="material-symbols-outlined text-[16px]">download</span>
+</button>
+</div>
+<div class="flex items-center justify-between p-2.5 bg-elevated-surface rounded-[6px] border border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-text text-[18px]">folder_zip</span>
+<span class="font-mono text-xs text-primary-text font-medium">libc.so.6 (2.1 MB)</span>
+</div>
+<button class="p-1 text-secondary-text hover:text-primary-text hover:bg-surface rounded-[6px] border border-outline-variant transition-colors" title="Download" type="button">
+<span class="material-symbols-outlined text-[16px]">download</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Hints -->
+<div class="space-y-2">
+<h4 class="font-mono text-xs font-semibold text-secondary-text uppercase tracking-wider">
+              Hints
+            </h4>
+<!-- Hint 1: Unlocked -->
+<div class="bg-elevated-surface rounded-[6px] border border-outline-variant p-3 space-y-1">
+<div class="flex items-center justify-between font-mono text-xs">
+<span class="text-tertiary font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">lock_open</span>
+                  Hint 1 (Unlocked)
+                </span>
+<span class="text-secondary-text">0 pts</span>
+</div>
+<p class="text-xs text-secondary-text leading-relaxed">
+                Check the off-by-one index check in chunk allocation table logic around line 84.
+              </p>
+</div>
+<!-- Hint 2: Locked -->
+<div class="bg-surface rounded-[6px] border border-outline-variant p-3 flex items-center justify-between">
+<div>
+<span class="font-mono text-xs text-secondary-text flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+                  Hint 2
+                </span>
+<p class="text-[11px] font-mono text-secondary-text/80">Cost: 50 points</p>
+</div>
+<button class="px-2.5 py-1 text-xs font-mono font-semibold text-primary bg-primary-container/10 border border-primary-container/40 rounded-[6px] hover:bg-primary-container hover:text-white transition-colors" type="button">
+                Unlock Hint (-50 pts)
+              </button>
+</div>
+</div>
+<!-- Flag Submission -->
+<div class="space-y-2 pt-2 border-t border-outline-variant">
+<div class="flex items-center justify-between font-mono text-xs">
+<label class="font-semibold text-secondary-text uppercase tracking-wider">
+                Flag Submission
+              </label>
+<span class="text-secondary-text">3 attempts</span>
+</div>
+<!-- Solved Status Feedback State -->
+<div class="bg-tertiary/10 border border-tertiary/40 rounded-[6px] p-2.5 flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span class="font-mono text-xs font-semibold">
+                Challenge Solved (+420 pts awarded to Atlas_Sec)
+              </span>
+</div>
+<div class="flex items-center gap-2">
+<input class="flex-1 bg-elevated-surface border border-outline-variant rounded-[6px] px-3 py-2 font-mono text-xs text-primary-text focus:outline-none focus:border-primary-container" placeholder="CYBERDUNE{...}" type="text" value="CYBERDUNE{tcache_mangling_bypassed_glibc235}"/>
+<button class="bg-primary-container hover:bg-primary text-white px-4 py-2 font-mono text-xs font-semibold rounded-[6px] transition-colors shrink-0" type="button">
+                Submit Flag
+              </button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- ================= FOOTER ================= -->
+<footer class="bg-surface border-t border-outline-variant mt-12">
+<div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="text-center md:text-left">
+<span class="font-headline font-bold text-sm text-primary-text uppercase">CYBERDUNE CTF</span>
+<p class="text-xs text-secondary-text mt-0.5">EST Guelmim, Ibn Zohr University. All rights reserved.</p>
+</div>
+<nav class="flex items-center flex-wrap gap-x-6 gap-y-2 justify-center font-mono text-xs text-secondary-text">
+<a class="hover:text-primary-text transition-colors" href="#">Rules</a>
+<a class="hover:text-primary-text transition-colors" href="#">Academic Integrity</a>
+<a class="hover:text-primary-text transition-colors" href="#">Platform Status</a>
+<a class="hover:text-primary-text transition-colors" href="#">Contact</a>
+</nav>
+</div>
+</footer>
+</body></html>

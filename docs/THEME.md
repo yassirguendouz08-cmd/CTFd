@@ -40,7 +40,7 @@ selected under **Admin → Config → Theme**.
 | `templates/components/contacts.html` | Official contact links |
 | `templates/base.html` | Shared layout and CSS/JS cache versions |
 | `static/css/cyberdune.css` | Style, responsive layout and RTL |
-| `static/js/cyberdune.js` | Terminal illustration, motion controls and filters |
+| `static/js/cyberdune.js` | Schedule, real homepage metrics, links and filters |
 | `static/img/` | Supplied official white/red and black/red logos |
 
 Copy uses the `cd_copy` macro and a translation dictionary shared with JavaScript.
@@ -48,8 +48,14 @@ Add all three variants when editing a phrase. User names, team names, challenge
 content and custom admin pages are managed by the organizers. Core form labels
 retain CTFd's translations, CSRF protection and validation.
 
-The terminal does not execute commands. Motion can be paused and follows the
-operating system's reduced-motion preference. Arabic uses RTL; commands retain LTR.
+The redesign removes the decorative terminal and animated background. Controls
+respect reduced motion. Arabic uses RTL; code and flag fields retain LTR. Fonts
+are self-hosted under `static/fonts`, with their OFL licenses.
+
+The [Stitch references](stitch/README.md) record the actual generation and selected
+variants. Homepage metrics/previews respect configured visibility and use CTFd
+responses, never generated prototype figures. Admin CSS is included only when
+CyberDune is selected and preserves its existing controls and editor.
 
 Commit/push from your PC, then run `bash scripts/update-cyberdune.sh` in Codespaces.
 Restarting CTFd reloads templates. For CSS/JS cache changes, increment the `?v=`

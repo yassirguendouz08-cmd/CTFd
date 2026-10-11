@@ -1,0 +1,14 @@
+/* Opt-in appearance only. CTFd owns admin layout, forms, editors and scripts. */
+@import url("fonts.css");
+.cyberdune-admin {font-family:Inter,system-ui,sans-serif;background:#f8fafc;color:#18202e}
+.cyberdune-admin h1,.cyberdune-admin h2,.cyberdune-admin h3 {font-family:"Space Grotesk",Inter,system-ui,sans-serif}
+.cyberdune-admin>nav.navbar {background:#080a0f!important;border-bottom:2px solid #e11d48}
+.cyberdune-admin>nav.navbar .navbar-brand {font-family:"Space Grotesk",Inter,system-ui,sans-serif;font-weight:700;letter-spacing:.02em}
+.cyberdune-admin>nav.navbar .nav-link {font-size:13px}
+.cyberdune-admin .btn-primary {background:#e11d48;border-color:#e11d48}
+.cyberdune-admin .btn-primary:hover {background:#be123c;border-color:#be123c}
+.cyberdune-admin .btn-primary:focus {box-shadow:0 0 0 3px #e11d4826}
+.cyberdune-admin .card {border-color:#d8dee8;border-radius:8px}
+.cyberdune-admin .form-control:focus {border-color:#e11d48;box-shadow:0 0 0 3px #e11d481a}
+.cyberdune-admin :focus-visible {outline:2px solid #be123c;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.cyberdune-admin .btn,.cyberdune-admin .form-control {transition:none}}

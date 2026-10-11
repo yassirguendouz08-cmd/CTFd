@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand-xl fixed-top cd-nav" aria-label="Main navigation">
   <div class="container">
     <a class="navbar-brand" href="{{ url_for('views.static_html', route='/') }}" aria-label="CYBERDUNE home">
-      <span class="cd-official-logo"><img src="{{ url_for('views.themes_beta', theme='cyberdune', path='img/cyberdune-white.png') }}?v=4" alt="CyberDune" width="11812" height="11812"></span>
+      <span class="cd-official-logo"><img src="{{ url_for('views.themes_beta', theme='cyberdune', path='img/cyberdune-white.png') }}?v=9" alt="CyberDune" width="11812" height="11812"></span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#cd-navigation" aria-controls="cd-navigation" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="cd-navigation">
@@ -14,6 +14,7 @@
           {% if Configs.user_mode == 'teams' %}<li class="nav-item"><a class="nav-link" href="{{ url_for('teams.listing') }}">{% trans %}Teams{% endtrans %}</a></li>{% endif %}
           <li class="nav-item"><a class="nav-link" href="{{ url_for('users.listing') }}">{% trans %}Users{% endtrans %}</a></li>
         {% endif %}
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('views.static_html', route='/') }}#event-guide">{{ cd_copy("Event guide") }}</a></li>
         {% for page in Plugins.user_menu_pages %}<li class="nav-item"><a class="nav-link" href="{{ page.route }}" {% if page.link_target %}target="{{ page.link_target }}" rel="noopener"{% endif %}>{{ page.title }}</a></li>{% endfor %}
       </ul>
       <ul class="navbar-nav cd-nav-account">

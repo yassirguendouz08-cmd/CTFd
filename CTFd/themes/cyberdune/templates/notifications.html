@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="container cd-page-head"><p class="cd-eyebrow">CYBERDUNE CTF</p><h1>{% trans %}Notifications{% endtrans %}</h1></header>
+<div class="container cd-announcements">
+  {% if not notifications %}<div class="cd-empty"><h2>{% trans %}There are no notifications yet{% endtrans %}</h2></div>{% endif %}
+  {% for notification in notifications %}<article class="card mb-4"><div class="card-body"><h2 class="card-title">{{ notification.title }}</h2><div>{{ notification.html }}</div><small class="text-muted"><span data-time="{{ notification.date | isoformat }}"></span></small></div></article>{% endfor %}
+</div>
+{% endblock %}
+{% block scripts %}{{ Assets.js("assets/js/notifications.js", theme="core") }}{% endblock %}

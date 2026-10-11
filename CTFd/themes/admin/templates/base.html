@@ -11,6 +11,9 @@
 	{{ Assets.css("assets/css/fonts.scss", theme="admin") }}
 	{{ Assets.css("assets/css/admin.scss", theme="admin") }}
 	{{ Assets.css("assets/css/codemirror.scss", theme="admin") }}
+	{% if Configs.ctf_theme == 'cyberdune' %}
+	<link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/admin.css') }}?v=9">
+	{% endif %}
 	<script type="text/javascript">
 		var init = {
 			'urlRoot': "{{ request.script_root }}",
@@ -37,7 +40,7 @@
 	{% endfor %}
 </head>
 
-<body>
+<body{% if Configs.ctf_theme == 'cyberdune' %} class="cyberdune-admin"{% endif %}>
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
 		<div class="container">
 			<a href="{{ url_for('views.static_html', route='/') }}" class="navbar-brand">CTFd</a>
