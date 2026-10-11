@@ -86,6 +86,20 @@ starts, placing the two Compose subnet rules at the start of `DOCKER-USER` (or
 `FORWARD` if that chain is absent). Rules below Docker's jumps can be bypassed by
 an earlier drop. The helper does not flush firewall rules or change global policies.
 
+A rebuilt Codespace can also retain disconnected bridges from the old Docker
+daemon. In the reported Codespace this caused duplicate subnet routes to choose a
+`linkdown` bridge, while stale nft `MASQUERADE` rules intercepted container traffic.
+Removing the old NAT rules restored database TCP access; removing the old routes
+restored HTTP 200 on both ports 8000 and 80.
+
+On startup, the helper discovers each current Compose bridge. For the two fixed
+CyberDune subnets only, it removes duplicate `linkdown` routes through other
+`br-*` interfaces and their matching nft masquerade/direct-access rules for current
+container IPs. It preserves current and live bridges. Repeated startup is safe.
+The automatic cleanup has been checked with isolated command fixtures; the manual
+repair was confirmed in the running Codespace. A restart with this updated helper
+still needs to be verified there.
+
 ## Official references
 
 - [Introduction to dev containers](https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/introduction-to-dev-containers)
