@@ -81,8 +81,10 @@ curl -I --max-time 10 http://localhost:80
 
 Use the **Ports** tab to open port 80. A successful running container alone does
 not prove the web application is ready; database startup may take a little longer.
-The startup helper retains the targeted legacy firewall workaround for the two
-Compose subnets used by this project. It does not flush firewall rules.
+The startup helper applies the targeted legacy firewall workaround after Docker
+starts, placing the two Compose subnet rules at the start of `DOCKER-USER` (or
+`FORWARD` if that chain is absent). Rules below Docker's jumps can be bypassed by
+an earlier drop. The helper does not flush firewall rules or change global policies.
 
 ## Official references
 
