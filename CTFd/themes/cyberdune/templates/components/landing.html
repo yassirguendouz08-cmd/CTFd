@@ -1,4 +1,5 @@
 {% from "components/copy.html" import cd_copy with context %}
+<div class="cd-hero-shell">
 <section class="container cd-hero">
   <div class="cd-hero-copy">
     <p class="cd-eyebrow"><span class="cd-dot"></span> {{ cd_copy("BORN IN THE SAHARA. CONNECTED BY CURIOSITY.") }}</p>
@@ -6,7 +7,7 @@
     <h1 class="cd-brand-title">{{ cd_presentation.name }}</h1>
     <p class="cd-hero-description">{{ cd_presentation.briefing }}</p>
     {% else %}
-    <h1 class="cd-brand-title cd-platform-title">CYBERDUNE <span>CTF PLATFORM</span></h1>
+    <h1 class="cd-brand-title cd-platform-title">CyberDune <span>CTF Platform</span></h1>
     <p class="cd-platform-tagline">{{ cd_copy("Explore. Learn. Hack. Evolve.") }}</p>
     <p class="cd-hero-description">{{ cd_copy("A cybersecurity playground built for curious minds, future hackers, and competitive CTF teams.") }}</p>
     {% endif %}
@@ -41,6 +42,7 @@
   </div>
 </aside>
 </section>
+</div>
 <section class="container cd-home-workspace" data-home-workspace
   data-load-challenges="{{ 'true' if Configs.challenge_visibility == 'public' or (Configs.challenge_visibility == 'private' and authed()) or is_admin() else 'false' }}"
   data-load-scores="{{ 'true' if cd_presentation.mode == 'event' and Configs.account_visibility != 'admins' and (Configs.score_visibility == 'public' or (Configs.score_visibility == 'private' and authed())) else 'false' }}">

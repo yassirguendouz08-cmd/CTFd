@@ -13,6 +13,7 @@
   {{ Configs.theme_header }}
   <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/cyberdune.css') }}?v=14">
   <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/operations.css') }}?v=14">
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/club.css') }}?v=1">
   <script>
     window.cyberduneCopy = {{ messages.get(get_locale() | string, messages.en) | tojson }};
     window.init = {
