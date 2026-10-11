@@ -27,6 +27,7 @@ Install the builder once on the same Linux Docker worker:
 
 ```bash
 sudo bash scripts/install-instance-builder.sh
+bash scripts/publish-instance-launcher.sh
 sudo docker compose restart ctfd
 ```
 
@@ -38,6 +39,9 @@ to build administrator-provided Dockerfiles, one at a time, with a 15-minute
 limit and 10 MB log limit. Uploaded sources and bounded logs are retained in the
 private queue; extracted build contexts are removed after a build. The generated
 images live in the worker's Docker daemon, shared with the existing manager.
+The one-time publication helper saves the digest-pinned v2 launcher for future
+uploads. It includes explicit random host-port allocation. The Compose init
+service creates the file-backed Pulumi state directory before the manager starts.
 
 Service status and operational logs:
 

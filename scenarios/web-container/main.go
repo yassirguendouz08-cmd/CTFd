@@ -63,7 +63,7 @@ func main() {
 				Name: network.Name,
 			}},
 			Ports: docker.ContainerPortArray{docker.ContainerPortArgs{
-				Internal: pulumi.Int(port), Ip: pulumi.String("127.0.0.1"), Protocol: pulumi.String("tcp"),
+				Internal: pulumi.Int(port), External: pulumi.Int(0), Ip: pulumi.String("127.0.0.1"), Protocol: pulumi.String("tcp"),
 			}},
 			Rm: pulumi.Bool(true),
 		}, opts...)
