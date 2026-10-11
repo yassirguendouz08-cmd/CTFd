@@ -76,3 +76,79 @@
 @media (prefers-reduced-motion: reduce) {
   .cd-app *, .cd-app *::before, .cd-app *::after { animation: none !important; transition: none !important; }
 }
+
+/* Ready platform: larger type, wider content and a compact first screen. */
+body.cd-app { font-size: 17px; }
+.cd-app .container { max-width: 1560px; padding-inline: clamp(20px, 3vw, 48px); }
+.cd-app h1, .cd-app h2, .cd-app h3 { font-family: Inter, system-ui, sans-serif; }
+.cd-app .cd-nav .nav-link { font-size: 15px; }
+.cd-app .cd-hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: center; gap: 44px; padding-block: 48px 40px; text-align: start; }
+.cd-hero-copy { max-width: none; min-width: 0; width: 100%; }
+.cd-app .cd-hero .cd-eyebrow { max-width: none; margin-inline: 0; margin-bottom: 20px; font-size: 12px; }
+.cd-app .cd-hero .cd-brand-title { font-size: clamp(44px, 5.2vw, 84px); letter-spacing: -.045em; line-height: 1.06; margin-bottom: 0; }
+.cd-app .cd-platform-tagline { font-family: Inter, system-ui, sans-serif; font-size: clamp(20px, 2vw, 28px); margin-block: 22px 14px; }
+.cd-app .cd-hero .cd-hero-description { font-size: 19px; line-height: 1.65; max-width: 660px; margin-inline: 0; margin-bottom: 26px; }
+.cd-app .cd-hero .cd-actions { justify-content: flex-start; gap: 14px; }
+.cd-app .cd-actions .btn { font-size: 16px; padding: 15px 24px; min-height: 54px; }
+.cd-app .cd-platform-panel { width: 100%; min-width: 0; max-width: none; margin: 0; }
+.cd-platform-panel .cd-briefing-head { padding: 24px; flex-wrap: wrap; }
+.cd-platform-panel .cd-briefing-head h2 { font-size: 22px; }
+.cd-platform-panel .cd-status { font-size: 13px; }
+.cd-platform-panel .cd-briefing dt { font: 500 13px/1.6 Inter, system-ui, sans-serif; letter-spacing: .04em; }
+.cd-platform-panel .cd-briefing dd { font-size: 16px; }
+.cd-platform-panel .cd-briefing dl>div { padding-block: 20px; align-items: center; }
+.cd-platform-panel .cd-briefing-foot { font-size: 15px; padding: 20px 24px; }
+.cd-app .cd-section-heading { margin-bottom: 22px; gap: 24px; }
+.cd-app .cd-section-heading h2, .cd-app .cd-comms-heading h2 { font-size: clamp(28px, 2.5vw, 38px); }
+.cd-app .cd-section-heading .cd-eyebrow { font-size: 12px; margin-bottom: 12px; }
+.cd-app .cd-section-heading>p, .cd-app .cd-section-heading>a { font-size: 16px; }
+.cd-app .cd-home-categories { gap: 18px; }
+.cd-app .cd-home-category { padding: 28px; min-height: 164px; gap: 22px; }
+.cd-app .cd-home-category strong { font-family: Inter, system-ui, sans-serif; font-size: 23px; line-height: 1.35; }
+.cd-app .cd-home-category>span { font-size: 15px; }
+.cd-app .cd-category-symbol { font-size: 19px; width: 32px; height: 32px; }
+.cd-app .cd-guide { padding-top: 38px; }
+.cd-app .cd-guide-grid { gap: 18px; }
+.cd-app .cd-guide-grid article { padding: 28px; }
+.cd-app .cd-guide-grid h3 { font-size: 25px; margin-block: 20px 14px; }
+.cd-app .cd-guide-grid p { font-size: 16px; line-height: 1.65; }
+.cd-app .cd-guide-grid .cd-step { font-size: 14px; }
+.cd-app .cd-scope { margin-top: 22px; padding: 22px 26px; }
+.cd-app .cd-scope strong { font-size: 17px; }
+.cd-app .cd-scope p { font-size: 15px; line-height: 1.65; }
+.cd-app main { padding-top: 0; padding-bottom: 28px; margin-bottom: 0; }
+.cd-app .cd-comms { padding-block: 30px; }
+.cd-app .cd-comms-heading p { font-size: 16px; }
+.cd-app .cd-comms-links strong { font-size: 16px; }
+.cd-app .cd-comms-links small { font-size: 12px; }
+.cd-app .cd-footer { padding-top: 0; padding-bottom: 24px; }
+.cd-app .cd-footer small, .cd-app .cd-footer-links a { font-size: 14px; }
+@media (max-width: 1199px) {
+  .cd-app .cd-hero { grid-template-columns: 1fr; gap: 28px; text-align: center; }
+  .cd-app .cd-hero .cd-eyebrow, .cd-app .cd-hero .cd-hero-description { margin-inline: auto; }
+  .cd-app .cd-hero .cd-actions { justify-content: center; }
+}
+@media (max-width: 767px) {
+  .cd-app .container { padding-inline: 20px; }
+  .cd-app .cd-hero { padding-block: 28px 30px; }
+  .cd-app .cd-hero .cd-brand-title { font-size: clamp(34px, 9vw, 60px); }
+  .cd-app .cd-hero .cd-eyebrow { font-size: 11px; }
+  .cd-app .cd-hero .cd-hero-description { font-size: 17px; }
+  .cd-app .cd-actions .btn { font-size: 15px; }
+  .cd-platform-panel .cd-briefing-head { padding: 20px; }
+  .cd-platform-panel .cd-briefing-head h2 { font-size: 20px; }
+  .cd-platform-panel .cd-briefing-body { padding-inline: 20px; }
+  .cd-platform-panel .cd-briefing dt { font-size: 11px; }
+  .cd-platform-panel .cd-briefing dd { font-size: 14px; }
+  .cd-platform-panel .cd-briefing-foot { padding: 18px 20px; font-size: 14px; }
+  .cd-app .cd-home-categories { gap: 12px; }
+  .cd-app .cd-home-category { padding: 18px; min-height: 148px; }
+  .cd-app .cd-home-category strong { font-size: 18px; gap: 8px; }
+  .cd-app .cd-home-category>span { font-size: 13px; }
+  .cd-app .cd-guide-grid article { padding: 24px; }
+  .cd-app .cd-guide-grid h3 { font-size: 23px; }
+  .cd-app .cd-scope { padding: 20px; }
+}
+@media (max-width: 359px) {
+  .cd-app .cd-home-categories { grid-template-columns: 1fr; }
+}

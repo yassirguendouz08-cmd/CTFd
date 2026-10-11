@@ -1,5 +1,5 @@
 {% from "components/copy.html" import cd_copy, messages with context %}
-{% set cd_presentation = CyberdunePresentation | default({'mode': 'platform', 'status': 'Under Development'}) %}
+{% set cd_presentation = CyberdunePresentation | default({'mode': 'platform', 'status': 'Platform ready'}) %}
 <!DOCTYPE html>
 <html lang="{{ get_locale() }}" dir="{{ 'rtl' if get_locale() | string == 'ar' else 'ltr' }}" data-bs-theme="dark">
 <head>
@@ -11,8 +11,8 @@
   {% block stylesheets %}{{ Assets.css("assets/scss/main.scss", theme="core") }}{% endblock %}
   {{ Plugins.styles }}
   {{ Configs.theme_header }}
-  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/cyberdune.css') }}?v=13">
-  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/operations.css') }}?v=13">
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/cyberdune.css') }}?v=14">
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/operations.css') }}?v=14">
   <script>
     window.cyberduneCopy = {{ messages.get(get_locale() | string, messages.en) | tojson }};
     window.init = {
@@ -50,13 +50,13 @@
   <footer class="cd-footer">
     {% include 'components/contacts.html' %}
     <div class="container cd-footer-inner">
-      <div class="cd-footer-brand"><span class="cd-official-logo"><img src="{{ url_for('views.themes_beta', theme='cyberdune', path='img/cyberdune-white.png') }}?v=13" alt="CyberDune" width="11812" height="11812" loading="lazy"></span><small>{{ cd_copy("Sahara roots. Hacker mindset.") }}</small></div>
+      <div class="cd-footer-brand"><span class="cd-official-logo"><img src="{{ url_for('views.themes_beta', theme='cyberdune', path='img/cyberdune-white.png') }}?v=14" alt="CyberDune" width="11812" height="11812" loading="lazy"></span><small>{{ cd_copy("Sahara roots. Hacker mindset.") }}</small></div>
       <div class="cd-footer-links"><a href="https://cyberdune.online" target="_blank" rel="noopener">{{ cd_copy("The club \u2197") }}</a><a href="{{ url_for('views.static_html', route='/') }}#platform-guide">{{ cd_copy("Platform guide") }}</a><a href="https://ctfd.io" target="_blank" rel="noopener">Powered by CTFd</a></div>
     </div>
   </footer>
   {% include 'components/notifications.html' %}
-  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/cyberdune.js') }}?v=13"></script>
-  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/operations.js') }}?v=13"></script>
+  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/cyberdune.js') }}?v=14"></script>
+  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/operations.js') }}?v=14"></script>
   {% block scripts %}{{ Assets.js("assets/js/page.js", theme="core") }}{% endblock %}
   {{ Plugins.scripts }}
   {{ Configs.theme_footer }}

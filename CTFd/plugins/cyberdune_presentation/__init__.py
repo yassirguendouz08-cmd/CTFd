@@ -13,7 +13,7 @@ def presentation():
         settings = {}
     if not isinstance(settings, dict):
         settings = {}
-    result = {"mode": "platform", "status": "Under Development"}
+    result = {"mode": "platform", "status": "Platform ready"}
     if settings.get("cyberdune_mode") != "event":
         return result
     try:

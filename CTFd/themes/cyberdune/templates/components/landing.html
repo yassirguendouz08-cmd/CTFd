@@ -19,8 +19,7 @@
       {% if not authed() and registration_visible() %}<a class="btn btn-outline-secondary" href="{{ url_for('auth.register') }}">{{ cd_copy("Join CyberDune") }}</a>{% else %}<a class="btn btn-outline-secondary" href="{{ url_for('views.static_html', route='/') }}#platform-guide">{{ cd_copy("Your first flag starts here") }}</a>{% endif %}
     </div>
   </div>
-</section>
-<section class="container cd-platform-panel" aria-labelledby="cd-platform-panel-title">
+<aside class="cd-platform-panel" aria-labelledby="cd-platform-panel-title">
   <div class="cd-briefing">
     <div class="cd-briefing-head"><h2 id="cd-platform-panel-title">{{ cd_copy("Mission briefing") if cd_presentation.mode == 'event' else cd_copy("Platform intelligence") }}</h2>{% include 'components/presentation-status.html' %}</div>
     <div class="cd-briefing-body"><dl>
@@ -29,7 +28,7 @@
       <div><dt>{{ cd_copy("Start time") }}</dt><dd><time data-event-start datetime="{{ cd_presentation.start_date }}">{{ cd_presentation.start_date }}</time></dd></div>
       <div><dt>{{ cd_copy("End time") }}</dt><dd><time data-event-end datetime="{{ cd_presentation.end_date }}">{{ cd_presentation.end_date }}</time></dd></div>
       {% else %}
-      <div><dt>{{ cd_copy("PLATFORM STATUS") }}</dt><dd>{{ cd_copy("Under Development") }}</dd></div>
+      <div><dt>{{ cd_copy("PLATFORM STATUS") }}</dt><dd>{{ cd_copy("Ready to explore") }}</dd></div>
       <div><dt>{{ cd_copy("COMPETITIONS") }}</dt><dd>{{ cd_copy("Coming Soon") }}</dd></div>
       <div><dt>{{ cd_copy("MISSION") }}</dt><dd>{{ cd_copy("Learn • Practice • Compete") }}</dd></div>
       {% endif %}
@@ -37,9 +36,10 @@
     {% if cd_presentation.mode == 'event' %}
     <div class="cd-briefing-foot" data-countdown hidden><span data-countdown-label></span> <strong data-countdown-value></strong></div>
     {% else %}
-    <p class="cd-briefing-foot">{{ cd_copy("We’re building the playground. Future competitions will be announced here.") }}</p>
+    <p class="cd-briefing-foot">{{ cd_copy("Sharpen your skills. Solve challenges. Build your next breakthrough.") }}</p>
     {% endif %}
   </div>
+</aside>
 </section>
 <section class="container cd-home-workspace" data-home-workspace
   data-load-challenges="{{ 'true' if Configs.challenge_visibility == 'public' or (Configs.challenge_visibility == 'private' and authed()) or is_admin() else 'false' }}"

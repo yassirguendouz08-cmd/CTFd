@@ -17,7 +17,7 @@ class PresentationTests(unittest.TestCase):
     def test_dates_never_enable_event(self):
         for settings in [None, "{}", "null", "[]", "broken", '{"cyberdune_mode":"platform"}', '{"cyberdune_mode":true}']:
             with self.subTest(settings=settings):
-                self.assertEqual(render_state(settings), {"mode": "platform", "status": "Under Development"})
+                self.assertEqual(render_state(settings), {"mode": "platform", "status": "Platform ready"})
 
     def test_invalid_schedule_fails_closed(self):
         for start, end in [(None, 2000), (1000, None), (0, 2000), (2000, 1000), (1000, 1000), ("bad", 2000), (1000, 10**30)]:

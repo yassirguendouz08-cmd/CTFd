@@ -121,3 +121,23 @@ accessed or changed.
 Activation and deployed-date cleanup: [Platform Mode guide](PLATFORM-MODE.md).
 The original event status came from CTFd timing keys read by theme JavaScript;
 there is no local persistent database from which to inspect production values.
+
+
+## Ready platform typography and spacing — 2026-10-11
+
+Platform Mode now shows “Platform ready” / “Ready to explore”, with no development
+announcement. The same neutral status applies to challenge and scoreboard
+headers. No event is enabled by this copy change.
+
+The existing layout now uses larger Inter headings and body text, wider content,
+a hero beside the platform panel on desktop, larger category/guide cards, and
+compact section spacing. Inherited core-theme main padding and bottom margin
+were removed. Mobile retains a single-column hero and panel, with readable
+category cards and no horizontal overflow.
+
+
+The updated ready-platform layout passes browser checks at 320/390/768/1440px,
+mobile navigation and related-page rendering, with no JavaScript errors.
+English/French/Arabic and RTL checks pass. The existing future-event status and
+countdown checks and focused presentation unit checks also pass. Updated
+screenshots use isolated QA fixture data.

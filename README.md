@@ -18,7 +18,7 @@ teams and standings, with English, French and Arabic copy.
 ## What is included
 
 - Official CyberDune logo and responsive theme.
-- Default development landing with premium CYBERDUNE branding and explicit future Event Mode.
+- Ready platform landing with premium CYBERDUNE branding and explicit future Event Mode.
 - Clean club-branded hero, readable category cards and restrained red accents.
 - Reduced-motion support and finite highlights for real score/solve updates.
 - Clean club-branded hero, readable category cards and restrained red accents.

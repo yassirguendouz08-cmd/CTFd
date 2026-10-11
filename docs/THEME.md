@@ -87,12 +87,12 @@ states, scores, profiles, languages, notifications and logout. See
 ## Professional visual refinement
 
 `static/css/operations.css` refines the existing theme with readable labels,
-consistent card spacing, restrained red accents and clean surfaces. The hero is centered with white/gray typography and clear actions. The homepage
-The default homepage uses a development information panel. Dates, event status and countdown are opt-in through [Event Mode](PLATFORM-MODE.md). Decorative network art, typing
+consistent card spacing, restrained red accents and clean surfaces. The hero and platform panel share the desktop row, with larger Inter typography and clear actions; mobile uses a centered single-column layout. The homepage
+The default homepage uses a platform information panel. Dates, event status and countdown are opt-in through [Event Mode](PLATFORM-MODE.md). Decorative network art, typing
 labels, HUD corners, scan lines and redundant club chips were removed.
 
 `static/js/operations.js` only adds finite highlights to real score/solve updates.
 No animation loop, motion preference control or extra API polling is needed.
 Reduced motion suppresses those highlights. Category icons use existing fonts.
 The authoritative palette and page grids remain in `cyberdune.css`; cache version
-13 loads the refinement after the baseline stylesheet. Auth and scoring stay CTFd.
+14 loads the refinement after the baseline stylesheet. Auth and scoring stay CTFd.

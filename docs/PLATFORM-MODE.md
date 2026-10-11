@@ -1,7 +1,7 @@
 # CYBERDUNE platform and event presentation
 
 Platform Mode is the default. Existing or sample CTFd dates never activate an
-event. The homepage shows CYBERDUNE CTF PLATFORM, the development status,
+event. The homepage shows CYBERDUNE CTF PLATFORM, the platform-ready status,
 upcoming competitions and the learning mission, using the existing theme.
 Challenge navigation and all CTFd features remain available under their existing
 permissions. Homepage participant metrics and standings previews appear only
@@ -22,7 +22,7 @@ CTFd stores timings in its `configs` table, administered under **Admin → Confi
 running Docker deployment; QA uses a separate in-memory fixture database.
 The actual deployed values therefore cannot be asserted from this checkout.
 
-## Put an existing deployment into development mode
+## Put an existing deployment into Platform Mode
 
 After deploying this source and restarting CTFd, missing `cyberdune_mode` settings
 already render Platform Mode, regardless of saved dates. To explicitly select it
