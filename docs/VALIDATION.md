@@ -141,3 +141,16 @@ mobile navigation and related-page rendering, with no JavaScript errors.
 English/French/Arabic and RTL checks pass. The existing future-event status and
 countdown checks and focused presentation unit checks also pass. Updated
 screenshots use isolated QA fixture data.
+## Optional instances (2026-10-11)
+
+- Pinned CTFer.io plugin loads on CTFd 3.8.8; existing authentication, registration,
+  teams, dynamic scoring, flags and platform-mode regression checks pass.
+- Seven instance integration tests and four presentation tests pass using an
+  in-memory database and a fake HTTP backend. Coverage includes account/team
+  isolation, cross-account and expired flags, lifecycle, mana, prerequisites,
+  scheduled access and ordinary flags during backend failure.
+- Real-browser desktop/mobile checks pass for launch, renew, restart, destroy,
+  core flag submission and absence of JavaScript errors/ horizontal overflow.
+- Live Docker containers and the optional backend Compose overlay remain
+  unverified on this Windows workstation (Docker is unavailable). Follow
+  `docs/INSTANCES.md` and test your actual worker before publishing challenges.

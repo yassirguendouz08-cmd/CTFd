@@ -13,6 +13,10 @@ services:
       - ACCESS_LOG=-
       - ERROR_LOG=-
       - REVERSE_PROXY=true
+      - PLUGIN_SETTINGS_CM_API_URL=http://chall-manager:8080
+      - PLUGIN_SETTINGS_CM_API_TIMEOUT=60
+      - PLUGIN_SETTINGS_CM_MANA_TOTAL=3
+      - PLUGIN_SETTINGS_CM_UI_HIDE_INSTANCES_PANEL=true
     volumes:
       - .data/CTFd/logs:/var/log/CTFd
       - .data/CTFd/uploads:/var/uploads

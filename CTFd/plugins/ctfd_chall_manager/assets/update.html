@@ -1,0 +1,155 @@
+{% extends "admin/challenges/update.html" %}
+
+{% block value %}
+
+<div class="form-group">
+    <label for="value">Current Value<br>
+        <small class="form-text text-muted">
+            This is how many points the challenge is worth right now.
+        </small>
+    </label>
+    <input type="number" class="form-control chal-value" name="value" value="{{ challenge.value }}" disabled>
+</div>
+
+<!-- CM Plugins -->
+
+<div class="form-group">
+    <label for="value">Sharing<br>
+        <small class="form-text text-muted">
+            <span>If enabled, the instance will be shared for all Users/Teams.
+                It is disabled by default.</span>
+        </small>
+    </label>
+    <select id="select-shared" data-test-id="shared-selector-id" class="custom-select" name="shared">
+        <option value="true" {% if challenge.shared %}selected{% endif %} >Enabled</option>
+        <option value="false" {% if not challenge.shared %}selected{% endif %}>Disabled</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="value">Destroy on flag<br>
+        <small class="form-text text-muted">
+            <span>If enabled, the instance will be destroyed when the player flags the challenge.
+                It is disabled by default.</span>
+        </small>
+    </label>
+    <select id="select-dof" data-test-id="destroy-on-flag-selector-id" class="custom-select" name="destroy_on_flag">
+        <option value=true {% if challenge.destroy_on_flag %}selected{% endif %} >Enabled</option>
+        <option value=false {% if not challenge.destroy_on_flag %}selected{% endif %}>Disabled</option>
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="value">Mana Cost<br>
+        <small class="form-text text-muted">
+            This is how many points the challenge will cost to User to start it.
+        </small>
+    </label>
+    <input type="number" class="form-control" name="mana_cost" value="{{ challenge.mana_cost }}">
+</div>
+
+<div id="cm-mode-until" class="form-group">
+    <label for="value">Until<br>
+        <small class="form-text text-muted">
+            Until: Define a timestamp where all the instances will be detroyed (e.g 2024-07-10 15:00)
+        </small>
+    </label>
+    <input type="datetime-local" id="until-input-local" data-test-id="until-create-id" class="form-control">
+    <input type="hidden" id="until-input-utc" class="form-control" name="until" {% if challenge.until is not none %}value={{challenge.until}}{% endif %}>
+</div>
+
+<div id="cm-mode-timeout" class="form-group">
+    <label for="value">Timeout<br>
+        <small class="form-text text-muted">
+            Timeout: Define a timeout that the instance will be destroyed by the janitor (e.g 600s for 10 min)
+        </small>
+    </label>
+    <input type="number" id="timeout-input" data-test-id="timeout-create-id" class="form-control" name="timeout" {% if challenge.timeout is not none %}value={{challenge.timeout}}{% endif %}>
+</div>
+
+<div class="form-group">
+    <label for="value">Scenario<br>
+        <small class="form-text text-muted">
+            Scenario reference (e.g registry.lan/category/challenge-scenario:v0.1.0@sha256:a0b1...c2d3)
+        </small>
+    </label>
+    <input type="text" id="scenario-input" data-test-id="scenario-update-id" class="form-control" name="scenario" required value="{{ challenge.scenario }}">
+</div>
+
+<div id="update-strategy-div" class="form-group">
+    <label for="value">Update Strategy<br>
+        <small class="form-text text-muted">
+            <span>The UpdateStrategy to use in case of a Challenge scenario update with running instances.
+                Default strategy is the update-in-place.</span>
+            <ul>
+                <li>Update in place: This updates the existing state based on the new stack in the scenario. This update strategy provide high availability with low update costs.</li>
+                <li>Blue Green: spins up a second instance of the scenario in parallel and once up, delete the previous one for players to shift. This update strategy provide high availability with high update costs due to infra deduplication.</li>
+                <li>Recreate: recreate delete the previous instance then spins up a fresh instance of the scenario. This update strategy provide no availability guarantee with medium update costs due to intensive create/delete operations. It should be used at a last relief, for instance if the update is inconsistent and the outcomes are not predictable.</li>
+            </ul>
+        </small>
+    </label>
+    <select id="update-strategy" name="updateStrategy" class="custom-select">
+        <option value="update_in_place">Update in place</option>
+        <option value="blue_green">Blue Green</option>
+        <option value="recreate">Recreate</option>
+    </select>
+</div>
+
+<p>
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#advanced" aria-expanded="false" aria-controls="advanced">
+      Advanced
+    </button>
+  </p>
+  <div class="collapse" id="advanced" >
+    <div class="card card-body">
+        <label for="value">Challenge configuration</label>
+
+        <div>
+            <button class="btn btn-primary" type="button" onclick=addRow()>
+                Add +
+            </button>
+            <button class="btn btn-primary" type="button" onclick=applyAdditional()>
+                Apply
+            </button>
+        </div>
+
+
+        <div id="table-div-id">
+            <table class="table table-striped border" id="additional-configuration">
+                <thead>
+                    <tr>
+                        <th class="sort-col text-left"><b></b></td>
+                        <th class="sort-col text-left"><b>Key</b></td>
+                        <th class="sort-col text-left"><b>Value</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <input type="hidden" id="additional-json" name="additional" value='{{ challenge.additional | tojson | safe }}'>
+        <input type="hidden" id="current-additional-json"  value='{{ challenge.additional | tojson | safe }}'>
+    </div>
+    <div class="card card-body">
+        <label for="value">Pooler</label>
+
+        <label for="value">Min<br>
+            <small class="form-text text-muted">
+                Min from the pooler feature. <br>
+                Determine the minimum number of instances we want to pre-provision, and make available for claiming later.
+            </small>
+        </label>
+        <input type="number" class="form-control" name="min" value="{{ challenge.min }}">
+
+        <label for="value">Max<br>
+            <small class="form-text text-muted">
+                Max from the pooler feature. <br>
+                Determine the maximum number of instances that needs to be deployed until we stop pre-provisioning ones in the pool.
+            </small>
+        </label>
+        <input type="number" class="form-control" name="max" value="{{ challenge.max }}">
+
+    </div>
+  </div>
+{% endblock %}

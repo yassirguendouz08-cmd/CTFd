@@ -1,0 +1,60 @@
+# Optional single-host Docker instance backend. Never loaded by the normal compose command.
+# See docs/INSTANCES.md; use a dedicated worker for public, untrusted targets.
+services:
+  ctfd:
+    environment:
+      - PLUGIN_SETTINGS_CM_UI_HIDE_INSTANCES_PANEL=false
+    networks:
+      instance_control:
+
+  chall-manager:
+    image: ctferio/chall-manager:v0.6.6@sha256:34b5ca4b9e02db171cd58f148f927c0955c106427e97e4525e0376c2512c3959
+    restart: unless-stopped
+    environment:
+      DIR: /var/lib/chall-manager
+      CACHE: /var/cache/chall-manager
+      PULUMI_HOME: /var/lib/pulumi
+      PULUMI_BACKEND_URL: file:///var/lib/chall-manager/pulumi-state
+      PULUMI_CONFIG_PASSPHRASE: ${CM_PULUMI_PASSPHRASE:?Set CM_PULUMI_PASSPHRASE in .env.instances}
+      OCI_INSECURE: "true"
+    volumes:
+      - instance_state:/var/lib/chall-manager
+      - instance_cache:/var/cache/chall-manager
+      - instance_pulumi:/var/lib/pulumi
+      # Only the instance backend gets Docker control, never CTFd or a target.
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      instance_control:
+      instance_egress:
+
+  chall-manager-janitor:
+    image: ctferio/chall-manager-janitor:v0.6.6@sha256:69ee55e6ad10f25b6c454c70b4de49350c82e5dde9c681a3e1c3ac623a6e0970
+    restart: unless-stopped
+    environment:
+      URL: chall-manager:8080
+      TICKER: 1m
+    depends_on:
+      - chall-manager
+    networks:
+      instance_control:
+
+  scenario-registry:
+    image: registry:3
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5001:5000"
+    volumes:
+      - instance_registry:/var/lib/registry
+    networks:
+      instance_egress:
+
+networks:
+  instance_control:
+    internal: true
+  instance_egress:
+
+volumes:
+  instance_state:
+  instance_cache:
+  instance_pulumi:
+  instance_registry:

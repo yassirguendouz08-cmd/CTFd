@@ -1,0 +1,183 @@
+"""
+This module contains all functions to use Chall-Manager ChallengeStore group.
+"""
+
+import json
+
+import requests
+from CTFd.plugins.ctfd_chall_manager.utils.chall_manager_error import (
+    ChallManagerException,
+    chall_manager_exception_builder,
+)
+from CTFd.plugins.ctfd_chall_manager.utils.logger import configure_logger
+from CTFd.utils import get_config
+
+logger = configure_logger(__name__)
+def api_timeout():
+    # Resolve after plugin setup and honour later admin updates.
+    try:
+        value = int(get_config("chall-manager:chall-manager_api_timeout") or 60)
+    except (TypeError, ValueError):
+        value = 60
+    return max(1, value)
+# pylint: disable=duplicate-code
+# pylint detect duplicate-code between challenge_store and intance_manager
+# This is false positive
+
+
+def query_challenges() -> list | ChallManagerException:
+    """
+    Query all challenges information and their instances running.
+
+    :return list: list of challenges [{ . }, { . }]
+    """
+    cm_api_url = get_config("chall-manager:chall-manager_api_url")
+    url = f"{cm_api_url}/api/v1/challenge"
+    s = requests.Session()
+    result = []
+
+    logger.debug("querying challenges from %s", url)
+
+    try:
+        with s.get(url, headers=None, stream=True, timeout=api_timeout()) as resp:
+            for line in resp.iter_lines():
+                if line:
+                    res = line.decode("utf-8")
+                    res = json.loads(res)
+                    result.append(res["result"])
+        logger.debug("successfully queried challenges: %s", result)
+    except Exception as e:
+        logger.error("error querying challenges: %s", e)
+        raise ChallManagerException(message="error querying challenges") from e
+
+    return result
+
+
+def create_challenge(
+    challenge_id: int, **kwargs
+) -> requests.Response | ChallManagerException:
+    """
+    Create challenge on chall-manager
+
+    :param challenge_id: id of challenge to create (e.g: 1)
+    :param **kwargs: additional configuration in dictionary format
+    (e.g {'timeout': '600', 'updateStrategy': 'update_in_place', 'until': '2024-07-10 15:00:00'})
+
+    :return Response: of chall-manager API
+    """
+    cm_api_url = get_config("chall-manager:chall-manager_api_url")
+    url = f"{cm_api_url}/api/v1/challenge"
+    headers = {"Content-Type": "application/json"}
+    payload = kwargs
+
+    logger.debug("creating challenge with id=%s", challenge_id)
+
+    payload["id"] = str(challenge_id)
+
+    try:
+        r = requests.post(
+            url, data=json.dumps(payload), headers=headers, timeout=api_timeout()
+        )
+        logger.debug("received response: %s %s", r.status_code, r.text)
+        r.raise_for_status()
+    except requests.HTTPError as e:
+        custom_exception = chall_manager_exception_builder(r)
+        raise custom_exception from e
+    except requests.RequestException as e:
+        raise ChallManagerException() from e
+
+    return r
+
+
+def delete_challenge(challenge_id: int) -> requests.Response | ChallManagerException:
+    """
+    Delete challenge and its instances running.
+
+    :param challenge_id* (int): 1
+
+    :return Response: of chall-manager API
+    """
+    cm_api_url = get_config("chall-manager:chall-manager_api_url")
+    url = f"{cm_api_url}/api/v1/challenge/{challenge_id}"
+
+    logger.debug("deleting challenge with id=%s", challenge_id)
+
+    try:
+        r = requests.delete(url, timeout=api_timeout())
+        logger.debug("received response: %s %s", r.status_code, r.text)
+        r.raise_for_status()
+    except requests.HTTPError as e:
+        custom_exception = chall_manager_exception_builder(r)
+        raise custom_exception from e
+    except requests.RequestException as e:
+        raise ChallManagerException() from e
+
+    return r
+
+
+def get_challenge(challenge_id: int) -> requests.Response | ChallManagerException:
+    """
+    Get challenge information and its instances running.
+
+    :param challenge_id* (int): 1
+    :return Response: of chall-manager API
+    """
+    cm_api_url = get_config("chall-manager:chall-manager_api_url")
+    url = f"{cm_api_url}/api/v1/challenge/{challenge_id}"
+
+    logger.debug("getting challenge information for id=%s", challenge_id)
+
+    try:
+        r = requests.get(url, timeout=api_timeout())
+        logger.debug("recieved response: %s %s", r.status_code, r.text)
+        r.raise_for_status()
+    except requests.HTTPError as e:
+        custom_exception = chall_manager_exception_builder(r)
+        raise custom_exception from e
+    except requests.RequestException as e:
+        raise ChallManagerException() from e
+
+    return r
+
+
+def update_challenge(
+    challenge_id: int, **kwargs
+) -> requests.Response | ChallManagerException:
+    """
+    Update challenge with information provided
+
+    :param challenge_id*: 1
+    :param **kwargs: additional configuration in dictionary format
+    (e.g {'timeout': '600s', 'updateStrategy': 'update_in_place', 'until': '2024-07-10 15:00:00' })
+    :return Response: of chall-manager API
+    """
+    cm_api_url = get_config("chall-manager:chall-manager_api_url")
+    url = f"{cm_api_url}/api/v1/challenge/{challenge_id}"
+    headers = {"Content-Type": "application/json"}
+    payload = kwargs
+
+    logger.debug("updating challenge with id=%s", challenge_id)
+
+    payload["updateMask"] = ",".join(
+        k
+        for k in ("timeout", "until", "additional", "min", "max", "scenario")
+        if k in payload
+    )
+
+    logger.debug(
+        "updating challenge %s with updateMask %s", challenge_id, payload["updateMask"]
+    )
+
+    try:
+        r = requests.patch(
+            url, data=json.dumps(payload), headers=headers, timeout=api_timeout()
+        )
+        logger.debug("received response: %s %s", r.status_code, r.text)
+        r.raise_for_status()
+    except requests.HTTPError as e:
+        custom_exception = chall_manager_exception_builder(r)
+        raise custom_exception from e
+    except requests.RequestException as e:
+        raise ChallManagerException() from e
+
+    return r

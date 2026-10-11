@@ -152,3 +152,9 @@ body.cd-app { font-size: 17px; }
 @media (max-width: 359px) {
   .cd-app .cd-home-categories { grid-template-columns: 1fr; }
 }
+.cd-instance-panel .card { border: 1px solid rgba(255, 52, 64, .25); background: #0d1017; border-radius: 14px; padding: 20px; }
+.cd-instance-panel .card-title { font-size: 20px; margin-bottom: 16px; }
+.cd-instance-panel .card-link { margin: 6px; }
+.cd-instance-panel .btn-success { background: #161a22; border-color: rgba(255, 52, 64, .4); color: #fff; }
+.cd-instance-panel .btn-success:hover { background: #a8172b; border-color: #f32b48; }
+.cd-instance-connection { display: block; overflow-wrap: anywhere; white-space: pre-wrap; padding: 12px; }

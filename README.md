@@ -170,3 +170,9 @@ not built on the Windows PC.
 CTFd is developed by [CTFd](https://github.com/CTFd/CTFd) and distributed under
 the [Apache License 2.0](LICENSE). This repository retains the upstream code,
 license and history. CyberDune supplies the club branding and custom theme.
+## Optional challenge instances
+
+The `dynamic_iac` challenge type is included for challenges that need per-user
+or per-team environments. Backend activation, image/scenario authoring and
+deployment verification are documented in [docs/INSTANCES.md](docs/INSTANCES.md).
+Normal Docker Compose startup keeps this backend off.

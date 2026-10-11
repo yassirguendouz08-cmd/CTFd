@@ -91,6 +91,7 @@ CTFd/plugins/*
 !CTFd/plugins/dynamic_challenges/
 !CTFd/plugins/flags/
 !CTFd/plugins/cyberdune_presentation/
+!CTFd/plugins/ctfd_chall_manager/
 !CTFd/plugins/*.py
 
 # non-default themes
@@ -107,6 +108,7 @@ CTFd/themes/*
 .env
 .env.*
 !.env.example
+!.env.instances.example
 *.sql
 *.sql.gz
 *.sqlite

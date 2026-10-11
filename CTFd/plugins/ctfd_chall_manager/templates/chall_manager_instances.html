@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h2>Chall-Manager by CTFer.io</h2>
+        {% if mana_enabled %}
+        <h3>Remaining mana: {{ mana_remaining }}/{{ mana_total }}</h3>
+        <small>You regain mana by destroying instances.</small>
+        {% endif %}
+        <small>For more informations about the plugin, refer to the <a href=https://ctfer.io/docs>documentation</a>.</small>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="col-md-12">
+        <table class="table table-striped border">
+            <thead>
+            <tr>
+                <th class="sort-col text-center"><b>Category</b></td>
+                <th class="sort-col text-center"><b>Challenge</b></td>
+                {% if mana_enabled %}<th class="text-center"><b>Mana Cost</b></td>{% endif %}
+                <th class="text-center"><b>Connection Info</b></td>
+                <th class="sort-col text-center"><b>Since</b></td>
+                <th class="sort-col text-center"><b>Until</b></td>
+            </tr>
+            </thead>
+
+            <tbody>
+                {% for instance in instances %}
+                <tr>
+
+                    <td class="text-center">
+                        <div class="form-check" id="challenge-category">
+                                {{ instance.challengeCategory }}
+                        </div>
+                    </td>
+
+                    <td class="text-center">
+                        <div class="form-check" id="challenge-name">
+                                {{ instance.challengeName }}
+                        </div>
+                    {% if mana_enabled %}
+                    <td class="text-center">
+                        <div class="form-check" id="challenge-mana-cost">
+                                {{ instance.manaCost }}
+                        </div>
+                    </td>
+                    {% endif %}
+
+                    <td class="text-center">
+                        <div class="form-check" id="instance-connection-info">
+                                {{ instance.connectionInfo }}
+                        </div>
+                    </td>
+
+                    <td class="text-center">
+                        {% set list1 = instance.since.split('T') %}
+                        {{ list1[0] }} &nbsp;
+                        {{ list1[1][0:8] }}
+                    </td>
+
+                    <td class="text-center">
+                        {% if instance.until %}
+                        {% set list1 = instance.until.split('T') %}
+                        {{ list1[0] }} &nbsp;
+                        {{ list1[1][0:8] }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
