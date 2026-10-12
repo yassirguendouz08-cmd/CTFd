@@ -7,4 +7,4 @@
 docker-compose.native.yml text eol=lf
 # Generated dependency license banners and unified-diff context retain whitespace.
 CTFd/themes/core-theme/static/assets/*.js whitespace=-blank-at-eol
-services/native-manager/*.patch whitespace=-blank-at-eol,-space-before-tab
+services/native-manager/*.patch text eol=lf whitespace=-blank-at-eol,-space-before-tab
