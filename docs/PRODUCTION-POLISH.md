@@ -12,6 +12,7 @@ CTFd version: **3.8.8**. The supplied **core-theme** and CYBERDUNE branding are 
 - Instance controls show checking/starting/ready/stopping/stopped/failed/expired states; mutations disable duplicate clicks, offer status recovery, and expose a copy button and countdown. Status polling is serial at five-second intervals while provisioning and stops on completion or modal closure. No automatic mutation retries.
 - Profile-save positioning, duplicate form IDs, inaccessible team icon actions and unassociated floating labels are corrected. Tables retain their semantics inside responsive scrolling wrappers.
 - Guest pages no longer open the authenticated notification event stream. Authenticated notifications remain enabled.
+- Corrected the supplied theme's outdated hint-unlock SDK call. Free hints load directly; paid hints retain confirmation and CTFd's unlock checks. Ratings no longer send an invalid zero vote; rating/scoreboard failures display readable feedback.
 - The background animation was converted from a 22,444,863-byte GIF to a 2,508,370-byte VP9 WebM, retaining its visuals. It pauses for reduced motion and hidden tabs. The welcome effect runs once per tab and no longer blocks every home navigation for several seconds.
 
 ## Instance bottleneck and improvements
@@ -42,11 +43,12 @@ Main groups changed:
 
 - `CTFd/themes/core-theme/templates/`: base/navigation, challenge board/detail, auth forms, settings, user/team tables and forms, content pages/home.
 - `CTFd/themes/core-theme/static/assets/`: shared tokens/components, board/detail CSS, corrected inherited supplied styles, rebuilt JS assets/manifest.
-- `CTFd/themes/core-theme/assets/js/index.js`, `assets/js/challenges.js`, `vite.config.js`, and `package-lock.json`.
+- `CTFd/themes/core-theme/assets/js/index.js`, `assets/js/challenges.js`, `assets/js/scoreboard.js`, `assets/js/teams/private.js`, `vite.config.js`, and `package-lock.json`.
 - `CTFd/plugins/ctfd_chall_manager/api/instance.py`, `assets/view.html`, `assets/view.js`, `utils/instance_manager.py`, and `utils/lock.py`.
 - `scenarios/web-container/main.go`, launcher publish/configuration scripts.
 - `services/native-manager/`, `docker-compose.native.yml`, `scripts/build-native-manager.sh`.
 - `tests/test_cyberdune_instances.py`.
+- `.gitattributes`: native Compose line endings and whitespace handling for generated license banners/unified patch context.
 
 **No CTFd core files, schema changes or flag/scoring algorithm changes.** No user/account, challenge-description, logo configuration or competition data was replaced.
 
@@ -57,6 +59,7 @@ The theme's supplied customized CSS differs from its SCSS source. Its base templ
 - 13 automated backend/ZIP tests passed: owner/team isolation, correct/incorrect flags, timing/expiry, authorization, mana, lifecycle, safe ZIP extraction, offline worker/failure, ZIP finalization retries, duplicate launch and busy-lock rejection.
 - Browser QA covers 320, 375, 430, 768, 1024, 1280 and 1440px; home, navigation, board, long-description/code/file/hint modal, settings/profile, notifications, scoreboard, content, auth and team pages. Separate tests exercise real CTFd registration, create/join team, submissions/solved state/scoreboard, and simulated instance launch/extend/restart/stop/copy/failure/recovery.
 - Real private VPS instance build/provision/readiness/HTTP/cleanup probes passed. Frontend deployment is backed up under `~/cyberdune-theme-backups/polish-*`.
+- The deployed CTFd endpoint was tested with a temporary hidden challenge: absent-instance status, start (**8.161s**), duplicate launch returning the same instance, real Redis locking, extend, stop and cleanup all passed. Live homepage/login/register/scoreboard checks at 375 and 1440px passed with no JavaScript errors or failed asset requests. All seven final local viewport checks passed.
 - Instance targets continue to use the existing private loopback/SSH access model. Public player access is a separate product change; this pass does not expose vulnerable targets to the internet.
 - Future ARM64 deployments can build with `scripts/build-native-manager.sh` and append `docker-compose.native.yml` last in their existing Compose file list. Keep that override when recreating the manager so it does not revert to emulation.
 - GitHub synchronization still needs the previously failed large push to be resolved; the live deployment uses the verified direct package transfer.

@@ -4,3 +4,7 @@
 *.js text eol=lf
 *.json text eol=lf
 *.md text eol=lf
+docker-compose.native.yml text eol=lf
+# Generated dependency license banners and unified-diff context retain whitespace.
+CTFd/themes/core-theme/static/assets/*.js whitespace=-blank-at-eol
+services/native-manager/*.patch whitespace=-blank-at-eol,-space-before-tab
