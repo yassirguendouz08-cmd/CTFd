@@ -100,7 +100,12 @@ def confirm(data=None):
     if data is None:
         if request.method == "POST":
             # User wants to resend their confirmation email
-            email.verify_email_address(user.email)
+            sent, _ = email.verify_email_address(user.email)
+            if not sent:
+                return render_template(
+                    'confirm.html',
+                    errors=['We could not send the confirmation email. Please try again later or contact an administrator.'],
+                ), 503
             log(
                 "registrations",
                 format="[{date}] {ip} - {name} initiated a confirmation email resend",
@@ -398,7 +403,7 @@ def register():
 
                 login_user(user)
 
-                if request.args.get("next") and validators.is_safe_url(
+                if not get_config("verify_emails") and request.args.get("next") and validators.is_safe_url(
                     request.args.get("next")
                 ):
                     return redirect(request.args.get("next"))
@@ -412,8 +417,13 @@ def register():
                         name=user.name,
                         email=user.email,
                     )
-                    email.verify_email_address(user.email)
+                    sent, _ = email.verify_email_address(user.email)
                     db.session.close()
+                    if not sent:
+                        return render_template(
+                            "confirm.html",
+                            errors=["Your account was created, but the confirmation email could not be sent. Please try the resend button later."],
+                        ), 503
                     return redirect(url_for("auth.confirm"))
                 else:  # Don't care about confirming users
                     if (
@@ -486,7 +496,7 @@ def login():
                 log("logins", "[{date}] {ip} - {name} logged in", name=user.name)
 
                 db.session.close()
-                if request.args.get("next") and validators.is_safe_url(
+                if not get_config("verify_emails") and request.args.get("next") and validators.is_safe_url(
                     request.args.get("next")
                 ):
                     return redirect(request.args.get("next"))

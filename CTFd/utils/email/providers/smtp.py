@@ -1,4 +1,5 @@
 import smtplib
+import ssl
 from email.message import EmailMessage
 from email.utils import formataddr
 from socket import timeout
@@ -76,13 +77,13 @@ class SMTPEmailProvider(EmailProvider):
 
 
 def get_smtp(host, port, username=None, password=None, TLS=None, SSL=None, auth=None):
-    if SSL is None:
+    if not SSL:
         smtp = smtplib.SMTP(host, port, timeout=3)
     else:
-        smtp = smtplib.SMTP_SSL(host, port, timeout=3)
+        smtp = smtplib.SMTP_SSL(host, port, timeout=3, context=ssl.create_default_context())
 
     if TLS:
-        smtp.starttls()
+        smtp.starttls(context=ssl.create_default_context())
 
     if auth:
         smtp.login(username, password)

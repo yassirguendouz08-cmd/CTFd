@@ -93,6 +93,7 @@ class TestCyberduneInstances(unittest.TestCase):
         self.manager.calls.clear()
         with self.app.app_context():
             cache.clear()
+            self.app.extensions.get('cyberdune_security_counters', {}).clear()
             set_config("user_mode", "users")
             set_config("paused", False)
             set_config("start", None)
