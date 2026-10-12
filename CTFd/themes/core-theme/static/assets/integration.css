@@ -44,6 +44,9 @@ textarea.form-control { min-height: 120px; }
 .form .mb-3 { margin-bottom: var(--cd-space-6) !important; }
 .input-container { min-width: 0; }
 .validation-error { display: block; color: #ff9292; margin-top: var(--cd-space-2); }
+.nav-dropdown-toggle { background: transparent; }
+.nav-pills button.nav-link { min-height: var(--cd-control); padding: 8px 16px; background: var(--cd-surface-raised); color: var(--cd-muted); border: 1px solid var(--cd-border); }
+.nav-pills button.nav-link.active { background: #481414; color: #fff; border-color: #ff7676; }
 .ht-tm-navbar .mobile-nav-toggle { display: none; }
 .ht-tm-navbar .container { gap: var(--cd-space-3); }
 .ht-tm-nav .nav-link { min-height: var(--cd-control); display: inline-flex; align-items: center; padding: 8px 12px; }
