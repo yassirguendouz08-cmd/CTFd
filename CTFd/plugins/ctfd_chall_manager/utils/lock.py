@@ -52,7 +52,8 @@ class Lock:
         self.gr = threading.Lock()
         if REDIS_CLIENT is not None:
             logger.debug("redis client found, use distributed cache")
-            self.gr = REDIS_CLIENT.lock(name=f"{name}_gr", thread_local=False)
+            # Recover after a killed worker; instance requests have a 240s budget.
+            self.gr = REDIS_CLIENT.lock(name=f"{name}_gr", timeout=360, thread_local=False)
 
     def __repr__(self):
         return f"Lock name={self.name}"
@@ -63,11 +64,11 @@ class Lock:
         """
         return self.gr.locked()
 
-    def lock(self):
+    def lock(self, blocking=True):
         """
         Acquires the lock.
         """
-        self.gr.acquire()
+        return self.gr.acquire(blocking=blocking)
 
     def unlock(self):
         """

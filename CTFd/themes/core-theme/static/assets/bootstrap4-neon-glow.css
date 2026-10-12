@@ -4617,7 +4617,7 @@ a.close.disabled {
 
 .modal-dialog {
   position: relative;
-  width: 850px !important;
+  width: auto;
   margin: 0 auto;
   pointer-events: none; }
   .modal.fade .modal-dialog {
@@ -9280,14 +9280,14 @@ textarea.form-control {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
   padding: 0;
-  width: 850px;
-  max-width: 95vw;
+  width: 100%;
+  max-width: 100%;
   max-height: max-content;
   background-color: #171717;
   border-radius: 15px;
   border: 1px solid #434242;
    /* 1E1D1D */
-  box-shadow: 1px 1px 20px 100vh rgba(0, 0, 0, 0.7);
+  box-shadow: var(--cd-shadow);
   pointer-events: auto;
 }
 
@@ -9343,7 +9343,7 @@ textarea.form-control {
 }
 
 .modal-backdrop {
-  display: none !important;
+  background-color: #000;
 }
 
 .mb-1 .form-select{

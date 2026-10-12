@@ -15,12 +15,16 @@
     {% include "components/errors.html" %}
 
     <div id="score-graph" class="cyber-graph-container" :class="{'d-flex align-items-center justify-content-center': !show}" x-data="ScoreboardDetail" x-ref="scoregraph" @bracket-change.window="activeBracket=$event.detail; update();">
-      <div class="col-md-12 text-center" x-show="!show">
-        <i class="fas fa-circle-notch fa-spin fa-3x fa-fw spinner"></i>
+      <div class="col-md-12 text-center" x-show="!show && !error">
+        <p>No scores to chart yet.</p>
       </div>
+      <div x-show="error" x-cloak role="alert"><p x-text="error"></p><button class="btn btn-secondary" type="button" @click="update()">Try again</button></div>
     </div>
 
     <div id="scoreboard" class="row" x-data="ScoreboardList">
+      <div class="col-12" x-show="error" x-cloak role="alert">
+        <p x-text="error"></p><button class="btn btn-secondary" type="button" @click="update()">Try again</button>
+      </div>
       <template x-if="brackets.length && standings.length">
         <div class="col-md-12 py-3">
           <nav class="nav nav-pills nav-fill cyber-nav-pills">
@@ -33,7 +37,7 @@
       </template>
 
       <div class="col-md-12" x-show="standings.length">
-        <table class="table cyber-table">
+        <div class="table-responsive"><table class="table cyber-table">
           <thead>
           <tr>
             <th class="text-center" style="width: 80px">{% trans %}Rank{% endtrans %}</th>
@@ -88,7 +92,7 @@
               </tr>
             </template>
           </tbody>
-        </table>
+        </table></div>
       </div>
 
       <div class="col-md-12 empty-state" x-show="! standings.length">

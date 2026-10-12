@@ -1,0 +1,21 @@
+--- a/global/otel.go
++++ b/global/otel.go
+@@ -2,6 +2,7 @@
+ 
+ import (
+ 	"context"
++	"os"
+ 
+ 	"go.opentelemetry.io/contrib/exporters/autoexport"
+ 	"go.opentelemetry.io/otel"
+@@ -108,6 +109,10 @@
+ 		err = multierr.Append(inErr, shutdown(ctx))
+ 	}
+ 
++	if os.Getenv("OTEL_SDK_DISABLED") == "true" {
++		return shutdown, nil
++	}
++
+ 	// Define this OTel resource
+ 	r, err := resource.New(ctx,
+ 		resource.WithAttributes(

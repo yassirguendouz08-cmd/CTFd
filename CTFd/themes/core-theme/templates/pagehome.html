@@ -2,7 +2,7 @@
   /* ===========================
         GLOBAL & FONTS
   =========================== */
-  @import url('https://fonts.googleapis.com/css2?family=Hack:wght@400;700&display=swap');
+
   @import url('https://fonts.googleapis.com/css2?family=Big+Shoulders:opsz,wght@10..72,100..900&display=swap');
 
   :root {
@@ -19,7 +19,7 @@
     padding: 0;
     background-color: #050505; /* Fallback dark bg */
     font-family: "Hack", monospace;
-    overflow-x: hidden;
+
   }
 
   /* ===========================
@@ -98,7 +98,7 @@
   }
 
   main{
-      margin-top: 2% !important;
+      margin-top: 0;
   }
 
   body{
@@ -781,7 +781,7 @@
     <div> <span class="cursor"></span></div>
   </div>
 
-  <div class="bg-transparent mb-0 radius-0 bg_container">
+  <div class="bg-transparent mb-0 radius-0 bg_container cd-home">
     <div class="container">
       <div class="row">
 
@@ -793,7 +793,7 @@
           </h4>
 
           <div class="text-mono">
-            <a href="{{ url_for('challenges.listing') }}" class="btn btn-primary btn-shadow px-3 my-2 ml-0 text-left" style="color:#fff; text-decoration:none; border:1px solid #da0000; padding:10px; width: 200px;">
+            <a href="{{ url_for('challenges.listing') }}" class="btn btn-primary btn-shadow px-3 my-2 ml-0 text-left">
               > ./start_hack.sh
             </a>
           </div>
@@ -885,6 +885,10 @@
   document.addEventListener("DOMContentLoaded", () => {
     const output = document.getElementById("terminal-output");
     const loader = document.getElementById("hack-loader");
+    if (sessionStorage.getItem('cyberdune-welcomed') || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      loader.remove(); return;
+    }
+    sessionStorage.setItem('cyberdune-welcomed', '1');
     const randomLines = [
       "Loading kernel module...", "Injecting 0x004F3A...", "Patching memory region...",
       "Decrypting block...", "Verifying checksum...", "Syncing IO buffer...",
@@ -894,8 +898,8 @@
       "Compiling assets...", "Generating entropy...", "Allocating heap...",
       "Spawning worker thread...", "Executing shell routine..."
     ];
-    const spamDuration = 2000;
-    const spamInterval = 10;
+    const spamDuration = 350;
+    const spamInterval = 50;
     const endTime = Date.now() + spamDuration;
     const spammer = setInterval(() => {
       if (Date.now() >= endTime) {
@@ -926,10 +930,10 @@
           setTimeout(() => {
             loader.classList.add("fade-out");
             setTimeout(() => loader.remove(), 800);
-          }, 900);
+          }, 100);
         }
         output.scrollTop = output.scrollHeight;
-      }, 60);
+      }, 20);
     }
   });
 

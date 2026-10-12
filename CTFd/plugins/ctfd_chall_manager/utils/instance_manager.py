@@ -3,6 +3,7 @@ This module contains all functions to use Chall-Manager InstanceManager group.
 """
 
 import json
+import time
 
 import requests
 from CTFd.cache import cache
@@ -49,11 +50,12 @@ def create_instance(challenge_id: int, source_id: int) -> dict | ChallManagerExc
         "creating instance for challenge_id=%s, source_id=%s", challenge_id, source_id
     )
 
+    started = time.monotonic()
     try:
         r = requests.post(
             url, data=json.dumps(payload), headers=headers, timeout=api_timeout()
         )
-        logger.debug("received response: %s, %s", r.status_code, r.text)
+        logger.debug("manager response status: %s", r.status_code)
         r.raise_for_status()
     except requests.HTTPError as e:
         custom_exception = chall_manager_exception_builder(r)
@@ -61,6 +63,7 @@ def create_instance(challenge_id: int, source_id: int) -> dict | ChallManagerExc
     except requests.RequestException as e:
         raise ChallManagerException() from e
 
+    logger.info("instance create completed challenge=%s source=%s elapsed=%.3fs", challenge_id, source_id, time.monotonic() - started)
     # store the informations on cache
     result = r.json()
     cache.set(cache_key, result, timeout=60)
@@ -89,7 +92,7 @@ def delete_instance(challenge_id: int, source_id: int) -> dict | ChallManagerExc
 
     try:
         r = requests.delete(url, timeout=api_timeout())
-        logger.debug("received response: %s %s", r.status_code, r.text)
+        logger.debug("manager response status: %s", r.status_code)
         r.raise_for_status()
     except requests.HTTPError as e:
         custom_exception = chall_manager_exception_builder(r)
@@ -134,7 +137,7 @@ def get_instance(challenge_id: int, source_id: int, fresh=False) -> dict | Chall
 
     try:
         r = requests.get(url, timeout=api_timeout())
-        logger.debug("received response: %s %s", r.status_code, r.text)
+        logger.debug("manager response status: %s", r.status_code)
         r.raise_for_status()
     except requests.HTTPError as e:
         custom_exception = chall_manager_exception_builder(r)
@@ -177,7 +180,7 @@ def update_instance(challenge_id: int, source_id: int) -> dict | ChallManagerExc
         r = requests.patch(
             url, data=json.dumps(payload), headers=headers, timeout=api_timeout()
         )
-        logger.debug("received response: %s %s", r.status_code, r.text)
+        logger.debug("manager response status: %s", r.status_code)
         r.raise_for_status()
     except requests.HTTPError as e:
         custom_exception = chall_manager_exception_builder(r)
@@ -218,7 +221,7 @@ def query_instance(source_id: int) -> list | ChallManagerException:
                     res = json.loads(res)
                     if "result" in res.keys():
                         result.append(res["result"])
-        logger.debug("successfully queried instances: %s", result)
+        logger.debug("queried %s instances", len(result))
     except Exception as e:
         logger.error("connection error: %s", e)
         raise ChallManagerException(message="connection error") from e

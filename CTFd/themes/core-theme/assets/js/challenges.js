@@ -27,36 +27,47 @@ Alpine.store("challenge", {
 Alpine.data("Hint", () => ({
   id: null,
   html: null,
+  busy: false,
+  error: "",
 
   async showHint(event) {
-    if (event.target.open) {
-      let response = await CTFd.pages.challenge.loadHint(this.id);
+    if (event.target.open && !this.busy) {
+      this.busy = true;
+      this.error = "";
+      try {
+        let response = await CTFd.pages.challenge.loadHint(this.id);
 
-      // Hint has some kind of prerequisite or access prevention
-      if (response.errors) {
-        event.target.open = false;
-        CTFd._functions.challenge.displayUnlockError(response);
-        return;
-      }
-      let hint = response.data;
-      if (hint.content) {
-        this.html = addTargetBlank(hint.html);
-      } else {
-        let answer = await CTFd.pages.challenge.displayUnlock(this.id);
-        if (answer) {
-          let unlock = await CTFd.pages.challenge.loadUnlock(this.id);
+        // Hint has some kind of prerequisite or access prevention
+        if (response.errors) {
+          event.target.open = false;
+          CTFd._functions.challenge.displayUnlockError(response);
+          return;
+        }
+        let hint = response.data;
+        if (hint.content) {
+          this.html = addTargetBlank(hint.html);
+        } else {
+          let answer =
+            hint.cost === 0 || (await CTFd.pages.challenge.displayHintUnlock(hint));
+          if (answer) {
+            let unlock = await CTFd.pages.challenge.loadUnlock(this.id);
 
-          if (unlock.success) {
-            let response = await CTFd.pages.challenge.loadHint(this.id);
-            let hint = response.data;
-            this.html = addTargetBlank(hint.html);
+            if (unlock.success) {
+              let response = await CTFd.pages.challenge.loadHint(this.id);
+              let hint = response.data;
+              this.html = addTargetBlank(hint.html);
+            } else {
+              event.target.open = false;
+              CTFd._functions.challenge.displayUnlockError(unlock);
+            }
           } else {
             event.target.open = false;
-            CTFd._functions.challenge.displayUnlockError(unlock);
           }
-        } else {
-          event.target.open = false;
         }
+      } catch (_) {
+        this.error = "The hint could not be loaded. Close and reopen it to try again.";
+      } finally {
+        this.busy = false;
       }
     }
   },
@@ -71,6 +82,8 @@ Alpine.data("Challenge", () => ({
   submissions: [],
   solution: null,
   response: null,
+  submitting: false,
+  submissionError: "",
   share_url: null,
   max_attempts: 0,
   attempts: 0,
@@ -78,6 +91,8 @@ Alpine.data("Challenge", () => ({
   selectedRating: 0,
   ratingReview: "",
   ratingSubmitted: false,
+  ratingBusy: false,
+  ratingError: "",
 
   async init() {
     highlight();
@@ -108,10 +123,6 @@ Alpine.data("Challenge", () => ({
       console.log(error);
     }
     return styles;
-  },
-
-  async init() {
-    highlight();
   },
 
   async showChallenge() {
@@ -209,12 +220,23 @@ Alpine.data("Challenge", () => ({
   },
 
   async submitChallenge() {
-    this.response = await CTFd.pages.challenge.submitChallenge(
-      this.id,
-      this.submission,
-    );
-
-    await this.renderSubmissionResponse();
+    if (this.submitting || !this.submission.trim()) return;
+    this.submitting = true;
+    this.submissionError = "";
+    try {
+      const response = await CTFd.pages.challenge.submitChallenge(
+        this.id,
+        this.submission,
+      );
+      if (!response?.data?.status) throw new Error("Submission failed");
+      this.response = response;
+      await this.renderSubmissionResponse();
+    } catch (error) {
+      this.submissionError =
+        "Your submission could not be completed. Please try again.";
+    } finally {
+      this.submitting = false;
+    }
   },
 
   async renderSubmissionResponse() {
@@ -250,16 +272,23 @@ Alpine.data("Challenge", () => ({
   },
 
   async submitRating() {
-    const response = await CTFd.pages.challenge.submitRating(
-      this.id,
-      this.selectedRating,
-      this.ratingReview,
-    );
-    if (response.value) {
+    if (this.ratingBusy || ![1, -1].includes(this.selectedRating)) return;
+    this.ratingBusy = true;
+    this.ratingError = "";
+    try {
+      const response = await CTFd.pages.challenge.submitRating(
+        this.id,
+        this.selectedRating,
+        this.ratingReview,
+      );
+      if (!response?.value) throw new Error("Rating failed");
       this.ratingValue = this.selectedRating;
       this.ratingSubmitted = true;
-    } else {
-      alert("Error submitting rating");
+    } catch (_) {
+      this.ratingError = "Your rating could not be saved. Please try again.";
+      this.selectedRating = this.ratingValue || 0;
+    } finally {
+      this.ratingBusy = false;
     }
   },
 }));
@@ -268,6 +297,7 @@ Alpine.data("ChallengeBoard", () => ({
   loaded: false,
   challenges: [],
   challenge: null,
+  opening: false,
 
   async init() {
     this.challenges = await CTFd.pages.challenges.getChallenges();
@@ -337,27 +367,33 @@ Alpine.data("ChallengeBoard", () => ({
   },
 
   async loadChallenge(challengeId) {
-    await CTFd.pages.challenge.displayChallenge(challengeId, challenge => {
-      challenge.data.view = addTargetBlank(challenge.data.view);
-      Alpine.store("challenge").data = challenge.data;
+    if (this.opening) return;
+    this.opening = true;
+    try {
+      await CTFd.pages.challenge.displayChallenge(challengeId, challenge => {
+        challenge.data.view = addTargetBlank(challenge.data.view);
+        Alpine.store("challenge").data = challenge.data;
 
-      // nextTick is required here because we're working in a callback
-      Alpine.nextTick(() => {
-        let modal = Modal.getOrCreateInstance("[x-ref='challengeWindow']");
-        // TODO: Get rid of this private attribute access
-        // See https://github.com/twbs/bootstrap/issues/31266
-        modal._element.addEventListener(
-          "hidden.bs.modal",
-          event => {
-            // Remove location hash
-            history.replaceState(null, null, " ");
-          },
-          { once: true },
-        );
-        modal.show();
-        history.replaceState(null, null, `#${challenge.data.name}-${challengeId}`);
+        // nextTick is required here because we're working in a callback
+        Alpine.nextTick(() => {
+          let modal = Modal.getOrCreateInstance("[x-ref='challengeWindow']");
+          // TODO: Get rid of this private attribute access
+          // See https://github.com/twbs/bootstrap/issues/31266
+          modal._element.addEventListener(
+            "hidden.bs.modal",
+            event => {
+              // Remove location hash
+              history.replaceState(null, null, " ");
+            },
+            { once: true },
+          );
+          modal.show();
+          history.replaceState(null, null, `#${challenge.data.name}-${challengeId}`);
+        });
       });
-    });
+    } finally {
+      this.opening = false;
+    }
   },
 }));
 

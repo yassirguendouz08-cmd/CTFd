@@ -98,7 +98,7 @@ class DynamicIaCValueChallenge(DynamicValueChallenge):
     scripts = {  # Scripts that are loaded when a template is loaded
         "create": "/plugins/ctfd_chall_manager/assets/create.js",
         "update": "/plugins/ctfd_chall_manager/assets/update.js",
-        "view": "/plugins/ctfd_chall_manager/assets/view.js",
+        "view": "/plugins/ctfd_chall_manager/assets/view.js?v=20261012-polish",
     }
     # Route at which files are accessible.
     # This must be registered using register_plugin_assets_directory()

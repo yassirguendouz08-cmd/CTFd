@@ -18,6 +18,17 @@ import eventRead from "./utils/notifications/read";
 import "./components/language";
 
 dayjs.extend(advancedFormat);
+// The SSE endpoint requires authentication; guest pages should not reconnect to a 403.
+const initEvents = CTFd.events.init;
+CTFd.events.init = (...args) => {
+  if (!window.init.userId) return;
+  if (CTFd.events.source) CTFd.events.disconnect();
+  initEvents(...args);
+};
+const connectEvents = CTFd.events.connect;
+CTFd.events.connect = () => {
+  if (CTFd.events.source) connectEvents();
+};
 CTFd.init(window.init);
 
 (() => {

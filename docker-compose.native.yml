@@ -1,0 +1,16 @@
+# Override only the manager runtime; retain existing state and control networks.
+services:
+  chall-manager:
+    image: cyberdune/chall-manager:v0.6.6-arm64-polish
+    platform: linux/arm64
+    environment:
+      PULUMI_HOME: /var/lib/pulumi-native
+      PULUMI_SKIP_UPDATE_CHECK: "true"
+      OTEL_TRACES_EXPORTER: none
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
+      OTEL_SDK_DISABLED: "true"
+    volumes:
+      - instance_pulumi_native:/var/lib/pulumi-native
+volumes:
+  instance_pulumi_native:

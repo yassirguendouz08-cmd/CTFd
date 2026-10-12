@@ -31,7 +31,7 @@
 
             <div class="mb-3 input-container glitch-input-wrapper">
               {{ form.name(class="holo-input", value=name, autocomplete="username", placeholder="Enter your name") }}
-              <label class="input-label" data-text="{{ form.name.label.text }}">
+              <label for="{{ form.name.id }}" class="input-label" data-text="{{ form.name.label.text }}">
                   <span class="label-text-inactive">Enter your name</span>
                   <span class="label-text-active">Name <span class="text-danger">*</span></span>
               </label>
@@ -52,7 +52,7 @@
 
             <div class="mb-3 input-container glitch-input-wrapper">
               {{ form.email(class="holo-input", value=email, autocomplete="email", placeholder="Enter a valid email") }}
-              <label class="input-label" data-text="{{ form.email.label.text }}">
+              <label for="{{ form.email.id }}" class="input-label" data-text="{{ form.email.label.text }}">
                   <span class="label-text-inactive">Enter a valid email</span>
                   <span class="label-text-active">Email <span class="text-danger">*</span></span>
               </label>
@@ -73,7 +73,7 @@
 
             <div class="mb-3 input-container glitch-input-wrapper">
               {{ form.password(class="holo-input", value=password, autocomplete="new-password", placeholder="Enter password") }}
-              <label class="input-label" data-text="{{ form.password.label.text }}">
+              <label for="{{ form.password.id }}" class="input-label" data-text="{{ form.password.label.text }}">
                   <span class="label-text-inactive">Enter password</span>
                   <span class="label-text-active">Password <span class="text-danger">*</span></span>
               </label>
@@ -98,7 +98,7 @@
 
             <div class="row pt-3">
               <div class="col-6 col-md-4 offset-6 offset-md-8">
-                {{ form.submit(class="btn btn-block btn-success w-100") }}
+                {{ form.submit(class="btn btn-block btn-primary w-100") }}
               </div>
             </div>
 

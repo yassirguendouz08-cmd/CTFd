@@ -84,6 +84,8 @@ class UserInstance(Resource):
             result = get_instance(challenge_id, source_id)
             logger.info("instance retrieved for challenge %s source %s", challenge_id, source_id)
         except ChallManagerException as e:
+            if e.http_code == 404:
+                return {"success": True, "data": None}, 200
             logger.error("error while getting instance: %s", e)
             return {
                 "success": False,
@@ -126,13 +128,20 @@ class UserInstance(Resource):
                 abort(403, "unauthorized", success=False)
 
         lock = load_or_store(str(source_id))
-        if lock.is_locked():
+        if not lock.lock(blocking=False):
             logger.debug("instance creation already in progress, abort")
             abort(429, "instance creation already in progress", success=False)
 
         try:
             logger.debug("post /instance acquire the player lock for %s", source_id)
-            lock.lock()
+            # Return the current instance for retries instead of issuing another create.
+            try:
+                existing = get_instance(challenge_id, source_id, fresh=True)
+            except ChallManagerException as error:
+                if error.http_code != 404:
+                    raise
+            else:
+                return {"success": True, "data": {k: existing[k] for k in ["connectionInfo", "until", "since"] if k in existing}}, 200
 
             if not check_source_can_create_instance(challenge_id, source_id):
                 abort(403, "You or your team used up all your mana.", success=False)
@@ -253,15 +262,13 @@ class UserInstance(Resource):
                 abort(403, "unauthorized", success=False)
 
         lock = load_or_store(str(source_id))
-        if lock.is_locked():
+        if not lock.lock(blocking=False):
             logger.debug("instance deletion already in progress, abort")
             abort(429, "instance deletion already in progress", success=False)
 
         try:
             # lock = load_or_store(f"{source_id}")
             logger.debug("delete /instance acquire the player lock for %s", source_id)
-            lock.lock()
-
             if not check_source_can_edit_instance(challenge_id, source_id):
                 abort(403, "unauthorized", success=False)
 

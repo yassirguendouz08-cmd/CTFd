@@ -4,7 +4,7 @@ repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 arch=${SCENARIO_ARCH:-amd64}
 sudo docker build -t cyberdune/instance-gateway:v1 "$repo/services/instance-gateway"
 case "$arch" in amd64|arm64) ;; *) echo "Unsupported architecture"; exit 1 ;; esac
-tag="web-container:v2-$arch"
+tag="web-container:v3-$arch"
 artifact=$(mktemp -d)
 trap 'sudo rm -f -- "$artifact/main" "$artifact/Pulumi.yaml"; rmdir -- "$artifact"' EXIT
 if [[ "${USE_CACHED_LAUNCHER_BUILDER:-0}" == 1 ]]; then

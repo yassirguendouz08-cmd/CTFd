@@ -132,6 +132,25 @@ class TestCyberduneInstances(unittest.TestCase):
         self.assertIn((str(self.id), str(self.second_id)), self.manager.instances)
         self.assertNotIn((str(self.id), str(self.first_id)), self.manager.instances)
 
+    def test_duplicate_launch_returns_existing_and_busy_lock_rejects_mutation(self):
+        from CTFd.plugins.ctfd_chall_manager.utils.lock import load_or_store
+        empty = self.first.get(self.url + f"?challengeId={self.id}")
+        self.assertEqual(empty.status_code, 200)
+        self.assertIsNone(empty.get_json()["data"])
+        first = self.first.post(self.url, json={"challengeId": self.id})
+        second = self.first.post(self.url, json={"challengeId": self.id})
+        self.assertEqual(first.get_json(), second.get_json())
+        creates = [call for call in self.manager.calls if call[0] == "POST" and call[1].endswith('/instance')]
+        self.assertEqual(len(creates), 1)
+        lock = load_or_store(str(self.first_id))
+        self.assertTrue(lock.lock(blocking=False))
+        try:
+            self.assertEqual(self.first.post(self.url, json={"challengeId": self.id}).status_code, 429)
+            self.assertEqual(self.first.delete(self.url, json={"challengeId": self.id}).status_code, 429)
+        finally:
+            lock.unlock()
+        self.assertEqual(self.first.delete(self.url, json={"challengeId": self.id}).status_code, 200)
+
     def test_access_rules_and_current_backend_state(self):
         self.assertIn(self.app.test_client().post(self.url, json={"challengeId": self.id}).status_code, [302, 403])
         with self.app.app_context():

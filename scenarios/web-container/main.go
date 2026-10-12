@@ -156,7 +156,13 @@ func main() {
 			ReadOnly:     pulumi.Bool(true),
 			Capabilities: &docker.ContainerCapabilitiesArgs{Drops: pulumi.StringArray{pulumi.String("ALL")}},
 			SecurityOpts: pulumi.StringArray{pulumi.String("no-new-privileges:true")},
-			Sysctls:      pulumi.StringMap{"net.ipv4.ip_forward": pulumi.String("0")},
+			// Ready means that the target accepts TCP connections, not just that Docker started.
+			Healthcheck: &docker.ContainerHealthcheckArgs{
+				Tests:    pulumi.StringArray{pulumi.String("CMD"), pulumi.String("socat"), pulumi.String("-u"), pulumi.String("OPEN:/dev/null"), address.ApplyT(func(ip string) string { return fmt.Sprintf("TCP:%s:%d,connect-timeout=1", ip, port) }).(pulumi.StringOutput)},
+				Interval: pulumi.String("2s"), Timeout: pulumi.String("2s"), Retries: pulumi.Int(30), StartPeriod: pulumi.String("1s"),
+			},
+			Wait: pulumi.Bool(true), WaitTimeout: pulumi.Int(90),
+			Sysctls: pulumi.StringMap{"net.ipv4.ip_forward": pulumi.String("0")},
 			NetworksAdvanced: docker.ContainerNetworksAdvancedArray{
 				docker.ContainerNetworksAdvancedArgs{Name: network.Name},
 				docker.ContainerNetworksAdvancedArgs{Name: ingress.Name},

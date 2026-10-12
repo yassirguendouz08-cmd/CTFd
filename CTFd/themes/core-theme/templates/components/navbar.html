@@ -9,14 +9,14 @@
     --text-dim: #a3a3a3;
   }
 
-  @import url('https://fonts.googleapis.com/css2?family=Hack:wght@400;700&display=swap');
+
 
   body {
     margin: 0;
     padding: 0;
     background-color: #050505; /* Fallback dark bg */
     font-family: "Hack", monospace;
-    overflow: hidden; /* Prevent scroll */
+
   }
 
   /* --- 1. Layout --- */
@@ -239,10 +239,10 @@
 
 
       <div class="nav-dropdown" style="position: relative;">
-        <a class="nav-link nav-dropdown-toggle" onclick="toggleNavDropdown(event)" id="navDropdownToggle">
+        <button type="button" class="nav-link nav-dropdown-toggle" onclick="toggleNavDropdown(event)" id="navDropdownToggle" aria-controls="navDropdown" aria-expanded="false">
           Explore
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-        </a>
+        </button>
 
         <div class="custom-dropdown-menu" id="navDropdown">
           {% if Configs.account_visibility != 'admins' %}
@@ -281,7 +281,7 @@
     <div class="account-dropdown">
       <div class="account-btn-wrapper">
         {% if authed() %}
-          <button class="btn-accent" onclick="toggleAccountDropdown(event)">
+          <button type="button" class="btn-accent" onclick="toggleAccountDropdown(event)" id="accountDropdownToggle" aria-controls="accountDropdown" aria-expanded="false">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             Account
           </button>
@@ -343,9 +343,11 @@
 
     // Close other
     if(navDropdown) navDropdown.classList.remove('show');
+    document.getElementById('navDropdownToggle')?.setAttribute('aria-expanded', 'false');
 
     if (dropdown) {
       dropdown.classList.toggle('show');
+      event.currentTarget.setAttribute('aria-expanded', String(dropdown.classList.contains('show')));
     }
   }
 
@@ -358,9 +360,11 @@
 
     // Close other
     if(accountDropdown) accountDropdown.classList.remove('show');
+    document.getElementById('accountDropdownToggle')?.setAttribute('aria-expanded', 'false');
 
     if (dropdown) {
       dropdown.classList.toggle('show');
+      event.currentTarget.setAttribute('aria-expanded', String(dropdown.classList.contains('show')));
       toggle.classList.toggle('active-parent'); // Toggle the parent active state visually
     }
   }
@@ -375,12 +379,14 @@
     if (accountDropdown && accountDropdown.classList.contains('show')) {
       if (!accountContainer.contains(event.target)) {
         accountDropdown.classList.remove('show');
+        document.getElementById('accountDropdownToggle')?.setAttribute('aria-expanded', 'false');
       }
     }
 
     if (navDropdown && navDropdown.classList.contains('show')) {
       if (!navContainer.contains(event.target)) {
         navDropdown.classList.remove('show');
+        document.getElementById('navDropdownToggle')?.setAttribute('aria-expanded', 'false');
         // Remove active-parent if we are clicking away AND not on a child page
         // The page load logic below will re-add it if we are actually on a child page
         const toggle = document.getElementById('navDropdownToggle');
@@ -391,12 +397,19 @@
     }
   });
 
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    document.querySelectorAll('.custom-dropdown-menu.show').forEach(menu => menu.classList.remove('show'));
+    document.querySelectorAll('[aria-expanded="true"]').forEach(toggle => toggle.setAttribute('aria-expanded', 'false'));
+    document.getElementById('theme-navigation')?.classList.remove('mobile-open');
+  });
+
   // Active Link Highlight Logic
   document.addEventListener('DOMContentLoaded', function() {
     const currentPath = window.location.pathname;
 
     // 1. Check Standard Links
-    const navLinks = document.querySelectorAll('.nav-link:not(.nav-dropdown-toggle)');
+    const navLinks = document.querySelectorAll('.ht-tm-nav a.nav-link');
     navLinks.forEach(function(link) {
       const linkPath = new URL(link.href).pathname;
       if (currentPath === linkPath || (currentPath !== '/' && linkPath !== '/' && currentPath.startsWith(linkPath))) {
@@ -405,7 +418,7 @@
     });
 
     // 2. Check Dropdown Items to light up Parent "Explore"
-    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    const dropdownItems = document.querySelectorAll('.ht-tm-navbar a.dropdown-item');
     const exploreToggle = document.getElementById('navDropdownToggle');
 
     dropdownItems.forEach(function(item) {

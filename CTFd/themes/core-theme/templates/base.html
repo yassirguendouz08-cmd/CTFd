@@ -10,11 +10,14 @@
   {{ meta | safe }}
 
   {% block stylesheets %}
-    {{ Assets.css("assets/scss/main.scss") }}
-    <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/bootstrap4-neon-glow.css') }}">
+    {# The supplied theme's customized stylesheet differs from its SCSS source. #}
+    <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/main.e9ec7884.css') }}?v=20261012-polish">
+    <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/bootstrap4-neon-glow.css') }}?v=20261012-polish">
 
   {% endblock %}
 
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/challenge-detail.css') }}?v=20261012-polish">
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/challenge-board.css') }}?v=20261012-polish">
   {{ Plugins.styles }}
 
 
@@ -40,16 +43,20 @@
   </script>
 
   {{ Configs.theme_header }}
-  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/integration.css') }}">
 </head>
 <body>
+<video class="cd-background-video" aria-hidden="true" tabindex="-1" autoplay muted loop playsinline preload="metadata" poster="{{ url_for('views.themes_beta', theme='core-theme', path='img/bg.webp') }}">
+  <source src="{{ url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-background.webm') }}" type="video/webm">
+</video>
+<a class="cd-skip-link" href="#main-content">Skip to content</a>
 {% include "components/navbar.html" %}
 
 
-<main role="main">
+<main role="main" id="main-content">
   {% block content %}
   {% endblock %}
 </main>
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/integration.css') }}?v=20261012-polish">
 
 {% include "components/snackbar.html" %}
 
@@ -64,6 +71,15 @@
 {{ Configs.theme_footer }}
 
 <script>
+  const backgroundVideo = document.querySelector('.cd-background-video');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const updateBackground = () => {
+    if (reducedMotion.matches || document.hidden) backgroundVideo.pause();
+    else backgroundVideo.play().catch(() => {});
+  };
+  reducedMotion.addEventListener('change', updateBackground);
+  document.addEventListener('visibilitychange', updateBackground);
+  updateBackground();
   // Click outside modal-content → close modal
   document.addEventListener('mousedown', function(e) {
     if (e.target.closest('.modal-content')) return;

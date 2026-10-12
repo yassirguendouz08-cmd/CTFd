@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 reference = sys.argv[1]
-if not re.fullmatch(r'scenario-registry:5000/scenarios/web-container:v2-(amd64|arm64)@sha256:[0-9a-f]{64}', reference):
+if not re.fullmatch(r'scenario-registry:5000/scenarios/web-container:v[23]-(amd64|arm64)@sha256:[0-9a-f]{64}', reference):
     raise SystemExit('Invalid local launcher reference')
 from CTFd import create_app
 from CTFd.utils import get_config, set_config
@@ -18,4 +18,4 @@ with app.app_context():
         timeout = 240
     set_config('chall-manager:chall-manager_api_timeout', max(240, timeout))
     cache.clear()
-print('New ZIP challenges will use the verified v2 launcher.')
+print('New ZIP challenges will use the verified launcher with TCP readiness checks.')

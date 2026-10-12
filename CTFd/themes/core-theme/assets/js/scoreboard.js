@@ -13,15 +13,25 @@ Alpine.data("ScoreboardDetail", () => ({
   data: {},
   show: true,
   activeBracket: null,
+  error: "",
 
   async update() {
-    this.data = await CTFd.pages.scoreboard.getScoreboardDetail(10, this.activeBracket);
+    try {
+      this.error = "";
+      this.data = await CTFd.pages.scoreboard.getScoreboardDetail(
+        10,
+        this.activeBracket,
+      );
 
-    let optionMerge = window.scoreboardChartOptions;
-    let option = getOption(CTFd.config.userMode, this.data, optionMerge);
+      let optionMerge = window.scoreboardChartOptions;
+      let option = getOption(CTFd.config.userMode, this.data, optionMerge);
 
-    embed(this.$refs.scoregraph, option);
-    this.show = Object.keys(this.data).length > 0;
+      embed(this.$refs.scoregraph, option);
+      this.show = Object.keys(this.data).length > 0;
+    } catch (_) {
+      this.show = false;
+      this.error = "The score chart could not be loaded. Please try again.";
+    }
   },
 
   async init() {
@@ -37,10 +47,16 @@ Alpine.data("ScoreboardList", () => ({
   standings: [],
   brackets: [],
   activeBracket: null,
+  error: "",
 
   async update() {
-    this.brackets = await CTFd.pages.scoreboard.getBrackets(CTFd.config.userMode);
-    this.standings = await CTFd.pages.scoreboard.getScoreboard();
+    try {
+      this.error = "";
+      this.brackets = await CTFd.pages.scoreboard.getBrackets(CTFd.config.userMode);
+      this.standings = await CTFd.pages.scoreboard.getScoreboard();
+    } catch (_) {
+      this.error = "The scoreboard could not be loaded. Please try again.";
+    }
   },
 
   async init() {

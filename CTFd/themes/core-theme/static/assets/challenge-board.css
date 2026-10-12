@@ -1,0 +1,20 @@
+/* The supplied chamfered card appearance; dimensions come from shared tokens. */
+.challenge-button {
+  position: relative; display: flex; flex-direction: column; justify-content: space-between;
+  background: #8b1a1a; color: #fff; border: 0; border-radius: 0; text-align: left; cursor: pointer;
+  clip-path: polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(50% - 8px),calc(100% - 4px) 50%,100% calc(50% + 8px),100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 calc(50% + 8px),4px 50%,0 calc(50% - 8px),0 12px);
+  transition: background-color var(--cd-duration);
+}
+.challenge-button:hover { background: var(--cd-accent); }
+.challenge-button.challenge-solved { background: #3d1111; }
+.challenge-button.challenge-solved:hover { background: #4d1515; }
+.challenge-title { color: #fff; font-weight: 700; margin: 0; }
+.challenge-pill { padding: 4px 12px; border-radius: 6px; font-weight: 700; font-size: .85rem; background: #ff7676; color: #111; border: 0; }
+.category-web .challenge-pill { background: #76d792; }
+.category-crypto .challenge-pill { background: #76a6ff; }
+.category-forensics .challenge-pill { background: #c98dff; }
+.category-warmup .challenge-pill { background: #ffd36b; }
+.challenge-button.challenge-solved .challenge-pill { background: #bfa9a9; color: #421a1a; }
+.challenge-stats { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: auto; font-weight: 700; }
+.challenge-stat { display: inline-flex; gap: var(--cd-space-2); align-items: center; font-weight: 700; }
+.category-header { border-bottom: 2px solid var(--cd-border); padding-bottom: var(--cd-space-2); }

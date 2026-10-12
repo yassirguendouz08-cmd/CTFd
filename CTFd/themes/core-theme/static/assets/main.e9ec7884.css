@@ -46,7 +46,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 }
 
 main {
-  margin-top: max(2.5%, 125px);
+  margin-top: 0;
 }
 
 body {
@@ -57,7 +57,7 @@ body {
   line-height: 1.5;
   color: #d8d8d8;
   text-align: left;
-  background: url('../img/bg-1.gif');
+  background-color: #050505;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

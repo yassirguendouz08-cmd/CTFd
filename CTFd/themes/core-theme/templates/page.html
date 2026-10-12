@@ -4,7 +4,7 @@
   {% if request.path.rstrip('/') == request.script_root.rstrip('/') %}
     {% include 'pagehome.html' %}
   {% else %}
-  <div class="title-container">
+  <div class="container cd-content-page">
     {{ content | safe }}
   </div>
   {% endif %}

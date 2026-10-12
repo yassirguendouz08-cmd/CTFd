@@ -27,7 +27,7 @@
           <form class="form" method="post" accept-charset="utf-8">
             <div class="mb-3 input-container glitch-input-wrapper">
               {{ form.name(class="holo-input", value=name, autocomplete="username email", placeholder="Enter your name or email") }}
-              <label class="input-label" data-text="{{ form.name.label.text }}">
+              <label for="{{ form.name.id }}" class="input-label" data-text="{{ form.name.label.text }}">
                 <span class="label-text-inactive">Enter your name or email</span>
                 <span class="label-text-active">{{ form.name.label.text }} <span class="text-danger">*</span></span>
               </label>
@@ -48,7 +48,7 @@
 
             <div class="mb-3 input-container glitch-input-wrapper">
               {{ form.password(class="holo-input", value=password, autocomplete="current-password", placeholder="Enter password") }}
-              <label class="input-label" data-text="{{ form.password.label.text }}">
+              <label for="{{ form.password.id }}" class="input-label" data-text="{{ form.password.label.text }}">
                 <span class="label-text-inactive">Enter password</span>
                 <span class="label-text-active">{{ form.password.label.text }} <span class="text-danger">*</span></span>
               </label>
@@ -75,7 +75,7 @@
               </div>
 
               <div class="col-6 col-md-4">
-                {{ form.submit(class="btn btn-block btn-success w-100") }}
+                {{ form.submit(class="btn btn-block btn-primary w-100") }}
               </div>
             </div>
 

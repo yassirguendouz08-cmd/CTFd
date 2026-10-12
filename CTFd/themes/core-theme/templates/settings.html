@@ -44,7 +44,7 @@
 
                 <div class="mb-3 input-container glitch-input-wrapper">
                   {{ form.name(class="holo-input", value=name, placeholder="Enter your name", autocomplete="username") }}
-                  <label class="input-label" data-text="{{ form.name.label.text }}">
+                  <label for="{{ form.name.id }}" class="input-label" data-text="{{ form.name.label.text }}">
                     <span class="label-text-inactive">Enter your name</span>
                     <span class="label-text-active">{{ form.name.label.text }}</span>
                   </label>
@@ -61,7 +61,7 @@
 
                 <div class="mb-3 input-container glitch-input-wrapper">
                   {{ form.email(class="holo-input", value=email, placeholder="Enter your email", autocomplete="email") }}
-                  <label class="input-label" data-text="{{ form.email.label.text }}">
+                  <label for="{{ form.email.id }}" class="input-label" data-text="{{ form.email.label.text }}">
                     <span class="label-text-inactive">Enter your email</span>
                     <span class="label-text-active">{{ form.email.label.text }}</span>
                   </label>
@@ -83,7 +83,7 @@
 
                 <div class="mb-3 input-container glitch-input-wrapper">
                   {{ form.confirm(class="holo-input", placeholder="Current password to confirm changes", autocomplete="current-password") }}
-                  <label class="input-label" data-text="{{ form.confirm.label.text }}">
+                  <label for="{{ form.confirm.id }}" class="input-label" data-text="{{ form.confirm.label.text }}">
                     <span class="label-text-inactive">Current password to confirm</span>
                     <span class="label-text-active">{{ form.confirm.label.text }} <span class="text-danger">*</span></span>
                   </label>
@@ -100,7 +100,7 @@
 
                 <div class="mb-3 input-container glitch-input-wrapper">
                   {{ form.password(class="holo-input", placeholder="New password (optional)", autocomplete="new-password") }}
-                  <label class="input-label" data-text="{{ form.password.label.text }}">
+                  <label for="{{ form.password.id }}" class="input-label" data-text="{{ form.password.label.text }}">
                     <span class="label-text-inactive">New password (optional)</span>
                     <span class="label-text-active">{{ form.password.label.text }}</span>
                   </label>
@@ -117,7 +117,7 @@
 
                 <div class="mb-3 input-container glitch-input-wrapper">
                   {{ form.affiliation(class="holo-input", value=affiliation or "", placeholder="Your affiliation", autocomplete="organization") }}
-                  <label class="input-label" data-text="{{ form.affiliation.label.text }}">
+                  <label for="{{ form.affiliation.id }}" class="input-label" data-text="{{ form.affiliation.label.text }}">
                     <span class="label-text-inactive">Your affiliation</span>
                     <span class="label-text-active">{{ form.affiliation.label.text }}</span>
                   </label>
@@ -134,7 +134,7 @@
 
                 <div class="mb-3 input-container glitch-input-wrapper">
                   {{ form.website(class="holo-input", value=website or "", placeholder="Your website", autocomplete="url") }}
-                  <label class="input-label" data-text="{{ form.website.label.text }}">
+                  <label for="{{ form.website.id }}" class="input-label" data-text="{{ form.website.label.text }}">
                     <span class="label-text-inactive">Your website</span>
                     <span class="label-text-active">{{ form.website.label.text }}</span>
                   </label>
@@ -192,8 +192,8 @@
                   </template>
                 </div>
 
-                <div class="mb-3 btn-w-200">
-                  {{ form.submit(class="btn btn-success float-end margin-right px-4") }}
+                <div class="mb-3 cd-actions">
+                  {{ form.submit(class="btn btn-success") }}
                 </div>
               </form>
             {% endwith %}
@@ -258,7 +258,7 @@
 
                 <div class="row">
                   <div class="col">
-                    {{ form.submit(class="btn btn-block btn-primary float-end px-4") }}
+                    {{ form.submit(id="token-submit", class="btn btn-primary") }}
                   </div>
                 </div>
               </form>
@@ -304,7 +304,7 @@
                   </div>
                 </div>
 
-                <table class="table table-striped align-middle">
+                <div class="table-responsive"><table class="table table-striped align-middle">
                   <thead>
                   <tr>
                     <th class="text-center">{% trans %}Created{% endtrans %}</th>
@@ -338,7 +338,7 @@
                   {% endfor %}
 
                   </tbody>
-                </table>
+                </table></div>
               </div>
             {% endif %}
 

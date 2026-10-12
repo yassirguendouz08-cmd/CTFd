@@ -3,187 +3,7 @@
 
 
 {% block content %}
-<style>
-  /* =========================================================
-     Challenge cards — Sci-fi chamfered design
-  ========================================================= */
 
-  .container-challenges {
-    margin-bottom: 2.5rem;
-  }
-
-  .category-header {
-    border-bottom: 2px solid #444;
-    padding-bottom: 0.5rem;
-  }
-
-  .challenges-row {
-    width: 100%;
-  }
-
-  /* =========================================
-     1. Normal State (The Base Shape)
-  ========================================= */
-  .challenge-button {
-    position: relative;
-    background-color: #8b1a1a !important;
-    color: #ffffff !important;
-    border: none !important;
-    border-radius: 0 !important;
-    text-align: left;
-    cursor: pointer;
-    overflow: hidden;
-
-    /* Sci-fi chamfered corners with side notches */
-    clip-path: polygon(
-      12px 0,
-      calc(100% - 12px) 0,
-      100% 12px,
-      100% calc(50% - 8px),
-      calc(100% - 4px) 50%,
-      100% calc(50% + 8px),
-      100% calc(100% - 12px),
-      calc(100% - 12px) 100%,
-      12px 100%,
-      0 calc(100% - 12px),
-      0 calc(50% + 8px),
-      4px 50%,
-      0 calc(50% - 8px),
-      0 12px
-    );
-
-    transition: all 0.2s ease-in-out;
-    min-height: 140px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 15px !important;
-  }
-
-  .challenge-button:focus {
-    outline: none;
-  }
-
-  .challenge-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    line-height: 1.1;
-    margin: 0;
-    padding-right: 7rem;
-    color: #ffffff;
-    transition: color 0.2s ease;
-  }
-
-  /* =========================================
-     2. Hover State
-  ========================================= */
-  .challenge-button:hover {
-    background-color: #da0000 !important;
-    transform: translate(-4px, -4px);
-    filter: drop-shadow(6px 6px 0px #ff3c5c);
-  }
-
-  .challenge-button:hover .challenge-title {
-    color: #ffffff !important;
-  }
-
-  /* =========================================
-     3. Solved State & GIF Overlay
-  ========================================= */
-  .challenge-button.challenge-solved {
-    background-color: #3d1111 !important;
-    filter: none;
-    transform: none;
-    opacity: 0.9;
-  }
-
-  .challenge-button.challenge-solved .challenge-title,
-  .challenge-button.challenge-solved .challenge-stats {
-    opacity: 0.6;
-  }
-
-  /* don't switch solved title to black on hover */
-  .challenge-button.challenge-solved:hover .challenge-title,
-  .challenge-button.challenge-solved:focus-visible .challenge-title {
-    color: #ffc6c6;
-  }
-
-  .challenge-button.challenge-solved:hover,
-  .challenge-button.challenge-solved:focus-visible {
-    background-color: #4d1515 !important;
-  }
-
-  /* Animated GIF overlay for solved challenges */
-  .challenge-button.challenge-solved::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 140px;
-    height: 140px;
-    background-image: url('{{ url_for('views.themes_beta', theme='core-theme', path='img/solve_gif.gif') }}');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 10;
-    pointer-events: none;
-  }
-
-  /* the right pill becomes muted green/grey when solved */
-  .challenge-button.challenge-solved .challenge-pill {
-    background: rgba(219, 190, 190, .85);
-    color: #421a1a;
-  }
-
-  /* =========================================
-     4. Pills (Tags) & Stats
-  ========================================= */
-  .challenge-pill {
-    position: absolute;
-    right: 1.35rem;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: .35rem .85rem;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: 0.85rem;
-    background: #ff7676;
-    color: #000000;
-    white-space: nowrap;
-    border: none;
-  }
-
-  /* Color the pill by category */
-  .category-web .challenge-pill { background: #76d792; }
-  .category-crypto .challenge-pill { background: #76a6ff; }
-  .category-forensics .challenge-pill { background: #c98dff; }
-  .category-warmup .challenge-pill { background: #ffd36b; }
-
-  .challenge-stats {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    color: #ffffff;
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-top: auto;
-  }
-
-  .challenge-stat {
-    display: inline-flex;
-    gap: .6rem;
-    align-items: center;
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1;
-  }
-
-  .challenge-stat i {
-    font-size: 1.55rem;
-  }
-</style>
   <div class="container">
     <div class="jumbotron text-center">
       <h1>
@@ -205,7 +25,7 @@
       @load-challenge.window="loadChallenge($event.detail)"
     >
       <div
-          x-ref="challengeWindow" id="challenge-window" class="modal fade" tabindex="-1" role="dialog" x-data=""
+          x-ref="challengeWindow" id="challenge-window" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="challenge-modal-title" x-data=""
           x-html="$store.challenge.data.view"
       ></div>
 
@@ -227,11 +47,11 @@
             </div>
 
             <div class="category-challenges d-flex flex-column">
-              <div class="challenges-row row w-100">
+              <div class="challenges-row">
                 <template x-for="(c, idx) in getChallenges(category)" :key="c.id">
-                  <div class="col-sm-6 col-md-4 col-lg-3 my-4">
+                  <div class="challenge-grid-item">
                     <button
-                        class="challenge-button btn w-100 h-100"
+                        class="challenge-button" type="button" :aria-label="c.name + ' — ' + c.value + ' points'"
                         :class="[
                           (c.solved_by_me || c.solved) ? 'challenge-solved' : '',
                           `category-${category.toLowerCase().replace(/ /g, '-')}`,
@@ -239,6 +59,7 @@
                         ];"
                         :value="c.id" @click="loadChallenge(c.id)"
                     >
+                      <span class="cd-solved-label" x-show="c.solved_by_me || c.solved">Solved</span>
                       <!-- Solved GIF overlay is handled via CSS ::after on .challenge-solved -->
 
                       <p class="challenge-title" x-text="c.name"></p>
