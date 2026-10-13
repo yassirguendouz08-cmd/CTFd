@@ -7,7 +7,8 @@
       <p>{{ presentation.briefing or Configs.ctf_description }}</p>
       <div class="cd-event-dates"><time datetime="{{ presentation.start_date }}">{{ presentation.start_date[:10] }} · {{ presentation.start_date[11:16] }} UTC</time><span>—</span><time datetime="{{ presentation.end_date }}">{{ presentation.end_date[:10] }} · {{ presentation.end_date[11:16] }} UTC</time></div>
     {% else %}
-      <h1><span>CYBERDUNE</span><br>CAPTURE THE FLAG<span class="cd-title-dot">.</span></h1>
+      <img class="cd-hero-logo" src="{{ url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-hero.png') }}" alt="CyberDune" width="640" height="463" fetchpriority="high">
+      <h1 class="cd-hero-title">CAPTURE THE FLAG<span class="cd-title-dot">.</span></h1>
       <p>Explore challenges. Sharpen your skills.<br>Every flag is a new way to think.</p>
     {% endif %}
     <div class="cd-hero-actions">

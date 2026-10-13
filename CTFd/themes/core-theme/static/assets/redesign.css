@@ -354,3 +354,30 @@ button[aria-busy='true']::before, .cd-spinner { content: ''; display: inline-blo
 
 .cd-site .challenge-button, .award-card, .notif-card, .empty-state, .notif-empty { background: var(--cd-surface-raised); }
 .cd-site .challenge-button:hover { background: #25252b; }
+/* Team workspace and homepage brand. */
+.cd-hero-logo { display: block; width: clamp(160px, 21vw, 260px); height: auto; margin: 28px auto 0; }
+.cd-hero h1.cd-hero-title { font-size: clamp(30px, 5vw, 64px); margin: 24px 0; }
+.cd-team-page { width: 100%; min-width: 0; }
+.cd-team-head { width: 100%; text-align: left; padding-bottom: 36px; }
+.cd-team-head h1 { font-size: clamp(32px, 4vw, 54px); margin-top: 12px; }
+.cd-team-head .profile-badges { display: flex; }
+.cd-team-head .profile-badges:empty { display: none; }
+.cd-team-head .profile-stats { display: flex; flex-wrap: wrap; gap: 12px; padding-top: 24px; }
+.cd-team-head .profile-stat { min-width: 140px; padding: 18px 24px; background: var(--cd-surface); border: 1px solid var(--cd-border); border-radius: var(--cd-panel-radius); }
+.cd-team-head .profile-stat-value { font-size: 32px; line-height: 1.2; }
+.cd-team-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.cd-site .cd-team-actions .btn { padding: 12px 16px; font-size: 10px; letter-spacing: .05em; }
+.cd-team-actions i { display: inline-flex; }
+.cd-team-actions svg { width: 18px; height: 18px; }
+.cd-team-page .profile-section { padding: 24px; border: 1px solid var(--cd-border); border-radius: var(--cd-panel-radius); background: var(--cd-surface); margin-bottom: 24px; }
+.cd-team-page .profile-section-title { display: flex; align-items: center; gap: 10px; font-size: 18px; }
+.cd-team-page .table { margin-bottom: 0; }
+.cd-team-page .table td:last-child, .cd-team-page .table th:last-child { text-align: right; }
+.cd-team-empty { display: grid; place-items: center; min-height: 180px; padding: 32px; border: 1px dashed var(--cd-border); border-radius: var(--cd-panel-radius); }
+.cd-team-empty h3 { font-size: 18px; margin: 0; }
+@media (max-width: 575px) {
+  .cd-team-head .profile-stat { flex: 1 1 90px; min-width: 0; padding: 16px; }
+  .cd-team-head .profile-stat-value { font-size: 26px; }
+  .cd-team-actions .btn { flex: 1 1 calc(50% - 10px); }
+  .cd-team-page .profile-section { padding: 18px 14px; }
+}
