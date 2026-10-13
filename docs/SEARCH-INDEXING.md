@@ -9,4 +9,4 @@ To request indexing:
 3. Submit `sitemap.xml` under Sitemaps.
 4. Inspect `https://ctf.cyberdune.online/` and choose Request indexing.
 
-Search Console ownership and indexing submission require the owner's Google account. Sitemap delivery and valid metadata do not guarantee indexing or rankings. No Google verification token is installed yet.
+The owner's HTML verification tag is installed on the public homepage. Ownership confirmation and indexing submission still require the owner's Google account. Sitemap delivery and valid metadata do not guarantee indexing or rankings.
