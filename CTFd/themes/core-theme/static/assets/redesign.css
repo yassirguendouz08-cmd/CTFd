@@ -325,7 +325,8 @@ button[aria-busy='true']::before, .cd-spinner { content: ''; display: inline-blo
 .cd-auth-tabs a[aria-current='page'] { border-bottom-color: var(--cd-accent); color: var(--cd-text); }
 .cd-brand small { font-size: 8px; }
 .cd-nav-link { font-size: 11px; }
-.cd-footer-credit, .cd-footer p { font-size: 10px; }
+.cd-footer p { font-size: 10px; }
+.cd-footer-credit { font: 500 13px/1.6 var(--cd-font); color: #e4e4e7; }
 .cd-footer strong { font-size: 12px; }
 @media (max-width:575px) { .cd-brand small { font-size: 6px; } }
 .ctfd-alerts { display: grid; gap: 12px; margin-bottom: 20px; }
