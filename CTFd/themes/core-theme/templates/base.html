@@ -1,9 +1,25 @@
 <!DOCTYPE html>
 <html lang="{{ get_locale() }}" data-bs-theme="dark">
 <head>
-  <title>{{ title or Configs.ctf_name }}</title>
+  {% set cd_is_home = request.path.rstrip('/') == request.script_root.rstrip('/') %}
+  {% set cd_search_title = 'CyberDune CTF | Capture the Flag & Cybersecurity Challenges' %}
+  {% set cd_search_description = 'CyberDune CTF is a cybersecurity Capture the Flag platform. Practice security skills, solve challenges, join a team and compete on the scoreboard.' %}
+  <title>{{ cd_search_title if cd_is_home else (title or Configs.ctf_name) }}</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% if cd_is_home %}
+  <meta name="description" content="{{ cd_search_description }}">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://ctf.cyberdune.online/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CyberDune CTF">
+  <meta property="og:title" content="{{ cd_search_title }}">
+  <meta property="og:description" content="{{ cd_search_description }}">
+  <meta property="og:url" content="https://ctf.cyberdune.online/">
+  <meta property="og:image" content="https://ctf.cyberdune.online/themes/core-theme/static/img/cyberdune-hero.png">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'WebSite', 'name': 'CyberDune CTF', 'alternateName': 'CyberDune', 'url': 'https://ctf.cyberdune.online/', 'description': cd_search_description} | tojson }}</script>
+  {% endif %}
   <link rel="shortcut icon" href="{{ Configs.ctf_small_icon or url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-white.png') }}" type="image/x-icon">
 
 
