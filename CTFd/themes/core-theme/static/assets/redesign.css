@@ -326,7 +326,7 @@ button[aria-busy='true']::before, .cd-spinner { content: ''; display: inline-blo
 .cd-brand small { font-size: 8px; }
 .cd-nav-link { font-size: 11px; }
 .cd-footer p { font-size: 10px; }
-.cd-footer-credit { font: 500 13px/1.6 var(--cd-font); color: #e4e4e7; }
+.cd-footer-credit { font: 600 13px/1.6 var(--cd-font); color: #ff4355; }
 .cd-footer strong { font-size: 12px; }
 @media (max-width:575px) { .cd-brand small { font-size: 6px; } }
 .ctfd-alerts { display: grid; gap: 12px; margin-bottom: 20px; }
