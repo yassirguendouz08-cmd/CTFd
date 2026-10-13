@@ -381,3 +381,6 @@ button[aria-busy='true']::before, .cd-spinner { content: ''; display: inline-blo
   .cd-team-actions .btn { flex: 1 1 calc(50% - 10px); }
   .cd-team-page .profile-section { padding: 18px 14px; }
 }
+.cd-footer-brand { display: flex; align-items: center; gap: 14px; }
+.cd-footer-brand img { flex: 0 0 44px; width: 44px; height: auto; object-fit: contain; }
+@media (max-width: 767px) { .cd-footer-brand { text-align: left; } }

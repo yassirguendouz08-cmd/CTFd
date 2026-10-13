@@ -1,5 +1,8 @@
 <footer class="cd-footer"><div class="container cd-footer-inner">
-  <div><strong>CYBERDUNE</strong><p>Capture the flag. Build your skills.</p></div>
+  <div class="cd-footer-brand">
+    <img src="{{ url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-hero.png') }}" width="44" height="32" alt="">
+    <div><strong>CYBERDUNE</strong><p>Capture the flag. Build your skills.</p></div>
+  </div>
   <span class="cd-footer-credit">Developed by Yassir Guendouz</span>
   <div class="cd-footer-language"><label for="language-select">Language</label>
     <select id="language-select" class="form-select" x-data="LanguageForm" @change="set({target: $event.target.selectedOptions[0]})">
