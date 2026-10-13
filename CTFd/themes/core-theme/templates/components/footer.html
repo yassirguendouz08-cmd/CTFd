@@ -6,7 +6,7 @@
   <span class="cd-footer-credit">Developed by Yassir Guendouz</span>
   <div class="cd-footer-language"><label for="language-select">Language</label>
     <select id="language-select" class="form-select" x-data="LanguageForm" @change="set({target: $event.target.selectedOptions[0]})">
-      {% for language in Languages %}<option value="{{ language.value }}" {% if get_locale() == language.value %}selected{% endif %}>{{ language.name.replace('_', ' ').title() }}</option>{% endfor %}
+      {% for code, name in [('en', 'English'), ('fr', 'Français'), ('ar', 'العربية')] %}<option value="{{ code }}" {% if get_locale() == code %}selected{% endif %}>{{ name }}</option>{% endfor %}
     </select>
   </div>
 </div></footer>
