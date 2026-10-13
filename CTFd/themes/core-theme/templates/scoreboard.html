@@ -96,7 +96,7 @@
       </div>
 
       <div class="col-md-12 empty-state" x-show="! standings.length">
-        <h3>{% trans %}Scoreboard is empty{% endtrans %}</h3>
+        <h3>{% trans %}Scoreboard is empty{% endtrans %}</h3><p>Scores appear here after the first solve.</p><a class="btn btn-secondary" href="{{ url_for('challenges.listing') }}">View challenges</a>
       </div>
     </div>
   </div>

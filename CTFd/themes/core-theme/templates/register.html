@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="bg_container df-content">
-  <div class="title_container">
+  <div class="title_container"><nav class="cd-auth-tabs" aria-label="Authentication"><a href="{{ url_for('auth.login') }}" {% if request.endpoint == 'auth.login' %}aria-current="page"{% endif %}>Log in</a>{% if registration_visible() %}<a href="{{ url_for('auth.register') }}" {% if request.endpoint == 'auth.register' %}aria-current="page"{% endif %}>Register</a>{% endif %}</nav>
     <div class="container">
-      <h1>
+      <h1 class="visually-hidden">
         {% trans %}Register{% endtrans %}
       </h1>
     </div>
@@ -98,7 +98,7 @@
 
             <div class="row pt-3">
               <div class="col-6 col-md-4 offset-6 offset-md-8">
-                {{ form.submit(class="btn btn-block btn-primary w-100") }}
+                {{ form.submit(value="Create account", class="btn btn-block btn-primary w-100") }}
               </div>
             </div>
 

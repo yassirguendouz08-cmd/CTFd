@@ -20,7 +20,7 @@
         {% endif %}
 
         {% with form = Forms.users.PublicUserSearchForm(field=field, q=q) %}
-          <form m ethod="GET" class="row justify-content-around align-items-center">
+          <form method="GET" class="row justify-content-around align-items-center">
             <div class="mb-3 col-md-2">
               {{ form.field(class="form-select w-100") }}
             </div>

@@ -5,10 +5,10 @@
 {% block content %}
 
   <div class="container">
-    <div class="jumbotron text-center">
+    <div class="jumbotron cd-page-head">
       <h1>
         {% trans %}Challenges{% endtrans %}
-      </h1>
+      </h1><p>Find your next challenge. Capture the flag.</p>
     </div>
   </div>
 
@@ -39,9 +39,14 @@
         </div>
       </div>
 
-      <div x-show="loaded">
+      <div x-show="loaded" x-data="{ selectedCategory: null }">
+        <nav class="cd-category-nav" aria-label="Challenge categories">
+          <button type="button" class="btn btn-secondary btn-sm" :class="{ 'is-active': selectedCategory === null }" @click="selectedCategory=null">All challenges</button>
+          <template x-for="category in getCategories()" :key="category"><button type="button" class="btn btn-secondary btn-sm" :class="{ 'is-active': selectedCategory === category }" @click="selectedCategory=category" x-text="category"></button></template>
+        </nav>
+        <div class="empty-state" x-show="!getCategories().length"><h3>No challenges available</h3><p>Published challenges will appear here.</p></div>
         <template x-for="(category, idx) in getCategories()" :key="idx">
-          <div class="container-challenges">
+          <section class="container-challenges" x-show="selectedCategory === null || selectedCategory === category">
             <div class="category-header mb-1r">
               <h3 class="title-h3" x-text="category"></h3>
             </div>
@@ -65,6 +70,7 @@
                       <p class="challenge-title" x-text="c.name"></p>
 
                       <span class="challenge-pill" x-text="category"></span>
+                      <div class="cd-card-tags"><template x-for="tag in (c.tags || []).slice(0, 2)" :key="tag.value"><span x-text="tag.value"></span></template></div>
 
                       <div class="challenge-stats">
                         <div class="challenge-stat">
@@ -83,7 +89,7 @@
                 </template>
               </div>
             </div>
-          </div>
+          </section>
         </template>
       </div>
     </div>

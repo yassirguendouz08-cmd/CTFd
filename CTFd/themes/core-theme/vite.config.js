@@ -19,6 +19,11 @@ export default defineConfig({
       plugins: [
         copy({
           targets: [
+            { src: "./node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2", dest: "static/webfonts" },
+            { src: "./node_modules/@fontsource/inter/files/inter-latin-600-normal.woff2", dest: "static/webfonts" },
+            { src: "./node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-700-normal.woff2", dest: "static/webfonts" },
+            { src: "./node_modules/@fontsource/montserrat/files/montserrat-latin-800-normal.woff2", dest: "static/webfonts" },
+            { src: "./node_modules/@fontsource/montserrat/files/montserrat-latin-900-normal.woff2", dest: "static/webfonts" },
             // https://github.com/vitejs/vite/issues/1618#issuecomment-764579557
             {
               src: "./node_modules/@fortawesome/fontawesome-free/webfonts/**/*",
