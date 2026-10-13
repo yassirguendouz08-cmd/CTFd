@@ -1,32 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="container cd-team-enrollment">
-  <header class="cd-enrollment-head">
-    <span class="cd-eyebrow">{% trans %}Capture the flag together{% endtrans %}</span>
-    <h1>{% trans %}Team{% endtrans %}</h1>
-    <p>{% trans %}In order to participate you must either join or create a team.{% endtrans %}</p>
-  </header>
-
-  <div class="cd-enrollment-panel">
-    <h2>{% trans %}Welcome to{% endtrans %} {{ Configs.ctf_name }}!</h2>
-    {% if integrations.mlc() %}
-      <a class="btn btn-primary cd-official-team" href="{{ url_for('auth.oauth_login') }}">{% trans %}Play with Official Team{% endtrans %}</a>
-    {% endif %}
-    <div class="cd-team-options">
-      <article class="cd-team-option">
-        <span class="cd-option-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6M21 21v-3a6 6 0 0 0-3-5.2"/></svg></span>
-        <h3>{% trans %}Join your crew{% endtrans %}</h3>
-        <p>{% trans %}Already have a team? Enter its name and password to join your teammates.{% endtrans %}</p>
-        <a class="btn btn-secondary" href="{{ url_for('teams.join') }}">{% if integrations.mlc() %}{% trans %}Join Unofficial Team{% endtrans %}{% else %}{% trans %}Join Team{% endtrans %}{% endif %}<span aria-hidden="true">→</span></a>
-      </article>
-      <article class="cd-team-option">
-        <span class="cd-option-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/></svg></span>
-        <h3>{% trans %}Start a new team{% endtrans %}</h3>
-        <p>{% trans %}Choose a team name, set a password and invite your crew to chase flags together.{% endtrans %}</p>
-        <a class="btn btn-primary" href="{{ url_for('teams.new') }}">{% if integrations.mlc() %}{% trans %}Create Unofficial Team{% endtrans %}{% else %}{% trans %}Create Team{% endtrans %}{% endif %}<span aria-hidden="true">→</span></a>
-      </article>
+<div class="cd-team-enrollment">
+  <div class="title_container text-center">
+    <div class="container">
+      <h1>{% trans %}Team{% endtrans %}</h1>
     </div>
   </div>
-</section>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 text-center">
+        <p class="h2">{% trans %}Welcome to{% endtrans %} {{ Configs.ctf_name }}!</p>
+        <p>
+          {% trans %}In order to participate you must either join or create a team.{% endtrans %}
+        </p>
+      </div>
+    </div>
+
+    {% if integrations.mlc() %}
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+          <a class="btn btn-primary w-100" href="{{ url_for('auth.oauth_login') }}">{% trans %}Play with Official Team{% endtrans %}</a>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="mt-3 col-md-3 text-center">
+          <a class="btn btn-outline-secondary w-100" href="{{ url_for('teams.join') }}">{% trans %}Join Unofficial Team{% endtrans %}</a>
+        </div>
+        <div class="mt-3 col-md-3 text-center">
+          <a class="btn btn-outline-secondary w-100" href="{{ url_for('teams.new') }}">{% trans %}Create Unofficial Team{% endtrans %}</a>
+        </div>
+      </div>
+    {% else %}
+      <div class="row justify-content-center">
+        <div class="mt-3 col-md-3 text-center">
+          <a class="btn btn-primary w-100" href="{{ url_for('teams.join') }}">{% trans %}Join Team{% endtrans %}</a>
+        </div>
+        <div class="mt-3 col-md-3 text-center">
+          <a class="btn btn-primary w-100" href="{{ url_for('teams.new') }}">{% trans %}Create Team{% endtrans %}</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
