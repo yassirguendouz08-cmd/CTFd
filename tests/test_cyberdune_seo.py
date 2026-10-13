@@ -26,4 +26,3 @@ class Checks(unittest.TestCase):
         self.assertNotIn('X-Robots-Tag',self.client.get('/').headers)
         for path in ['/login','/team','/admin/config','/api/v1/users']:
             self.assertEqual(self.client.get(path).headers['X-Robots-Tag'],'noindex, nofollow')
-
