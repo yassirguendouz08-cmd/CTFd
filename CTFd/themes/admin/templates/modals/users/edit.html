@@ -33,9 +33,15 @@
 	{{ render_extra_fields(form.extra) }}
 
 	<div class="form-group">
-		<div class="form-check form-check-inline">
-			{{ form.type(class="form-control form-inline custom-select", id="type-select") }}
-		</div>
+		<label for="type-select">Account role</label>
+		{{ form.type(class="form-control custom-select", id="type-select", aria_describedby="account-role-help") }}
+		<small id="account-role-help" class="form-text text-muted">
+			Select Admin to grant full access to the administration panel, including challenges,
+			users and configuration. Select User to remove admin access. Click Submit to save.
+			The user must sign in again after a role change.
+		</small>
+	</div>
+	<div class="form-group">
 		<div class="form-check form-check-inline">
 			{{ form.verified(class="form-check-input", autocomplete="off") }}
 			{{ form.verified.label(class="form-check-label") }}

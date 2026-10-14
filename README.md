@@ -143,6 +143,11 @@ to upload a theme ZIP for each edit.
 
 ## Where to make changes
 
+To give another person administrator access, open **Admin Panel → Users → their
+account → Manage admin access**, select **Admin** under **Account role**, and
+submit. See [admin access instructions](docs/ADMIN-ACCESS.md) for granting and
+revoking access.
+
 | Change | File or interface |
 | --- | --- |
 | Colors, spacing and responsive layout | `CTFd/themes/cyberdune/static/css/cyberdune.css` |
