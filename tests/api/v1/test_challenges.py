@@ -151,7 +151,7 @@ def test_api_challenges_get_hidden_admin():
             challenges_list = admin.get("/api/v1/challenges", json="").get_json()[
                 "data"
             ]
-            assert len(challenges_list) == 1
+            assert len(challenges_list) == 2
             challenges_list = admin.get(
                 "/api/v1/challenges?view=admin", json=""
             ).get_json()["data"]

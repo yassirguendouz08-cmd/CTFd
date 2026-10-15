@@ -159,8 +159,9 @@ class ChallengeList(Resource):
         q = query_args.pop("q", None)
         field = str(query_args.pop("field", None))
 
-        # Admins get a shortcut to see all challenges despite pre-requisites
-        admin_view = is_admin() and request.args.get("view") == "admin"
+        # The normal challenge board also includes hidden challenges for admins.
+        # A query parameter can never grant this view to a regular player.
+        admin_view = is_admin()
 
         # Get a cached mapping of challenge_id to solve_count
         solve_counts = get_solve_counts_for_challenges(admin=admin_view)
@@ -269,6 +270,7 @@ class ChallengeList(Resource):
                     "tags": challenge.tags,
                     "template": challenge_type.templates["view"],
                     "script": challenge_type.scripts["view"],
+                    **({"state": challenge.state} if admin_view else {}),
                 }
             )
 
@@ -677,8 +679,8 @@ class ChallengeAttempt(Resource):
 
         if current_user.is_admin():
             preview = request.args.get("preview", False)
-            if preview:
-                challenge = Challenges.query.filter_by(id=challenge_id).first_or_404()
+            challenge = Challenges.query.filter_by(id=challenge_id).first_or_404()
+            if preview or challenge.state == "hidden":
                 chal_class = get_chal_class(challenge.type)
                 response = chal_class.attempt(challenge, request)
                 # TODO: CTFd 4.0 We should remove the tuple strategy for Challenge plugins in favor of ChallengeResponse

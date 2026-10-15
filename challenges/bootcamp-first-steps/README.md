@@ -59,5 +59,8 @@ an edited or published pack. A failed import rolls back its new database rows an
 removes only files uploaded by that attempt.
 
 Review them in **Admin → Challenges**. Hidden means visible to all administrators,
-not regular players. To release a challenge later, change its state to Visible
+not regular players. Administrators also see them on the ordinary **Challenges**
+board with a **Hidden · admins only** badge. Flag checks on hidden challenges
+automatically run as previews and do not add solves or failed submissions.
+To release a challenge later, change its state to Visible
 in the admin editor. Keep the organizer guide outside player attachments.
