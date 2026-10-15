@@ -143,6 +143,9 @@ to upload a theme ZIP for each edit.
 
 ## Where to make changes
 
+The public **Rules** page is editable in **Admin → Pages**. Its versioned content
+and publishing procedure are documented in [CTF rules](docs/RULES.md).
+
 To give another person administrator access, open **Admin Panel → Users → their
 account → Manage admin access**, select **Admin** under **Account role**, and
 submit. See [admin access instructions](docs/ADMIN-ACCESS.md) for granting and
