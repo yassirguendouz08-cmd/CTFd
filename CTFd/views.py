@@ -401,6 +401,8 @@ def files(path):
     if f.type == "challenge":
         if challenges_visible():
             if current_user.is_admin() is False:
+                if f.challenge.state == "hidden":
+                    abort(404)
                 if not ctftime():
                     if ctf_ended() and view_after_ctf():
                         pass
@@ -468,8 +470,11 @@ def files(path):
             if file_id != f.id:
                 abort(403)
 
-            if user.type != "admin" and not can_access_challenge(f.challenge, user):
-                abort(404)
+            if user.type != "admin":
+                if f.challenge.state == "hidden" or not can_access_challenge(
+                    f.challenge, user
+                ):
+                    abort(404)
 
     elif f.type == "solution":
         s = Solutions.query.filter_by(id=f.solution_id).first_or_404()
