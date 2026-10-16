@@ -9,6 +9,7 @@ from CTFd.api.v1.schemas import APIDetailedSuccessResponse, APIListSuccessRespon
 from CTFd.constants import RawEnum
 from CTFd.models import Hints, HintUnlocks, db
 from CTFd.schemas.hints import HintSchema
+from CTFd.utils.challenge_localization import localize_hint
 from CTFd.utils import get_config
 from CTFd.utils.decorators import admins_only, during_ctf_time_only
 from CTFd.utils.decorators.visibility import check_challenge_visibility
@@ -145,7 +146,7 @@ class Hint(Resource):
                 # Allow admins to allow public CTFs to see free hints if they wish
                 if bool(get_config("hints_free_public_access", False)) is True:
                     response = HintSchema(view="unlocked").dump(hint)
-                    return {"success": True, "data": response.data}
+                    return {"success": True, "data": localize_hint(response.data, hint)}
                 else:
                     return (
                         {
@@ -201,7 +202,7 @@ class Hint(Resource):
         if response.errors:
             return {"success": False, "errors": response.errors}, 400
 
-        return {"success": True, "data": response.data}
+        return {"success": True, "data": localize_hint(response.data, hint)}
 
     @admins_only
     @hints_namespace.doc(

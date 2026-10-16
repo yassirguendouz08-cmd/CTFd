@@ -1,10 +1,35 @@
 import Alpine from "alpinejs";
-import dayjs from "dayjs";
 
 import CTFd from "./index";
 
 import { Modal, Tab, Tooltip } from "bootstrap";
 import highlight from "./theme/highlight";
+
+const t = text => window.cyberduneChallengeCopy?.[text] ?? text;
+const formatDate = date =>
+  new Intl.DateTimeFormat(document.documentElement.lang || "en", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(date));
+
+// Only this player board opts into translated GET responses. Editing and writes
+// continue to use the original competition data.
+const challengeFetch = CTFd.fetch;
+CTFd.fetch = (url, options = {}) => {
+  if (
+    (options.method || "GET").toUpperCase() === "GET" &&
+    /^\/api\/v1\/(challenges(?:\/\d+)?|hints\/\d+)(?:\?|$)/.test(url)
+  ) {
+    url += `${url.includes("?") ? "&" : "?"}localized=1`;
+  }
+  return challengeFetch(url, options);
+};
+CTFd._functions.challenge.displayHintUnlock = hint =>
+  window.confirm(
+    t("Unlock this hint for {points} points?").replace("{points}", hint.cost),
+  );
+CTFd._functions.challenge.displayUnlockError = response =>
+  window.alert(Object.values(response.errors).flat().map(t).join("\n"));
 
 function addTargetBlank(html) {
   let dom = new DOMParser();
@@ -65,7 +90,7 @@ Alpine.data("Hint", () => ({
           }
         }
       } catch (_) {
-        this.error = "The hint could not be loaded. Close and reopen it to try again.";
+        this.error = t("The hint could not be loaded. Please try again.");
       } finally {
         this.busy = false;
       }
@@ -74,6 +99,7 @@ Alpine.data("Hint", () => ({
 }));
 
 Alpine.data("Challenge", () => ({
+  t,
   id: null,
   next_id: null,
   submission: "",
@@ -132,7 +158,7 @@ Alpine.data("Challenge", () => ({
   async showSolves() {
     this.solves = await CTFd.pages.challenge.loadSolves(this.id);
     this.solves.forEach(solve => {
-      solve.date = dayjs(solve.date).format("MMMM Do, h:mm:ss A");
+      solve.date = formatDate(solve.date);
       return solve;
     });
     new Tab(this.$el).show();
@@ -142,7 +168,7 @@ Alpine.data("Challenge", () => ({
     let response = await CTFd.pages.users.userSubmissions("me", this.id);
     this.submissions = response.data;
     this.submissions.forEach(s => {
-      s.date = dayjs(s.date).format("MMMM Do, h:mm:ss A");
+      s.date = formatDate(s.date);
       return s;
     });
     new Tab(this.$el).show();
@@ -232,8 +258,9 @@ Alpine.data("Challenge", () => ({
       this.response = response;
       await this.renderSubmissionResponse();
     } catch (error) {
-      this.submissionError =
-        "Your submission could not be completed. Please try again.";
+      this.submissionError = t(
+        "Your submission could not be completed. Please try again.",
+      );
     } finally {
       this.submitting = false;
     }
@@ -291,7 +318,7 @@ Alpine.data("Challenge", () => ({
       this.ratingValue = this.selectedRating;
       this.ratingSubmitted = true;
     } catch (_) {
-      this.ratingError = "Your rating could not be saved. Please try again.";
+      this.ratingError = t("Your rating could not be saved. Please try again.");
       this.selectedRating = this.ratingValue || 0;
     } finally {
       this.ratingBusy = false;
@@ -300,6 +327,7 @@ Alpine.data("Challenge", () => ({
 }));
 
 Alpine.data("ChallengeBoard", () => ({
+  t,
   loaded: false,
   challenges: [],
   challenge: null,
@@ -309,7 +337,9 @@ Alpine.data("ChallengeBoard", () => ({
   async init() {
     try {
       const saved = JSON.parse(sessionStorage.getItem(this.previewKey()) || "[]");
-      this.previewSolves = Array.isArray(saved) ? saved.filter(id => typeof id === "string") : [];
+      this.previewSolves = Array.isArray(saved)
+        ? saved.filter(id => typeof id === "string")
+        : [];
     } catch (_) {
       this.previewSolves = [];
     }
@@ -379,7 +409,9 @@ Alpine.data("ChallengeBoard", () => ({
     const challenges = await CTFd.pages.challenges.getChallenges();
     this.challenges = challenges.map(challenge => ({
       ...challenge,
-      preview_solved: challenge.state === "hidden" && this.previewSolves.includes(String(challenge.id)),
+      preview_solved:
+        challenge.state === "hidden" &&
+        this.previewSolves.includes(String(challenge.id)),
     }));
   },
 

@@ -4,40 +4,40 @@
       <img src="{{ url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-white.png') }}" width="40" height="40" alt="">
     </a>
     <button class="cd-menu-toggle" type="button" aria-expanded="false" aria-controls="theme-navigation">Menu <i class="fas fa-bars" aria-hidden="true"></i></button>
-    <nav id="theme-navigation" class="cd-navigation" aria-label="Main navigation">
+    <nav id="theme-navigation" class="cd-navigation" aria-label="{{ challenge_copy('Main navigation') }}">
       <div class="cd-nav-pages">
-        <a href="{{ url_for('views.static_html', route='/') }}" class="cd-nav-link"><span data-scramble>Home</span></a>
-        {% for page in Plugins.user_menu_pages %}<a href="{{ page.route }}" class="cd-nav-link"><span data-scramble>{{ page.title }}</span></a>{% endfor %}
-        <a href="{{ url_for('challenges.listing') }}" class="cd-nav-link"><span data-scramble>Challenges</span></a>
+        <a href="{{ url_for('views.static_html', route='/') }}" class="cd-nav-link"><span data-scramble>{{ challenge_copy("Home") }}</span></a>
+        {% for page in Plugins.user_menu_pages %}<a href="{{ page.route }}" class="cd-nav-link"><span data-scramble>{{ challenge_copy(page.title) }}</span></a>{% endfor %}
+        <a href="{{ url_for('challenges.listing') }}" class="cd-nav-link"><span data-scramble>{{ challenge_copy("Challenges") }}</span></a>
         {% if Configs.score_visibility != 'admins' or Configs.account_visibility != 'admins' %}
         <div class="cd-explore">
-          <button id="exploreDropdownToggle" type="button" class="cd-nav-link" aria-expanded="false" aria-controls="exploreDropdown"><span data-scramble>Explore</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+          <button id="exploreDropdownToggle" type="button" class="cd-nav-link" aria-expanded="false" aria-controls="exploreDropdown"><span data-scramble>{{ challenge_copy("Explore") }}</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
           <div id="exploreDropdown" class="cd-account-menu" hidden>
-            {% if Configs.score_visibility != 'admins' %}<a href="{{ url_for('scoreboard.listing') }}"><span data-scramble>Scoreboard</span></a>{% endif %}
+            {% if Configs.score_visibility != 'admins' %}<a href="{{ url_for('scoreboard.listing') }}"><span data-scramble>{{ challenge_copy("Scoreboard") }}</span></a>{% endif %}
             {% if Configs.account_visibility != 'admins' %}
-              {% if Configs.user_mode == 'teams' %}<a href="{{ url_for('teams.listing') }}"><span data-scramble>Teams</span></a>{% endif %}
-              <a href="{{ url_for('users.listing') }}"><span data-scramble>Users</span></a>
+              {% if Configs.user_mode == 'teams' %}<a href="{{ url_for('teams.listing') }}"><span data-scramble>{{ challenge_copy("Teams") }}</span></a>{% endif %}
+              <a href="{{ url_for('users.listing') }}"><span data-scramble>{{ challenge_copy("Users") }}</span></a>
             {% endif %}
           </div>
         </div>
         {% endif %}
-        {% if authed() %}<a class="cd-nav-link cd-notifications" href="{{ url_for('views.notifications') }}" aria-label="Notifications"><i class="fas fa-bell" aria-hidden="true"></i></a>{% endif %}
+        {% if authed() %}<a class="cd-nav-link cd-notifications" href="{{ url_for('views.notifications') }}" aria-label="{{ challenge_copy('Notifications') }}"><i class="fas fa-bell" aria-hidden="true"></i></a>{% endif %}
       </div>
       <div class="cd-nav-account">
         {% if authed() %}
           <div class="cd-account">
-            <button id="accountDropdownToggle" class="btn btn-secondary btn-sm" type="button" aria-expanded="false" aria-controls="accountDropdown"><span data-scramble>Account</span> <i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+            <button id="accountDropdownToggle" class="btn btn-secondary btn-sm" type="button" aria-expanded="false" aria-controls="accountDropdown"><span data-scramble>{{ challenge_copy("Account") }}</span> <i class="fas fa-chevron-down" aria-hidden="true"></i></button>
             <div class="cd-account-menu" id="accountDropdown" hidden>
-              {% if is_admin() %}<a href="{{ url_for('admin.view') }}">Admin panel</a>{% endif %}
-              <a href="{{ url_for('users.private') }}">Profile</a>
-              {% if Configs.user_mode == 'teams' %}<a href="{{ url_for('teams.private') }}">My team</a>{% endif %}
-              <a href="{{ url_for('views.settings') }}">Settings</a>
-              <a href="{{ url_for('auth.logout') }}">Log out</a>
+              {% if is_admin() %}<a href="{{ url_for('admin.view') }}">{{ challenge_copy("Admin panel") }}</a>{% endif %}
+              <a href="{{ url_for('users.private') }}">{{ challenge_copy("Profile") }}</a>
+              {% if Configs.user_mode == 'teams' %}<a href="{{ url_for('teams.private') }}">{{ challenge_copy("My team") }}</a>{% endif %}
+              <a href="{{ url_for('views.settings') }}">{{ challenge_copy("Settings") }}</a>
+              <a href="{{ url_for('auth.logout') }}">{{ challenge_copy("Log out") }}</a>
             </div>
           </div>
         {% else %}
-          {% if registration_visible() %}<a class="btn btn-primary btn-sm" href="{{ url_for('auth.register') }}"><span data-scramble>Register</span></a>{% endif %}
-          <a class="cd-nav-link" href="{{ url_for('auth.login') }}"><span data-scramble>Log in</span></a>
+          {% if registration_visible() %}<a class="btn btn-primary btn-sm" href="{{ url_for('auth.register') }}"><span data-scramble>{{ challenge_copy("Register") }}</span></a>{% endif %}
+          <a class="cd-nav-link" href="{{ url_for('auth.login') }}"><span data-scramble>{{ challenge_copy("Log in") }}</span></a>
         {% endif %}
       </div>
     </nav>

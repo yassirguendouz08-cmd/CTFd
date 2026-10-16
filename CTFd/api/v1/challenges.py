@@ -39,6 +39,9 @@ from CTFd.schemas.ratings import RatingSchema
 from CTFd.schemas.tags import TagSchema
 from CTFd.utils import config, get_config
 from CTFd.utils import user as current_user
+from CTFd.utils.challenge_localization import (
+    ChallengeView, localize_challenge, localize_hint,
+)
 from CTFd.utils.challenges import (
     get_all_challenges,
     get_rating_average_for_challenge_id,
@@ -221,7 +224,7 @@ class ChallengeList(Resource):
                                 {
                                     "id": challenge.id,
                                     "type": "hidden",
-                                    "name": challenge.name,
+                                    "name": localize_challenge({"name": challenge.name}, challenge)["name"],
                                     "value": challenge.value,
                                     "solves": None,
                                     "solved_by_me": False,
@@ -257,7 +260,7 @@ class ChallengeList(Resource):
 
             # Challenge passes all checks, add it to response
             response.append(
-                {
+                localize_challenge({
                     "id": challenge.id,
                     "type": challenge_type.name,
                     "name": challenge.name,
@@ -271,7 +274,7 @@ class ChallengeList(Resource):
                     "template": challenge_type.templates["view"],
                     "script": challenge_type.scripts["view"],
                     **({"state": challenge.state} if admin_view else {}),
-                }
+                }, challenge)
             )
 
         db.session.close()
@@ -468,7 +471,7 @@ class Challenge(Resource):
         else:
             files = [url_for("views.files", path=f.location) for f in chal.files]
 
-        for hint in Hints.query.filter_by(challenge_id=chal.id).all():
+        for hint in Hints.query.filter_by(challenge_id=chal.id).order_by(Hints.id).all():
             if hint.id in unlocked_hints or ctf_ended():
                 hints.append(
                     {
@@ -480,8 +483,10 @@ class Challenge(Resource):
                 )
             else:
                 hints.append({"id": hint.id, "cost": hint.cost, "title": hint.title})
+            hints[-1] = localize_hint(hints[-1], hint)
 
-        response = chal_class.read(challenge=chal)
+        response = localize_challenge(chal_class.read(challenge=chal), chal)
+        tags = localize_challenge({"tags": tags}, chal)["tags"]
 
         # Get list of solve_ids for current user
         if authed():
@@ -587,7 +592,7 @@ class Challenge(Resource):
             ratings=rating_info,
             max_attempts=chal.max_attempts,
             attempts=attempts,
-            challenge=chal,
+            challenge=(ChallengeView(chal, response) if request.args.get("localized") == "1" else chal),
         )
 
         if (

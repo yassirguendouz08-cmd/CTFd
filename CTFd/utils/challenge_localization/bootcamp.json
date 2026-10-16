@@ -1,0 +1,234 @@
+{
+  "web-source": {
+    "fr": {
+      "name": "Bootcamp 01 — Derrière la page",
+      "description": "**Premier CTF · Niveau découverte · 5 à 10 minutes**\n\n### Le concept\nLe navigateur reçoit du HTML et le transforme en page. Les commentaires `<!-- ... -->` font partie du code reçu, même s’ils ne sont pas affichés. Un secret envoyé au navigateur peut être lu.\n\n### Ta mission\nOuvre `welcome.html` dans ton navigateur. Retrouve le flag laissé dans le code source. Tu peux aussi ouvrir le fichier dans un éditeur de texte. Aucun serveur à lancer.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Copie le flag dans le champ de réponse de ce défi.\n\n**Format :** `CYBERDUNE{...}`. Respecte les caractères du flag. Aucun compte externe payant, scan ou brute-force n’est nécessaire.",
+      "hints": [
+        "La page affichée et son code HTML ne sont pas la même chose.",
+        "Sur Windows/Linux : Ctrl+U affiche souvent le source. Sinon, ouvre welcome.html avec un éditeur de texte.",
+        "Cherche le commentaire qui commence par <!-- Note de développement et copie le flag complet."
+      ]
+    },
+    "en": {
+      "name": "Bootcamp 01 — Behind the page",
+      "description": "**Your first CTF · Beginner · 5–10 minutes**\n\n### The concept\nYour browser receives HTML and turns it into a page. Comments such as `<!-- ... -->` are part of that code, even when they are invisible on the page. A secret sent to the browser can be read.\n\n### Your mission\nOpen `welcome.html` in your browser. Find the flag left in the source code. You can also open the file in a text editor. There is no server to start.\n\n### Getting started\nDownload the attached file. All three hints are free: open them one at a time if you get stuck. Paste the flag into this challenge’s answer field.\n\n**Format:** `CYBERDUNE{...}`. Preserve the flag’s characters. No paid external account, scanning or brute force is needed.",
+      "hints": [
+        "The visible page and its HTML source are different views of the same file.",
+        "On Windows/Linux, Ctrl+U often opens the page source. Otherwise, open welcome.html in a text editor.",
+        "Find the HTML comment beginning with <!-- Note de développement and copy the complete flag."
+      ]
+    },
+    "ar": {
+      "name": "المخيم 01 — خلف الصفحة",
+      "description": "**أول مسابقة CTF لك · للمبتدئين · من 5 إلى 10 دقائق**\n\n### الفكرة\nيتلقى المتصفح شيفرة HTML ويحوّلها إلى صفحة. التعليقات مثل `<!-- ... -->` جزء من الشيفرة، حتى إن لم تظهر في الصفحة. يمكن قراءة أي سر يصل إلى المتصفح.\n\n### مهمتك\nافتح `welcome.html` في المتصفح وابحث عن العلم المتروك في الشيفرة المصدرية. يمكنك فتح الملف بمحرر نصوص أيضا. لا تحتاج إلى تشغيل خادم.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية: افتحها واحدا تلو الآخر إذا تعثرت. الصق العلم في خانة الإجابة عن هذا التحدي.\n\n**الصيغة:** `CYBERDUNE{...}`. حافظ على أحرف العلم كما هي. لا تحتاج إلى حساب خارجي مدفوع أو فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "الصفحة المعروضة وشيفرة HTML هما طريقتان مختلفتان لعرض الملف نفسه.",
+        "في Windows وLinux، يعرض Ctrl+U عادة مصدر الصفحة. أو افتح welcome.html بمحرر نصوص.",
+        "ابحث عن تعليق HTML الذي يبدأ بالنص <!-- Note de développement وانسخ العلم كاملا."
+      ]
+    }
+  },
+  "web-headers": {
+    "fr": {
+      "name": "Bootcamp 02 — Une réponse bavarde",
+      "description": "**Premier CTF · Niveau découverte · 5 à 10 minutes**\n\n### Le concept\nUne réponse HTTP contient un statut, des en-têtes, une ligne vide, puis un corps. Le navigateur affiche généralement le corps, mais les en-têtes peuvent aussi révéler des informations.\n\n### Ta mission\nLe fichier `response.http` est une capture texte de réponse HTTP créée pour cet exercice. Ouvre-le avec un éditeur de texte et retrouve le flag dans les en-têtes. Tu n’as pas besoin de contacter un site ni d’installer Burp Suite.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Copie le flag dans le champ de réponse de ce défi.\n\n**Format :** `CYBERDUNE{...}`. Respecte les caractères du flag. Aucun compte externe payant, scan ou brute-force n’est nécessaire.",
+      "hints": [
+        "Les en-têtes se trouvent avant la première ligne vide.",
+        "Une ligne d’en-tête s’écrit Nom: valeur. Regarde les en-têtes qui commencent par X-.",
+        "La valeur de X-Training-Flag est le flag. Copie seulement la valeur, sans le nom de l’en-tête."
+      ]
+    },
+    "en": {
+      "name": "Bootcamp 02 — A talkative response",
+      "description": "**Your first CTF · Beginner · 5–10 minutes**\n\n### The concept\nAn HTTP response contains a status line, headers, a blank line, then a body. Headers can hold useful information even when it is absent from the visible page.\n\n### Your mission\nOpen `response.http` in a text editor. Find the flag in an HTTP header. You do not need Burp, a network connection, or a running server.\n\n### Getting started\nDownload the attached file. All three hints are free: open them one at a time if you get stuck. Paste the flag into this challenge’s answer field.\n\n**Format:** `CYBERDUNE{...}`. Preserve the flag’s characters. No paid external account, scanning or brute force is needed.",
+      "hints": [
+        "Headers appear before the first blank line. The HTML body begins after it.",
+        "A header uses the form Name: value. Look at the custom headers beginning with X-.",
+        "Find X-Training-Flag and submit only its value, without the header name."
+      ]
+    },
+    "ar": {
+      "name": "المخيم 02 — استجابة كثيرة الكلام",
+      "description": "**أول مسابقة CTF لك · للمبتدئين · من 5 إلى 10 دقائق**\n\n### الفكرة\nتحتوي استجابة HTTP على سطر الحالة، ثم الترويسات، ثم سطر فارغ، ثم المحتوى. قد تحمل الترويسات معلومات لا تظهر في الصفحة.\n\n### مهمتك\nافتح `response.http` بمحرر نصوص وابحث عن العلم في إحدى ترويسات HTTP. لا تحتاج إلى Burp أو اتصال بالشبكة أو تشغيل خادم.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية: افتحها واحدا تلو الآخر إذا تعثرت. الصق العلم في خانة الإجابة عن هذا التحدي.\n\n**الصيغة:** `CYBERDUNE{...}`. حافظ على أحرف العلم كما هي. لا تحتاج إلى حساب خارجي مدفوع أو فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "تظهر الترويسات قبل أول سطر فارغ. يبدأ محتوى HTML بعده.",
+        "تأخذ الترويسة الشكل Name: value. انتبه إلى الترويسات المخصصة التي تبدأ بـ X-.",
+        "ابحث عن X-Training-Flag وأرسل قيمتها فقط دون اسم الترويسة."
+      ]
+    }
+  },
+  "crypto-base64": {
+    "fr": {
+      "name": "Bootcamp 03 — Le message emballé",
+      "description": "**Premier CTF · Niveau découverte · 5 à 10 minutes**\n\n### Le concept\nBase64 est un encodage : il change la représentation d’un texte sans utiliser de clé secrète. Il peut être décodé directement. Ce n’est pas du chiffrement.\n\n### Ta mission\nLe texte de `message.txt` est encodé en Base64 une seule fois. Décode-le pour obtenir le flag. Tu peux utiliser un terminal Linux ou un outil de décodage Base64.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Copie le flag dans le champ de réponse de ce défi.\n\n**Format :** `CYBERDUNE{...}`. Respecte les caractères du flag. Aucun compte externe payant, scan ou brute-force n’est nécessaire.",
+      "hints": [
+        "Tu connais déjà l’encodage : Base64. Il faut le décoder, sans chercher de mot de passe.",
+        "Sur Linux : base64 -d message.txt",
+        "Avec Python : python3 -c \"import base64; print(base64.b64decode(open('message.txt').read()).decode())\""
+      ]
+    },
+    "en": {
+      "name": "Bootcamp 03 — The wrapped message",
+      "description": "**Your first CTF · Beginner · 5–10 minutes**\n\n### The concept\nBase64 is an encoding: it represents data using a different alphabet. It is not encryption and does not require a secret key. Decoding restores the original data.\n\n### Your mission\nThe contents of `message.txt` were encoded once with Base64. Decode the message to recover the flag. You can use Linux or a Base64 decoder.\n\n### Getting started\nDownload the attached file. All three hints are free: open them one at a time if you get stuck. Paste the flag into this challenge’s answer field.\n\n**Format:** `CYBERDUNE{...}`. Preserve the flag’s characters. No paid external account, scanning or brute force is needed.",
+      "hints": [
+        "The operation you need is Base64 decode. No password or brute force is needed.",
+        "On Linux, try: base64 -d message.txt",
+        "With Python: python3 -c \"import base64; print(base64.b64decode(open('message.txt','rb').read()).decode())\""
+      ]
+    },
+    "ar": {
+      "name": "المخيم 03 — الرسالة المغلفة",
+      "description": "**أول مسابقة CTF لك · للمبتدئين · من 5 إلى 10 دقائق**\n\n### الفكرة\nBase64 ترميز يمثّل البيانات بأبجدية مختلفة. ليس تشفيرا ولا يحتاج إلى مفتاح سري. يعيد فك الترميز البيانات الأصلية.\n\n### مهمتك\nرُمّز محتوى `message.txt` مرة واحدة باستخدام Base64. فك الترميز لاسترجاع العلم. يمكنك استخدام Linux أو أداة لفك Base64.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية: افتحها واحدا تلو الآخر إذا تعثرت. الصق العلم في خانة الإجابة عن هذا التحدي.\n\n**الصيغة:** `CYBERDUNE{...}`. حافظ على أحرف العلم كما هي. لا تحتاج إلى حساب خارجي مدفوع أو فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "اختر عملية Base64 decode. لا تحتاج إلى كلمة مرور أو تخمين متكرر.",
+        "في Linux، جرّب: base64 -d message.txt",
+        "باستخدام Python: python3 -c \"import base64; print(base64.b64decode(open('message.txt','rb').read()).decode())\""
+      ]
+    }
+  },
+  "crypto-caesar": {
+    "fr": {
+      "name": "Bootcamp 04 — Trois lettres plus loin",
+      "description": "**Premier CTF · Niveau découverte · 5 à 10 minutes**\n\n### Le concept\nLe chiffre de César remplace chaque lettre par une autre à distance fixe dans l’alphabet. Ici, le décalage est +3 : A devient D, B devient E, et Z devient C. Les chiffres et symboles restent inchangés.\n\n### Ta mission\nDéchiffre `message.txt` en reculant chaque lettre de trois positions. Le préfixe du flag a lui aussi été décalé. Garde les accolades, chiffres et underscores.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Copie le flag dans le champ de réponse de ce défi.\n\n**Format :** `CYBERDUNE{...}`. Respecte les caractères du flag. Aucun compte externe payant, scan ou brute-force n’est nécessaire.",
+      "hints": [
+        "Pour déchiffrer : D devient A, E devient B, et A devient X.",
+        "Utilise une roue de César avec un décalage de -3 ou un outil ROT/Caesar. Préserve la casse.",
+        "Sur Linux : tr 'A-Za-z' 'X-ZA-Wx-za-w' < message.txt"
+      ]
+    },
+    "en": {
+      "name": "Bootcamp 04 — Three letters ahead",
+      "description": "**Your first CTF · Beginner · 5–10 minutes**\n\n### The concept\nA Caesar cipher replaces each letter with another at a fixed distance in the alphabet. Here, encryption shifts letters forward by 3: A becomes D, and Z becomes C. Numbers and symbols stay unchanged.\n\n### Your mission\nRead `message.txt` and reverse the shift by moving each letter back 3 places. Keep uppercase and lowercase letters, numbers, underscores and braces in the recovered flag.\n\n### Getting started\nDownload the attached file. All three hints are free: open them one at a time if you get stuck. Paste the flag into this challenge’s answer field.\n\n**Format:** `CYBERDUNE{...}`. Preserve the flag’s characters. No paid external account, scanning or brute force is needed.",
+      "hints": [
+        "Reverse the shift: D becomes A, and A wraps around to X.",
+        "Use a Caesar decoder with a shift of -3. Keep the original letter case.",
+        "On Linux: tr 'A-Za-z' 'X-ZA-Wx-za-w' < message.txt"
+      ]
+    },
+    "ar": {
+      "name": "المخيم 04 — ثلاث حروف إلى الأمام",
+      "description": "**أول مسابقة CTF لك · للمبتدئين · من 5 إلى 10 دقائق**\n\n### الفكرة\nيستبدل تشفير قيصر كل حرف بحرف يبعد عنه مسافة ثابتة. هنا تتحرك الحروف 3 مواضع إلى الأمام: A تصبح D وZ تصبح C. تبقى الأرقام والرموز دون تغيير.\n\n### مهمتك\nاقرأ `message.txt` واعكس الإزاحة بتحريك كل حرف 3 مواضع إلى الخلف. حافظ على حالة الحروف والأرقام والشرطة السفلية والأقواس في العلم.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية: افتحها واحدا تلو الآخر إذا تعثرت. الصق العلم في خانة الإجابة عن هذا التحدي.\n\n**الصيغة:** `CYBERDUNE{...}`. حافظ على أحرف العلم كما هي. لا تحتاج إلى حساب خارجي مدفوع أو فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "اعكس الإزاحة: D تصبح A، وA تعود إلى X عند الالتفاف حول الأبجدية.",
+        "استخدم أداة لفك تشفير قيصر بإزاحة -3 مع الحفاظ على حالة الحروف.",
+        "في Linux: tr 'A-Za-z' 'X-ZA-Wx-za-w' < message.txt"
+      ]
+    }
+  },
+  "linux-hidden": {
+    "fr": {
+      "name": "Bootcamp 05 — Le fichier discret",
+      "description": "**Premier CTF · Niveau découverte · 5 à 10 minutes**\n\n### Le concept\nSous Linux, un nom qui commence par un point désigne un fichier caché dans la liste habituelle. `ls` liste les fichiers, `ls -a` inclut les fichiers cachés, et `cat` affiche un fichier texte.\n\n### Ta mission\nDans ton terminal Linux (Ubuntu, Kali, une VM ou WSL), extrais l’archive avec `tar -xzf linux-hidden.tar.gz`, puis entre dans le dossier avec `cd linux-hidden`. Retrouve le fichier caché et lis le flag. Pas besoin de sudo.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Copie le flag dans le champ de réponse de ce défi.\n\n**Format :** `CYBERDUNE{...}`. Respecte les caractères du flag. Aucun compte externe payant, scan ou brute-force n’est nécessaire.",
+      "hints": [
+        "Dans le dossier linux-hidden, lance ls puis ls -a. Compare les deux résultats.",
+        "Le nom recherché commence par un point. cat accepte aussi les noms qui commencent par un point.",
+        "Exécute : cat .welcome-note"
+      ]
+    },
+    "en": {
+      "name": "Bootcamp 05 — The quiet file",
+      "description": "**Your first CTF · Beginner · 5–10 minutes**\n\n### The concept\nOn Linux, a filename beginning with a dot is hidden from the default ls listing. The ls -a command includes hidden files. The cat command displays a text file.\n\n### Your mission\nExtract `linux-hidden.tar.gz` with `tar -xzf linux-hidden.tar.gz`, then enter the `linux-hidden` directory. Find the hidden file and read its contents. No sudo or administrator access is needed.\n\n### Getting started\nDownload the attached file. All three hints are free: open them one at a time if you get stuck. Paste the flag into this challenge’s answer field.\n\n**Format:** `CYBERDUNE{...}`. Preserve the flag’s characters. No paid external account, scanning or brute force is needed.",
+      "hints": [
+        "Compare ls with ls -a in the extracted directory.",
+        "A filename beginning with a dot is still a normal file. Use cat followed by its exact name.",
+        "Inside linux-hidden, run: cat .welcome-note"
+      ]
+    },
+    "ar": {
+      "name": "المخيم 05 — الملف الهادئ",
+      "description": "**أول مسابقة CTF لك · للمبتدئين · من 5 إلى 10 دقائق**\n\n### الفكرة\nفي Linux، لا يظهر الملف الذي يبدأ اسمه بنقطة عند استخدام ls بالإعدادات العادية. يعرض ls -a الملفات المخفية أيضا. يعرض cat محتوى الملف النصي.\n\n### مهمتك\nفك `linux-hidden.tar.gz` بالأمر `tar -xzf linux-hidden.tar.gz`، ثم ادخل إلى المجلد `linux-hidden`. ابحث عن الملف المخفي واقرأ محتواه. لا تحتاج إلى sudo أو صلاحيات المدير.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية: افتحها واحدا تلو الآخر إذا تعثرت. الصق العلم في خانة الإجابة عن هذا التحدي.\n\n**الصيغة:** `CYBERDUNE{...}`. حافظ على أحرف العلم كما هي. لا تحتاج إلى حساب خارجي مدفوع أو فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "قارن نتيجة ls بنتيجة ls -a داخل المجلد المستخرج.",
+        "الاسم الذي يبدأ بنقطة يظل اسم ملف عادي. استخدم cat ثم الاسم كما هو.",
+        "داخل linux-hidden، نفّذ: cat .welcome-note"
+      ]
+    }
+  },
+  "linux-grep": {
+    "fr": {
+      "name": "Bootcamp 06 — Une ligne dans les logs",
+      "description": "**Premier CTF · Niveau découverte · 5 à 10 minutes**\n\n### Le concept\nUn log est un journal d’événements. `grep` recherche les lignes qui contiennent un texte donné. Cela évite de lire un gros fichier ligne par ligne.\n\n### Ta mission\nLe fichier `access.log` contient une seule ligne avec le préfixe `CYBERDUNE{`. Retrouve-la avec grep et soumets uniquement le flag. Aucun programme à écrire.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Copie le flag dans le champ de réponse de ce défi.\n\n**Format :** `CYBERDUNE{...}`. Respecte les caractères du flag. Aucun compte externe payant, scan ou brute-force n’est nécessaire.",
+      "hints": [
+        "Le mot à chercher est CYBERDUNE. grep affiche toute la ligne qui le contient.",
+        "La syntaxe est : grep 'texte à chercher' nom-du-fichier",
+        "Exécute : grep 'CYBERDUNE{' access.log. Copie seulement le flag, pas l’heure ni recovered_flag=."
+      ]
+    },
+    "en": {
+      "name": "Bootcamp 06 — One line in the logs",
+      "description": "**Your first CTF · Beginner · 5–10 minutes**\n\n### The concept\nA log records events, often one per line. The grep command searches for text and shows matching lines. It helps you find one useful clue in a much larger file.\n\n### Your mission\nSearch `access.log` for the line containing `CYBERDUNE{`. Submit only the flag. You do not need to write a program or read every line manually.\n\n### Getting started\nDownload the attached file. All three hints are free: open them one at a time if you get stuck. Paste the flag into this challenge’s answer field.\n\n**Format:** `CYBERDUNE{...}`. Preserve the flag’s characters. No paid external account, scanning or brute force is needed.",
+      "hints": [
+        "Search for the distinctive word CYBERDUNE rather than reading the entire log.",
+        "The command format is: grep 'text to find' filename",
+        "Run: grep 'CYBERDUNE{' access.log. Copy only the flag, without the timestamp or recovered_flag=."
+      ]
+    },
+    "ar": {
+      "name": "المخيم 06 — سطر بين السجلات",
+      "description": "**أول مسابقة CTF لك · للمبتدئين · من 5 إلى 10 دقائق**\n\n### الفكرة\nيسجل ملف السجل الأحداث، وغالبا يكون كل حدث في سطر. يبحث الأمر grep عن نص ويعرض الأسطر المطابقة، ليساعدك على إيجاد معلومة وسط ملف طويل.\n\n### مهمتك\nابحث في `access.log` عن السطر الذي يحتوي على `CYBERDUNE{`. أرسل العلم وحده. لا تحتاج إلى كتابة برنامج أو قراءة كل الأسطر يدويا.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية: افتحها واحدا تلو الآخر إذا تعثرت. الصق العلم في خانة الإجابة عن هذا التحدي.\n\n**الصيغة:** `CYBERDUNE{...}`. حافظ على أحرف العلم كما هي. لا تحتاج إلى حساب خارجي مدفوع أو فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "ابحث عن الكلمة المميزة CYBERDUNE بدلا من قراءة السجل كله.",
+        "صيغة الأمر هي: grep 'text to find' filename",
+        "نفّذ: grep 'CYBERDUNE{' access.log. انسخ العلم فقط دون التوقيت أو recovered_flag=."
+      ]
+    }
+  },
+  "osint-landmark": {
+    "fr": {
+      "name": "Bootcamp 07 — La carte postale",
+      "description": "**Premier CTF · Niveau découverte · 5 à 10 minutes**\n\n### Le concept\nL’OSINT consiste à retrouver et recouper des informations disponibles publiquement. Une photo peut fournir des indices : architecture, paysage, texte et origine de l’image.\n\n### Ta mission\nExtrais `carte-postale.zip` et observe `photo-01.jpg`. Dans quelle ville marocaine cette photo a-t-elle été prise ? Tu peux faire une recherche d’image inversée ou rechercher les indices visibles. Vérifie la ville avec une source publique. Soumets `CYBERDUNE{nom_de_la_ville}` en lettres latines, sans espaces.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Copie le flag dans le champ de réponse de ce défi.\n\n**Format :** `CYBERDUNE{...}`. Respecte les caractères du flag. Aucun compte externe payant, scan ou brute-force n’est nécessaire.",
+      "hints": [
+        "Observe le grand minaret et la mer. Décris ces deux éléments dans une recherche.",
+        "Une recherche d’image inversée (par exemple avec Lens) peut retrouver une page qui identifie le monument.",
+        "Le monument est la mosquée Hassan II. Recherche sa ville ; le flag attend la ville, pas le nom de la mosquée."
+      ]
+    },
+    "en": {
+      "name": "Bootcamp 07 — The postcard",
+      "description": "**Your first CTF · Beginner · 5–10 minutes**\n\n### The concept\nOSINT means learning from publicly available information. In a photo, architecture, surroundings and the image source can help identify a place. A reverse image search is one useful tool.\n\n### Your mission\nExtract `carte-postale.zip` and examine `photo-01.jpg`. Which Moroccan city is shown? Use visual clues or a reverse image search, then verify with a public source. Submit `CYBERDUNE{city_name}` using Latin letters, without spaces.\n\n### Getting started\nDownload the attached file. All three hints are free: open them one at a time if you get stuck. Paste the flag into this challenge’s answer field.\n\n**Format:** `CYBERDUNE{...}`. Preserve the flag’s characters. No paid external account, scanning or brute force is needed.",
+      "hints": [
+        "Look at the tall minaret and its position beside the sea.",
+        "Try a reverse image search with Google Lens or another image search engine.",
+        "The landmark is the Hassan II Mosque. Find the city where it stands."
+      ]
+    },
+    "ar": {
+      "name": "المخيم 07 — البطاقة البريدية",
+      "description": "**أول مسابقة CTF لك · للمبتدئين · من 5 إلى 10 دقائق**\n\n### الفكرة\nيعني OSINT جمع المعلومات من المصادر المتاحة للعموم. قد تساعدك العمارة والمحيط ومصدر الصورة على تحديد مكانها. البحث العكسي عن الصور أداة مفيدة لذلك.\n\n### مهمتك\nفك `carte-postale.zip` وافحص `photo-01.jpg`. ما المدينة المغربية الظاهرة؟ استخدم تفاصيل الصورة أو البحث العكسي، ثم تحقق بمصدر عام. أرسل `CYBERDUNE{city_name}` باسم المدينة بالحروف اللاتينية دون مسافات.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية: افتحها واحدا تلو الآخر إذا تعثرت. الصق العلم في خانة الإجابة عن هذا التحدي.\n\n**الصيغة:** `CYBERDUNE{...}`. حافظ على أحرف العلم كما هي. لا تحتاج إلى حساب خارجي مدفوع أو فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "لاحظ المئذنة العالية وموقعها بجانب البحر.",
+        "جرّب البحث العكسي باستخدام Google Lens أو محرك بحث آخر للصور.",
+        "المعلم هو مسجد الحسن الثاني. ابحث عن المدينة التي يوجد فيها."
+      ]
+    }
+  },
+  "osint-gps": {
+    "fr": {
+      "name": "Bootcamp 08 — La photo se souvient",
+      "description": "**Premier CTF · Niveau découverte · 5 à 10 minutes**\n\n### Le concept\nLes métadonnées EXIF sont des informations stockées dans un fichier photo. Certaines contiennent une position GPS. Pour cet exercice, des coordonnées GPS ont été ajoutées à une photo publique.\n\n### Ta mission\nExtrais `photo-voyage.zip`. Lis les coordonnées GPS de `photo-02.jpg`, puis cherche cette position sur une carte. Dans quelle ville marocaine se trouve ce lieu ? Soumets `CYBERDUNE{nom_de_la_ville}` en lettres latines. Tu peux utiliser `exiftool` sur Linux ou un lecteur EXIF. N’envoie pas tes photos personnelles à un service en ligne.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Copie le flag dans le champ de réponse de ce défi.\n\n**Format :** `CYBERDUNE{...}`. Respecte les caractères du flag. Aucun compte externe payant, scan ou brute-force n’est nécessaire.",
+      "hints": [
+        "Télécharge le fichier original du défi. Une capture d’écran peut perdre les métadonnées.",
+        "Avec exiftool : exiftool -GPSLatitude -GPSLongitude -GPSLatitudeRef -GPSLongitudeRef photo-02.jpg",
+        "La position est 34° 01' 27\" N, 6° 49' 22\" W. Entre-la dans une carte : N est positif et W négatif. Cherche la ville."
+      ]
+    },
+    "en": {
+      "name": "Bootcamp 08 — The photo remembers",
+      "description": "**Your first CTF · Beginner · 5–10 minutes**\n\n### The concept\nEXIF metadata is information stored inside a photo file. Some photos contain a GPS location. For this exercise, GPS coordinates were added to a publicly available photo.\n\n### Your mission\nExtract `photo-voyage.zip`. Read the GPS coordinates in `photo-02.jpg`, then look up that position on a map. Which Moroccan city is it in? Submit `CYBERDUNE{city_name}` in Latin letters. Use `exiftool` on Linux or an EXIF reader. Do not upload your personal photos to an online service.\n\n### Getting started\nDownload the attached file. All three hints are free: open them one at a time if you get stuck. Paste the flag into this challenge’s answer field.\n\n**Format:** `CYBERDUNE{...}`. Preserve the flag’s characters. No paid external account, scanning or brute force is needed.",
+      "hints": [
+        "Download the original challenge file. A screenshot can lose its metadata.",
+        "With exiftool: exiftool -GPSLatitude -GPSLongitude -GPSLatitudeRef -GPSLongitudeRef photo-02.jpg",
+        "The position is 34° 01' 27\" N, 6° 49' 22\" W. Enter it into a map: north is positive and west is negative. Identify the city."
+      ]
+    },
+    "ar": {
+      "name": "المخيم 08 — الصورة تتذكر",
+      "description": "**أول مسابقة CTF لك · للمبتدئين · من 5 إلى 10 دقائق**\n\n### الفكرة\nبيانات EXIF هي معلومات مخزنة داخل ملف الصورة، وقد تتضمن موقع GPS. أُضيفت إحداثيات GPS إلى صورة عامة من أجل هذا التمرين.\n\n### مهمتك\nفك `photo-voyage.zip`. اقرأ إحداثيات GPS في `photo-02.jpg` وابحث عن الموقع على خريطة. في أي مدينة مغربية يوجد؟ أرسل `CYBERDUNE{city_name}` بالحروف اللاتينية. يمكنك استخدام `exiftool` في Linux أو قارئ EXIF. لا ترفع صورك الشخصية إلى خدمة على الإنترنت.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية: افتحها واحدا تلو الآخر إذا تعثرت. الصق العلم في خانة الإجابة عن هذا التحدي.\n\n**الصيغة:** `CYBERDUNE{...}`. حافظ على أحرف العلم كما هي. لا تحتاج إلى حساب خارجي مدفوع أو فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "نزّل ملف التحدي الأصلي. قد تفقد لقطة الشاشة البيانات الوصفية.",
+        "باستخدام exiftool: exiftool -GPSLatitude -GPSLongitude -GPSLatitudeRef -GPSLongitudeRef photo-02.jpg",
+        "الموقع هو 34° 01' 27\" N, 6° 49' 22\" W. أدخله في خريطة: الشمال موجب والغرب سالب. حدد المدينة."
+      ]
+    }
+  }
+}

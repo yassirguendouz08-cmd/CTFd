@@ -119,6 +119,8 @@ def init_template_globals(app):
     app.jinja_env.globals.update(get_current_team_attrs=get_current_team_attrs)
     app.jinja_env.globals.update(get_ip=get_ip)
     app.jinja_env.globals.update(get_locale=get_locale)
+    from CTFd.utils.challenge_localization import copy, messages
+    app.jinja_env.globals.update(challenge_copy=copy, challenge_messages=messages)
     # TODO: CTFd 4.0 utcnow is deprecated and we should either update this to return TZ aware or rename entirely
     app.jinja_env.globals.update(utcnow=datetime.datetime.utcnow)
     app.jinja_env.globals.update(Assets=Assets)

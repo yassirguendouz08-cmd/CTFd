@@ -2,27 +2,27 @@
 
 
 
-    <div class="modal-content cyber-theme">
+    <div class="modal-content cyber-theme" dir="{{ 'rtl' if get_locale() == 'ar' else 'ltr' }}">
 
       <div class="modal-header cyber-header">
         <h3 class="modal-title" id="challenge-modal-title" data-scramble>{{ challenge.name }}</h3>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ challenge_copy('Close') }}"></button>
       </div>
 
       <ul class="nav nav-tabs cyber-tabs" x-show="!response">
         <li class="nav-item">
-          <button class="nav-link li-link active" data-bs-target="#challenge" @click="showChallenge(); tab='challenge'">Challenge</button>
+          <button class="nav-link li-link active" data-bs-target="#challenge" @click="showChallenge(); tab='challenge'">{{ challenge_copy("Challenge") }}</button>
         </li>
         {% block submissions %}
           {% if Configs.view_self_submissions %}
           <li class="nav-item">
-            <button class="nav-link li-link" data-bs-target="#submissions" @click="showSubmissions(); tab='submissions'">Submissions</button>
+            <button class="nav-link li-link" data-bs-target="#submissions" @click="showSubmissions(); tab='submissions'">{{ challenge_copy("Submissions") }}</button>
           </li>
           {% endif %}
         {% endblock %}
         {% block solution %}
           <li class="nav-item" x-show="getSolutionId()">
-            <button class="nav-link li-link" data-bs-target="#solution" @click="showSolution(); tab='solution'">Solution</button>
+            <button class="nav-link li-link" data-bs-target="#solution" @click="showSolution(); tab='solution'">{{ challenge_copy("Solution") }}</button>
           </li>
         {% endblock %}
         {% block solves %}
@@ -45,9 +45,9 @@
                 <div class="col-12">
                     <div class="cyber-meta-column">
                         <div class="cyber-meta-row">
-                          <div class="text"><span class="cyber-meta-label">Points:</span> <span class="cyber-meta-value text-danger">{{ challenge.value }}</span></div>
-                          {% if challenge.byline %}<div class="text"><span class="cyber-meta-label">Author:</span> <span class="cyber-meta-value">{{ challenge.byline }}</span></div>{% endif %}
-                          <div class="text"><span class="cyber-meta-label">Category:</span> <span class="cyber-meta-value">{{ challenge.category }}</span></div>
+                          <div class="text"><span class="cyber-meta-label">{{ challenge_copy("Points:") }}</span> <span class="cyber-meta-value text-danger">{{ challenge.value }}</span></div>
+                          {% if challenge.byline %}<div class="text"><span class="cyber-meta-label">{{ challenge_copy("Author:") }}</span> <span class="cyber-meta-value">{{ challenge.byline }}</span></div>{% endif %}
+                          <div class="text"><span class="cyber-meta-label">{{ challenge_copy("Category:") }}</span> <span class="cyber-meta-value">{{ challenge.category }}</span></div>
                         </div>
                         {% if challenge.tags %}
                         <div class="ms-auto">
@@ -58,7 +58,7 @@
                     </div>
                     <div class="cyber-desc">
                       {% block description %}
-                      <h2>Description</h2>
+                      <h2>{{ challenge_copy("Description") }}</h2>
                       {{ challenge.html }}
                       {% endblock %}
                     </div>
@@ -68,7 +68,7 @@
 
                     {% if challenge.connection_info %}
                     <div class="cyber-resource-box">
-                        <span class="cyber-resource-title">Connection</span>
+                        <span class="cyber-resource-title">{{ challenge_copy("Connection") }}</span>
                         <code style="color: #ff003c; word-break: break-all;">
                             {% if challenge.connection_info.startswith("http") %}
                                 <a href="{{ challenge.connection_info }}" target="_blank">{{ challenge.connection_info }}</a>
@@ -81,7 +81,7 @@
 
                     {% if files %}
                     <div class="cyber-resource-box">
-                        <span class="cyber-resource-title">Files</span>
+                        <span class="cyber-resource-title">{{ challenge_copy("Files") }}</span>
                         {% for file in files %}
                             {% set segments = file.split('/') %}
                             {% set token = file.split('?') | last %}
@@ -95,16 +95,16 @@
 
                     {% if hints %}
                     <div class="cyber-resource-box">
-                        <span class="cyber-resource-title">Hints</span>
+                        <span class="cyber-resource-title">{{ challenge_copy("Hints") }}</span>
                         {% for hint in hints | sort(attribute="cost") %}
                         <div x-data="Hint" x-init="id = {{ hint.id }}" class="mb-1">
                             {% if hint.content %}
-                            <details><summary>View Hint</summary><div class="small mt-1 p-2 border-top border-secondary">{{ hint.html | safe }}</div></details>
+                            <details><summary>{{ challenge_copy("View Hint") }}</summary><div class="small mt-1 p-2 border-top border-secondary">{{ hint.html | safe }}</div></details>
                             {% else %}
                             <details @toggle="showHint($event)">
-                                <summary class="btn btn-outline-secondary btn-sm w-100" style="list-style: none;">{% if hint.cost %}Unlock Hint ({{ hint.cost }} points){% else %}View Hint{% endif %}</summary>
+                                <summary class="btn btn-outline-secondary btn-sm w-100" style="list-style: none;">{% if hint.cost %}{{ challenge_copy('Unlock Hint') }} ({{ hint.cost }} {{ challenge_copy('points') }}){% else %}{{ challenge_copy('View Hint') }}{% endif %}</summary>
                                 <div class="small mt-1 p-2" x-html="html"></div>
-                                <p x-show="busy" role="status">Loading hint…</p>
+                                <p x-show="busy" role="status">{{ challenge_copy("Loading hint…") }}</p>
                                 <p x-show="error" x-text="error" role="alert" class="text-danger"></p>
                             </details>
                             {% endif %}
@@ -118,19 +118,19 @@
             <p x-show="submissionError" x-text="submissionError" role="alert" class="text-danger"></p>
             <div class="mt-3">
                 <template x-if="max_attempts > 0">
-                    <div class="text-center small text-muted mb-1"><span x-text="attempts"></span>/<span x-text="max_attempts"></span> attempts</div>
+                    <div class="text-center small text-muted mb-1"><span x-text="attempts"></span>/<span x-text="max_attempts"></span> {{ challenge_copy("attempts") }}</div>
                 </template>
                 <div class="cyber-input-wrapper">
-                    <label class="visually-hidden" for="challenge-input">Flag</label>
-                    <input id="challenge-input" class="cyber-input" type="text" name="submission" placeholder="Flag{...}" x-model="submission" @keyup.enter="submitChallenge()" :disabled="submitting" autocomplete="off">
-                    <button id="challenge-submit" class="cyber-btn-submit" type="submit" @click="submitChallenge()" :disabled="submitting || !submission.trim()" :aria-busy="submitting" x-text="submitting ? 'Submitting…' : 'Submit'">Submit</button>
+                    <label class="visually-hidden" for="challenge-input">{{ challenge_copy("Flag") }}</label>
+                    <input id="challenge-input" class="cyber-input" type="text" dir="ltr" name="submission" placeholder="Flag{...}" x-model="submission" @keyup.enter="submitChallenge()" :disabled="submitting" autocomplete="off">
+                    <button id="challenge-submit" class="cyber-btn-submit" type="submit" @click="submitChallenge()" :disabled="submitting || !submission.trim()" :aria-busy="submitting" x-text="t(submitting ? 'Submitting…' : 'Submit')">{{ challenge_copy("Submit") }}</button>
                 </div>
             </div>
           </div>
 
           <div role="tabpanel" class="tab-pane fade" id="submissions">
             <div class="table-responsive"><table class="table table-striped text-center mt-3">
-              <thead><tr><th>Submission</th><th>Date</th></tr></thead>
+              <thead><tr><th>{{ challenge_copy("Submission") }}</th><th>{{ challenge_copy("Date") }}</th></tr></thead>
               <tbody>
               <template x-for="submission in submissions">
                 <tr><td x-text="submission.provided"></td><td x-text="submission.date"></td></tr>
@@ -141,7 +141,7 @@
 
           <div role="tabpanel" class="tab-pane fade" id="solves">
             <div class="table-responsive"><table class="table table-striped text-center mt-3">
-              <thead><tr><th>Name</th><th>Date</th></tr></thead>
+              <thead><tr><th>{{ challenge_copy("Name") }}</th><th>{{ challenge_copy("Date") }}</th></tr></thead>
               <tbody>
               <template x-for="solve in solves">
                 <tr><td><a :href="solve.account_url" x-text="solve.name"></a></td><td x-text="solve.date"></td></tr>
@@ -176,23 +176,23 @@
                       'fa-circle-pause': response && response.data.status === 'paused'
                     }"
                   ></i>
-                  <span class="result-status" x-text="response ? response.data.status.replace('_',' ').toUpperCase() + (response.data.preview ? ' · PREVIEW' : '') : ''"></span>
+                  <span class="result-status" x-text="response ? t(({correct:'Correct', incorrect:'Incorrect', already_solved:'Already solved', paused:'Paused', ratelimited:'Ratelimited', partial:'Partial'})[response.data.status] || response.data.status).toUpperCase() + (response.data.preview ? ' · ' + t('Preview') : '') : ''"></span>
                 </div>
 
-                <div class="cyber-result-message" x-text="response ? response.data.message : ''"></div>
+                <div class="cyber-result-message" x-text="response ? t(response.data.message) : ''"></div>
 
                 <div x-show="response && !response.data.preview && (response.data.status === 'correct' || response.data.status === 'already_solved')"
                 class="cyber-result-actions">
 
                   <button x-show="getNextId()" @click="nextChallenge()" class="btn btn-cyber-action">
-                    <i class="fa-solid fa-arrow-right"></i> Next Challenge
+                    <i class="fa-solid fa-arrow-right"></i> {{ challenge_copy('Next Challenge') }}
                   </button>
 
                   {% if Configs.social_shares %}
                   <div class="cyber-share" x-init="getShareUrl()">
                     <div class="cd-actions" x-show="share_url">
-                      <button type="button" class="btn btn-secondary" @click="copyShareUrl()">Copy solve link</button>
-                      <a class="btn btn-secondary" :href="'https://x.com/intent/tweet?url=' + encodeURIComponent(share_url)" target="_blank" rel="noopener">Share on X</a>
+                      <button type="button" class="btn btn-secondary" @click="copyShareUrl()">{{ challenge_copy("Copy solve link") }}</button>
+                      <a class="btn btn-secondary" :href="'https://x.com/intent/tweet?url=' + encodeURIComponent(share_url)" target="_blank" rel="noopener">{{ challenge_copy("Share on X") }}</a>
                     </div>
                   </div>
                   {% endif %}
@@ -200,7 +200,7 @@
                   {% if Configs.challenge_ratings != "disabled" %}
                   <div class="cyber-rating">
                     <hr>
-                    <p class="rating-title">RATE THIS CHALLENGE</p>
+                    <p class="rating-title">{{ challenge_copy("RATE THIS CHALLENGE") }}</p>
 
                     <div class="cyber-rating-container" x-data="{
                       localRating: {{ (rating.get('value') if rating else 0) | tojson }},
@@ -223,7 +223,7 @@
                       })
                     ">
 
-                      <button type="button" aria-label="Dislike challenge" :disabled="ratingBusy"
+                      <button type="button" aria-label="{{ challenge_copy('Dislike challenge') }}" :disabled="ratingBusy"
                         @click="selectedRating = -1; $nextTick(() => submitRating())"
                         class="rating-icon dislike fa-thumbs-down"
                         :class="selectedRating === -1 ? 'fa-solid' : 'fa-regular'"
@@ -233,7 +233,7 @@
                         <span class="count-value" x-text="upCount - downCount"></span>
                       </div>
 
-                      <button type="button" aria-label="Like challenge" :disabled="ratingBusy"
+                      <button type="button" aria-label="{{ challenge_copy('Like challenge') }}" :disabled="ratingBusy"
                         @click="selectedRating = 1; $nextTick(() => submitRating())"
                         class="rating-icon like fa-thumbs-up"
                         :class="selectedRating === 1 ? 'fa-solid' : 'fa-regular'"
@@ -241,16 +241,16 @@
                     </div>
 
                     <div x-show="!ratingSubmitted">
-                      <textarea aria-label="Challenge review" class="cyber-textarea" rows="2" x-model="ratingReview" placeholder="Write a review (optional)" maxlength="2000"></textarea>
+                      <textarea aria-label="{{ challenge_copy('Challenge review') }}" class="cyber-textarea" rows="2" x-model="ratingReview" placeholder="{{ challenge_copy('Write a review (optional)') }}" maxlength="2000"></textarea>
 
                       <button @click="submitRating()" class="btn btn-cyber-action mt-2" :disabled="!selectedRating || ratingBusy" :aria-busy="ratingBusy">
-                        Submit Rating
+                        {{ challenge_copy('Submit Rating') }}
                       </button>
                     </div>
 
                     <p x-show="ratingError" x-text="ratingError" role="alert" class="text-danger"></p>
                     <div x-show="ratingSubmitted" class="rating-success py-2">
-                      Thank you for your feedback
+                      {{ challenge_copy('Thank you for your feedback') }}
                     </div>
                   </div>
                   {% endif %}
@@ -258,7 +258,7 @@
 
                 <div x-show="response && response.data.status !== 'correct' && response.data.status !== 'already_solved'" class="cyber-result-actions">
                     <button type="button" @click="response = null" class="btn btn-cyber-action">
-                        Try Again
+                        {{ challenge_copy('Try Again') }}
                     </button>
                 </div>
               </div>
