@@ -7,7 +7,7 @@
   <div class="container cd-challenges-shell">
     <div class="jumbotron cd-page-head cd-challenges-head">
       <span class="cd-eyebrow">CYBERDUNE / CAPTURE THE FLAG</span>
-      <h1>
+      <h1 data-scramble>
         {% trans %}Challenges{% endtrans %}
       </h1><p>Find your next challenge. Capture the flag.</p>
       {% if is_admin() %}<p>Admin view includes hidden challenges. Flag checks on hidden challenges run in preview mode.</p>{% endif %}
@@ -72,7 +72,7 @@
                         <span class="cd-solved-label" x-show="c.solved_by_me || c.solved || c.preview_solved" x-cloak><i class="fas fa-check-circle" aria-hidden="true"></i><span x-text="c.preview_solved && !c.solved_by_me ? 'Solved · preview' : 'Solved'"></span></span>
                       </div>
 
-                      <p class="challenge-title" x-text="c.name"></p>
+                      <p class="challenge-title" data-scramble x-text="c.name"></p>
 
                       {% if is_admin() %}<span class="challenge-pill" x-show="c.state === 'hidden'" x-cloak>Hidden · admins only</span>{% endif %}
                       <div class="cd-card-tags"><template x-for="tag in (c.tags || []).slice(0, 2)" :key="tag.value"><span x-text="tag.value"></span></template></div>

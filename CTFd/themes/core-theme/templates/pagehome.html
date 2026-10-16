@@ -1,25 +1,29 @@
 {% set presentation = CyberdunePresentation if CyberdunePresentation is defined else {'mode': 'platform'} %}
-<section class="cd-hero">
-  <div class="container cd-hero-content">
-    <span class="cd-eyebrow"><span class="cd-status-dot" aria-hidden="true"></span>{{ presentation.status if presentation.mode == 'event' else 'CAPTURE THE FLAG PLATFORM' }}</span>
+<section class="cd-hero cd-original-home">
+  <div class="container cd-original-home-grid">
+    <div class="cd-original-intro">
     {% if presentation.mode == 'event' %}
-      <h1>{{ presentation.name }}</h1>
-      <p>{{ presentation.briefing or Configs.ctf_description }}</p>
+      <span class="cd-eyebrow">{{ presentation.status }}</span>
+      <h1 data-scramble>{{ presentation.name }}</h1>
+      <p data-scramble>{{ presentation.briefing or Configs.ctf_description }}</p>
       <div class="cd-event-dates"><time datetime="{{ presentation.start_date }}">{{ presentation.start_date[:10] }} · {{ presentation.start_date[11:16] }} UTC</time><span>—</span><time datetime="{{ presentation.end_date }}">{{ presentation.end_date[:10] }} · {{ presentation.end_date[11:16] }} UTC</time></div>
     {% else %}
-      <img class="cd-hero-logo" src="{{ url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-hero.png') }}" alt="CyberDune" width="640" height="463" fetchpriority="high">
-      <h1 class="cd-hero-title">CAPTURE THE FLAG<span class="cd-title-dot">.</span></h1>
-      <p>Explore challenges. Sharpen your skills.<br>Every flag is a new way to think.</p>
+      <h1 aria-label="CYBERDUNE">CYBER<span class="cd-original-word" data-original-typing aria-hidden="true">DUNE</span><span class="cd-original-cursor" aria-hidden="true"></span></h1>
+      <p data-scramble>Welcome to the CyberDune CTF platform.<br>Test your skills and capture the flag.</p>
     {% endif %}
     <div class="cd-hero-actions">
-      {% if authed() %}
-        <a class="btn btn-primary" href="{{ url_for('challenges.listing') }}">View challenges <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-        {% if Configs.score_visibility != 'admins' %}<a class="btn btn-secondary" href="{{ url_for('scoreboard.listing') }}">Scoreboard</a>{% endif %}
-      {% else %}
-        {% if registration_visible() %}<a class="btn btn-primary" href="{{ url_for('auth.register') }}">Register <i class="fas fa-arrow-right" aria-hidden="true"></i></a>{% endif %}
-        <a class="btn btn-secondary" href="{{ url_for('auth.login') }}">Log in</a>
-      {% endif %}
+      <a class="btn btn-primary" href="{{ url_for('challenges.listing') }}"><span data-scramble>&gt; ./start_hack.sh</span></a>
     </div>
-    <a class="cd-hero-link" href="{{ url_for('challenges.listing') }}">Explore the challenges <i class="fas fa-arrow-down" aria-hidden="true"></i></a>
+    <p class="cd-original-note">We won't steal your passwords :)</p>
+    </div>
+    <aside class="cd-original-console" aria-label="Capture the flag platform">
+      <span class="cd-eyebrow">{{ presentation.status if presentation.mode == 'event' else 'PLATFORM READY' }}</span>
+      <h2 data-scramble>CAPTURE THE FLAG</h2>
+      <p>Follow the clues. Find your flag.</p>
+      <div class="cd-original-ticker" aria-hidden="true"><div>
+        {% for repeat in range(2) %}<span>WEB <b>·</b> CRYPTO <b>·</b> LINUX <b>·</b> OSINT <b>·</b> REVERSE <b>·</b> FORENSICS <b>·</b> </span>{% endfor %}
+      </div></div>
+      <span class="cd-original-console-note">Only attack designated challenge targets.</span>
+    </aside>
   </div>
 </section>

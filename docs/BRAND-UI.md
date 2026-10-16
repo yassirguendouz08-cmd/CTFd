@@ -1,15 +1,9 @@
 # CyberDune website identity and challenge completion
 
-The public CTF theme uses the club website's Geist Sans/Geist Mono fonts, charcoal
-surfaces and red accents. Sans typography carries headings, navigation and challenge
-titles; monospace is reserved for small technical details. Fonts are served locally with
-their SIL Open Font License in `static/webfonts/Geist-OFL.txt`.
-
-A small, hand-authored `static/img/network-field.svg` supplies the shared background:
-quiet grid lines, angled network traces and a few red connection points around the
-content. The static drawing replaces the hero's bitmap backdrop and also appears
-on the login panel. Cards use neutral borders, comfortable spacing and a modest
-hover lift; reduced-motion users do not receive that movement.
+The active public theme restores the owner's original Hack typography, animated
+background, glass navigation and red chamfered cards. See
+[Original UI restoration](ORIGINAL-UI-RESTORATION.md) for the archived source,
+animation provenance, accessibility behavior and validation. Fonts are served locally.
 
 The challenge heading, category filters and category rows are centered. Incomplete
 rows remain centered on desktop; cards wrap to two columns on tablets and one

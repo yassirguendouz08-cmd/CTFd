@@ -2,22 +2,31 @@
   <div class="cd-nav-wrap">
     <a class="cd-brand" href="{{ url_for('views.static_html', route='/') }}" aria-label="CYBERDUNE home">
       <img src="{{ url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-white.png') }}" width="40" height="40" alt="">
-      <span><strong>CYBERDUNE CTF</strong><small>CAPTURE THE FLAG PLATFORM</small></span>
     </a>
     <button class="cd-menu-toggle" type="button" aria-expanded="false" aria-controls="theme-navigation">Menu <i class="fas fa-bars" aria-hidden="true"></i></button>
     <nav id="theme-navigation" class="cd-navigation" aria-label="Main navigation">
-      <a href="{{ url_for('challenges.listing') }}" class="cd-nav-link">Challenges</a>
-      {% if Configs.score_visibility != 'admins' %}<a href="{{ url_for('scoreboard.listing') }}" class="cd-nav-link">Scoreboard</a>{% endif %}
-      {% if Configs.account_visibility != 'admins' %}
-        {% if Configs.user_mode == 'teams' %}<a href="{{ url_for('teams.listing') }}" class="cd-nav-link">Teams</a>{% endif %}
-        <a href="{{ url_for('users.listing') }}" class="cd-nav-link">Users</a>
-      {% endif %}
-      {% for page in Plugins.user_menu_pages %}<a href="{{ page.route }}" class="cd-nav-link">{{ page.title }}</a>{% endfor %}
+      <div class="cd-nav-pages">
+        <a href="{{ url_for('views.static_html', route='/') }}" class="cd-nav-link"><span data-scramble>Home</span></a>
+        {% for page in Plugins.user_menu_pages %}<a href="{{ page.route }}" class="cd-nav-link"><span data-scramble>{{ page.title }}</span></a>{% endfor %}
+        <a href="{{ url_for('challenges.listing') }}" class="cd-nav-link"><span data-scramble>Challenges</span></a>
+        {% if Configs.score_visibility != 'admins' or Configs.account_visibility != 'admins' %}
+        <div class="cd-explore">
+          <button id="exploreDropdownToggle" type="button" class="cd-nav-link" aria-expanded="false" aria-controls="exploreDropdown"><span data-scramble>Explore</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+          <div id="exploreDropdown" class="cd-account-menu" hidden>
+            {% if Configs.score_visibility != 'admins' %}<a href="{{ url_for('scoreboard.listing') }}"><span data-scramble>Scoreboard</span></a>{% endif %}
+            {% if Configs.account_visibility != 'admins' %}
+              {% if Configs.user_mode == 'teams' %}<a href="{{ url_for('teams.listing') }}"><span data-scramble>Teams</span></a>{% endif %}
+              <a href="{{ url_for('users.listing') }}"><span data-scramble>Users</span></a>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+        {% if authed() %}<a class="cd-nav-link cd-notifications" href="{{ url_for('views.notifications') }}" aria-label="Notifications"><i class="fas fa-bell" aria-hidden="true"></i></a>{% endif %}
+      </div>
       <div class="cd-nav-account">
         {% if authed() %}
-          <a class="cd-nav-link cd-notifications" href="{{ url_for('views.notifications') }}" aria-label="Notifications"><i class="fas fa-bell" aria-hidden="true"></i></a>
           <div class="cd-account">
-            <button id="accountDropdownToggle" class="btn btn-secondary btn-sm" type="button" aria-expanded="false" aria-controls="accountDropdown">Account <i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+            <button id="accountDropdownToggle" class="btn btn-secondary btn-sm" type="button" aria-expanded="false" aria-controls="accountDropdown"><span data-scramble>Account</span> <i class="fas fa-chevron-down" aria-hidden="true"></i></button>
             <div class="cd-account-menu" id="accountDropdown" hidden>
               {% if is_admin() %}<a href="{{ url_for('admin.view') }}">Admin panel</a>{% endif %}
               <a href="{{ url_for('users.private') }}">Profile</a>
@@ -27,8 +36,8 @@
             </div>
           </div>
         {% else %}
-          <a class="cd-nav-link" href="{{ url_for('auth.login') }}">Log in</a>
-          {% if registration_visible() %}<a class="btn btn-primary btn-sm" href="{{ url_for('auth.register') }}">Register</a>{% endif %}
+          {% if registration_visible() %}<a class="btn btn-primary btn-sm" href="{{ url_for('auth.register') }}"><span data-scramble>Register</span></a>{% endif %}
+          <a class="cd-nav-link" href="{{ url_for('auth.login') }}"><span data-scramble>Log in</span></a>
         {% endif %}
       </div>
     </nav>

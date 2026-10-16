@@ -29,6 +29,7 @@
   {% block stylesheets %}{{ Assets.css("assets/scss/main.scss") }}{% endblock %}
   {{ Plugins.styles }}
   <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/redesign.css') }}?v=20261016-2">
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/original-ui.css') }}?v=20261016-4">
 
   <script type="text/javascript">
       window.init = {
@@ -55,6 +56,9 @@
 </head>
 {% set auth_page = request.endpoint in ['auth.login', 'auth.register', 'auth.reset_password', 'auth.confirm'] %}
 <body class="cd-site{% if auth_page %} cd-auth{% endif %}{% if request.path.rstrip('/') == request.script_root.rstrip('/') %} cd-home{% endif %}">
+<div class="cd-original-backdrop" aria-hidden="true">
+  <video id="cd-original-background" muted loop playsinline preload="none" tabindex="-1" poster="{{ url_for('views.themes_beta', theme='core-theme', path='img/original-background-poster.webp') }}" data-src="{{ url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-background.webm') }}"></video>
+</div>
 <a class="cd-skip-link" href="#main-content">Skip to content</a>
 {% include "components/navbar.html" %}
 
@@ -96,5 +100,6 @@
   });
 </script>
 <script src="{{ url_for('views.themes_beta', theme='core-theme', path='assets/redesign.js') }}?v=20261013-1" defer></script>
+<script src="{{ url_for('views.themes_beta', theme='core-theme', path='assets/original-ui.js') }}?v=20261016-4" defer></script>
 </body>
 </html>
