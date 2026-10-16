@@ -20,7 +20,7 @@ from that GIF's first frame. The shared base template uses one decorative,
 muted, looping, inline video with this poster across all public theme pages.
 
 The restored visual layer uses the original Hack family, glass navigation pills,
-red active states, two-column homepage panels, DUNE typing/cursor, the 45-second
+red active states, two-column homepage panels, DUNE typing/cursor, the 32-second
 text ticker, and the red chamfered challenge-card polygon. Hack regular/bold files
 are hosted locally with their upstream license. Existing responsive forms, error
 messages, modal behavior, navigation routes and original event settings remain.
@@ -32,7 +32,10 @@ receive a still poster without loading the video. The full CYBERDUNE heading
 scrambles on hover or keyboard focus, pausing its DUNE typing until the reveal ends.
 This deliberately triggered brand reveal takes 240 ms with reduced motion,
 compared with the normal 900 ms; other scramble effects honor the OS preference. Hidden
-tabs pause playback and text timers. Video playback failure leaves the poster.
+tabs pause playback and text timers. The category ribbon repeats two identical
+groups in a seamless horizontal loop, including with reduced motion enabled,
+as explicitly requested. Hover does not stop it; hidden tabs pause it separately.
+Video playback failure leaves the poster.
 Solved cards retain the requested green state and checkmarked label; admin-only
 hidden flag previews remain separate from scored submissions.
 

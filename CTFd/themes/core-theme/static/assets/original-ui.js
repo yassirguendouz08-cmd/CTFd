@@ -35,6 +35,7 @@
   function syncMotion() {
     const stopped = !canAnimate();
     document.documentElement.toggleAttribute('data-effects-paused', stopped);
+    document.documentElement.toggleAttribute('data-ticker-paused', document.hidden);
     if (background) {
       if (stopped) background.pause();
       else {
@@ -49,6 +50,7 @@
   reducedMotion.addEventListener('change', syncMotion);
   document.addEventListener('visibilitychange', syncMotion);
   window.addEventListener('pagehide', () => {
+    document.documentElement.setAttribute('data-ticker-paused', '');
     background?.pause();
     resetTyping();
     for (const animation of [...active.values()]) animation.stop();

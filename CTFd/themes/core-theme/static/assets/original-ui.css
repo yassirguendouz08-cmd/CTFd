@@ -103,10 +103,9 @@ body.cd-site::before, .cd-hero::before, .cd-auth-brand::before { content: none; 
 .cd-original-console p { font-size: 11px; color: #ddd; margin-bottom: 22px; }
 .cd-original-console-note { font: 400 9px/1.6 var(--cd-font); color: #bdbdbd; display: block; margin-top: 18px; }
 .cd-original-ticker { overflow: hidden; border: 1px solid #ffffff0f; border-radius: 14px; background: #08080859; padding: 12px 0; }
-.cd-original-ticker > div { display: flex; width: max-content; animation: cd-original-scroll 45s linear infinite; }
+.cd-original-ticker > div { display: flex; width: max-content; animation: cd-original-scroll 32s linear infinite; will-change: transform; }
 .cd-original-ticker span { flex: none; white-space: pre; font: 700 28px/1.2 var(--cd-font); color: #ffffffbf; }
 .cd-original-ticker b { color: #da0000; font-size: 18px; vertical-align: middle; }
-.cd-original-ticker:hover > div { animation-play-state: paused; }
 @keyframes cd-original-scroll { to { transform: translateX(-50%); } }
 @keyframes cd-original-blink { 50% { opacity: 0; } }
 [data-scramble] { position: relative; }
@@ -114,7 +113,8 @@ body.cd-site::before, .cd-hero::before, .cd-auth-brand::before { content: none; 
 .cd-scramble-running > :not(.cd-scramble-visual) { visibility: hidden; }
 [data-scramble-brand] { cursor: default; }
 .cd-scramble-visual { position: absolute; inset: 0; pointer-events: none; white-space: pre-wrap; font: inherit; letter-spacing: inherit; text-transform: inherit; text-shadow: none; }
-html[data-effects-paused] .cd-original-ticker > div, html[data-effects-paused] .cd-original-cursor { animation-play-state: paused; }
+html[data-effects-paused] .cd-original-cursor { animation-play-state: paused; }
+html[data-ticker-paused] .cd-original-ticker > div { animation-play-state: paused !important; }
 @media (min-width: 1200px) { .cd-navigation { background: none; position: static; padding: 0; border: 0; box-shadow: none; } }
 @media (max-width: 1199px) {
   .cd-header { height: 88px; flex-basis: 88px; }
@@ -153,4 +153,9 @@ html[data-effects-paused] .cd-original-ticker > div, html[data-effects-paused] .
   .cd-original-home p { font-size: 12px; }
   .cd-original-home p.cd-original-note { font-size: 10px; }
 }
-@media (prefers-reduced-motion: reduce) { .cd-original-ticker > div, .cd-original-cursor { animation: none; } .cd-site .challenge-button:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  /* The category ribbon is explicitly requested to scroll continuously. */
+  .cd-original-ticker > div { animation: cd-original-scroll 32s linear infinite !important; }
+  .cd-original-cursor { animation: none; }
+  .cd-site .challenge-button:hover { transform: none; }
+}
