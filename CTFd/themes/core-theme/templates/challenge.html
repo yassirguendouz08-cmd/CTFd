@@ -176,12 +176,12 @@
                       'fa-circle-pause': response && response.data.status === 'paused'
                     }"
                   ></i>
-                  <span class="result-status" x-text="response ? response.data.status.replace('_',' ').toUpperCase() : ''"></span>
+                  <span class="result-status" x-text="response ? response.data.status.replace('_',' ').toUpperCase() + (response.data.preview ? ' · PREVIEW' : '') : ''"></span>
                 </div>
 
                 <div class="cyber-result-message" x-text="response ? response.data.message : ''"></div>
 
-                <div x-show="response && (response.data.status === 'correct' || response.data.status === 'already_solved')"
+                <div x-show="response && !response.data.preview && (response.data.status === 'correct' || response.data.status === 'already_solved')"
                 class="cyber-result-actions">
 
                   <button x-show="getNextId()" @click="nextChallenge()" class="btn btn-cyber-action">

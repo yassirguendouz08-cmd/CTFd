@@ -4,8 +4,9 @@
 
 {% block content %}
 
-  <div class="container">
-    <div class="jumbotron cd-page-head">
+  <div class="container cd-challenges-shell">
+    <div class="jumbotron cd-page-head cd-challenges-head">
+      <span class="cd-eyebrow">CYBERDUNE / CAPTURE THE FLAG</span>
       <h1>
         {% trans %}Challenges{% endtrans %}
       </h1><p>Find your next challenge. Capture the flag.</p>
@@ -13,7 +14,7 @@
     </div>
   </div>
 
-  <div class="container">
+  <div class="container cd-challenges-shell">
     <div class="row">
       <div class="col-md-12">
         {% include "components/errors.html" %}
@@ -24,6 +25,7 @@
       x-data="ChallengeBoard"
       @load-challenges.window="loadChallenges()"
       @load-challenge.window="loadChallenge($event.detail)"
+      @challenge-completed.window="markCompleted($event.detail)"
     >
       <div
           x-ref="challengeWindow" id="challenge-window" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="challenge-modal-title" x-data=""
@@ -57,16 +59,15 @@
                 <template x-for="(c, idx) in getChallenges(category)" :key="c.id">
                   <div class="challenge-grid-item">
                     <button
-                        class="challenge-button" type="button" :aria-label="c.name + ' — ' + c.value + ' points'"
+                        class="challenge-button" type="button" :aria-label="c.name + ' — ' + c.value + ' points' + ((c.solved_by_me || c.solved || c.preview_solved) ? ' — Solved' : '')"
                         :class="[
-                          (c.solved_by_me || c.solved) ? 'challenge-solved' : '',
+                          (c.solved_by_me || c.solved || c.preview_solved) ? 'challenge-solved' : '',
                           `category-${category.toLowerCase().replace(/ /g, '-')}`,
                           ...(c.tags || []).map((tag) => `tag-${tag.value.toLowerCase().replace(/ /g, '-')}`),
                         ];"
                         :value="c.id" @click="loadChallenge(c.id)"
                     >
-                      <span class="cd-solved-label" x-show="c.solved_by_me || c.solved">Solved</span>
-                      <!-- Solved GIF overlay is handled via CSS ::after on .challenge-solved -->
+                      <span class="cd-solved-label" x-show="c.solved_by_me || c.solved || c.preview_solved" x-cloak><i class="fas fa-check-circle" aria-hidden="true"></i><span x-text="c.preview_solved && !c.solved_by_me ? 'Solved · preview' : 'Solved'"></span></span>
 
                       <p class="challenge-title" x-text="c.name"></p>
 

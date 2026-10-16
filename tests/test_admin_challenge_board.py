@@ -34,6 +34,7 @@ def test_admin_board_includes_hidden_without_exposing_them_to_players():
                 })
                 assert result.status_code == 200
                 assert result.get_json()["data"]["status"] == expected
+                assert result.get_json()["data"]["preview"] is True
 
         for client in (app.test_client(), login_as_user(app)):
             for url in ("/api/v1/challenges", "/api/v1/challenges?view=admin"):

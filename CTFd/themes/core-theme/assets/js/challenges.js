@@ -243,6 +243,12 @@ Alpine.data("Challenge", () => ({
     if (this.response.data.status === "correct") {
       this.submission = "";
     }
+    if (["correct", "already_solved"].includes(this.response.data.status)) {
+      this.$dispatch("challenge-completed", {
+        id: this.id,
+        preview: this.response.data.preview === true,
+      });
+    }
 
     // Decide whether to check for the solution
     if (this.getSolutionId() == null) {
@@ -298,9 +304,16 @@ Alpine.data("ChallengeBoard", () => ({
   challenges: [],
   challenge: null,
   opening: false,
+  previewSolves: [],
 
   async init() {
-    this.challenges = await CTFd.pages.challenges.getChallenges();
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(this.previewKey()) || "[]");
+      this.previewSolves = Array.isArray(saved) ? saved.filter(id => typeof id === "string") : [];
+    } catch (_) {
+      this.previewSolves = [];
+    }
+    await this.loadChallenges();
     this.loaded = true;
 
     if (window.location.hash) {
@@ -363,7 +376,31 @@ Alpine.data("ChallengeBoard", () => ({
   },
 
   async loadChallenges() {
-    this.challenges = await CTFd.pages.challenges.getChallenges();
+    const challenges = await CTFd.pages.challenges.getChallenges();
+    this.challenges = challenges.map(challenge => ({
+      ...challenge,
+      preview_solved: challenge.state === "hidden" && this.previewSolves.includes(String(challenge.id)),
+    }));
+  },
+
+  previewKey() {
+    return `cyberdune-preview-solves:${window.init.userId}`;
+  },
+
+  markCompleted({ id, preview }) {
+    const challenge = this.challenges.find(item => String(item.id) === String(id));
+    if (!challenge) return;
+    if (preview) {
+      challenge.preview_solved = true;
+      if (!this.previewSolves.includes(String(id))) this.previewSolves.push(String(id));
+      try {
+        sessionStorage.setItem(this.previewKey(), JSON.stringify(this.previewSolves));
+      } catch (_) {
+        // Preview feedback still works when browser storage is unavailable.
+      }
+    } else {
+      challenge.solved_by_me = true;
+    }
   },
 
   async loadChallenge(challengeId) {

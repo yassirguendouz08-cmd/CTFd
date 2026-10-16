@@ -696,6 +696,7 @@ class ChallengeAttempt(Resource):
                     "data": {
                         "status": status,
                         "message": message,
+                        "preview": True,
                     },
                 }
 
