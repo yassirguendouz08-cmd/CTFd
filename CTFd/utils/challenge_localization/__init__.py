@@ -19,6 +19,11 @@ def catalog():
 
 
 @lru_cache(maxsize=1)
+def training_catalog():
+    return json.loads(Path(__file__).with_name("drive-training.json").read_text(encoding="utf-8"))
+
+
+@lru_cache(maxsize=1)
 def ui_catalog():
     return json.loads(Path(__file__).with_name("ui.json").read_text(encoding="utf-8"))
 
@@ -42,6 +47,8 @@ def entry(challenge):
         value = tag["value"] if isinstance(tag, dict) else tag.value
         if value.startswith("bootcamp-first-steps:"):
             return catalog().get(value.split(":", 1)[1])
+        if value.startswith("drive-training:"):
+            return training_catalog().get(value.split(":", 1)[1])
     return None
 
 
@@ -66,7 +73,7 @@ def localize_challenge(data, challenge):
         result["tags"] = [
             {**tag, "value": copy(tag["value"])} if isinstance(tag, dict) else copy(tag)
             for tag in result["tags"]
-            if not (tag["value"] if isinstance(tag, dict) else tag).startswith("bootcamp-first-steps:")
+            if not (tag["value"] if isinstance(tag, dict) else tag).startswith(("bootcamp-first-steps:", "drive-training:"))
         ]
     return result
 

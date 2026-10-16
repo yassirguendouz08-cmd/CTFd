@@ -88,7 +88,8 @@
     "Web": "Web",
     "Crypto": "Crypto",
     "Linux": "Linux",
-    "OSINT": "OSINT"
+    "OSINT": "OSINT",
+    "Training": "Atelier"
   },
   "ar": {
     "Challenges": "التحديات",
@@ -176,6 +177,7 @@
     "Web": "ويب",
     "Crypto": "تشفير",
     "Linux": "لينكس",
-    "OSINT": "استخبارات المصادر المفتوحة"
+    "OSINT": "استخبارات المصادر المفتوحة",
+    "Training": "التدريب"
   }
 }

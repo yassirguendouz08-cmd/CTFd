@@ -1,0 +1,118 @@
+{
+  "hello-hex": {
+    "en": {
+      "name": "Training 01 — Hello, hexadecimal",
+      "description": "**Beginner training · 100 points · Free hints**\n\n### The concept\nDecimal uses ten digits (0–9). Hexadecimal uses sixteen symbols (0–9 and a–f). They are two ways to write the same number; converting between them is not encryption.\n\n### Your mission\nOpen `hello.txt`. Convert the decimal number it contains to hexadecimal. Put the result inside the flag format shown in the file. Use lowercase letters and omit the `0x` prefix.\n\n### Getting started\nDownload the attached file. The three hints are free; open them one at a time if you get stuck. Submit the complete flag in the answer field. No scanning or brute force is needed.",
+      "hints": [
+        "Read the number in hello.txt carefully. You are changing its representation, not calculating a new number.",
+        "A programmer’s calculator can convert DEC to HEX. Choose the hexadecimal result, not a binary or octal result.",
+        "With Python: python3 -c \"print(format(int(input()), 'x'))\". Enter the decimal number, then wrap the output in the flag format from hello.txt."
+      ]
+    },
+    "fr": {
+      "name": "Atelier 01 — Bonjour, hexadécimal",
+      "description": "**Atelier débutant · 100 points · Indices gratuits**\n\n### Le concept\nLe décimal utilise dix chiffres (0–9). L’hexadécimal utilise seize symboles (0–9 et a–f). Ce sont deux représentations du même nombre, pas un chiffrement.\n\n### Ta mission\nOuvre `hello.txt`. Convertis le nombre décimal qu’il contient en hexadécimal. Place le résultat dans le format de flag indiqué dans le fichier. Utilise les lettres minuscules sans le préfixe `0x`.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Soumets le flag complet dans le champ de réponse. Aucun scan ni brute-force n’est nécessaire.",
+      "hints": [
+        "Lis attentivement le nombre de hello.txt. Tu changes sa représentation, pas sa valeur.",
+        "Une calculatrice en mode programmeur permet de passer de DEC à HEX. Ne choisis ni le binaire ni l’octal.",
+        "Avec Python : python3 -c \"print(format(int(input()), 'x'))\". Saisis le nombre décimal, puis entoure le résultat avec le format de flag indiqué dans hello.txt."
+      ]
+    },
+    "ar": {
+      "name": "التدريب 01 — مرحبا بالنظام الست عشري",
+      "description": "**تدريب للمبتدئين · 100 نقطة · تلميحات مجانية**\n\n### الفكرة\nيستخدم النظام العشري عشرة أرقام (0–9)، ويستخدم النظام الست عشري ستة عشر رمزا (0–9 وa–f). إنهما طريقتان لكتابة العدد نفسه، وليس ذلك تشفيرا.\n\n### مهمتك\nافتح `hello.txt` وحوّل العدد العشري الموجود فيه إلى النظام الست عشري. ضع النتيجة داخل صيغة العلم المذكورة في الملف. استخدم الحروف الصغيرة دون البادئة `0x`.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية؛ افتحها واحدا تلو الآخر إذا تعثرت. أرسل العلم كاملا في خانة الإجابة. لا تحتاج إلى فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "اقرأ العدد في hello.txt بعناية. المطلوب تغيير طريقة كتابته دون تغيير قيمته.",
+        "يمكنك استخدام آلة حاسبة في وضع المبرمج للتحويل من DEC إلى HEX. لا تختر النظام الثنائي أو الثماني.",
+        "باستخدام Python: python3 -c \"print(format(int(input()), 'x'))\". أدخل العدد العشري، ثم ضع النتيجة داخل صيغة العلم المذكورة في hello.txt."
+      ]
+    }
+  },
+  "hidden-file": {
+    "en": {
+      "name": "Training 02 — The invisible file",
+      "description": "**Beginner training · 100 points · Free hints**\n\n### The concept\nOn Linux, a filename starting with a dot is hidden from a normal ls listing. Hidden files are still readable. The ls -a command includes them, and cat prints a text file.\n\n### Your mission\nExtract `hidden-file.tar.gz`, then enter `linux_easyyy-lab` in a Linux terminal or WSL. Look beyond the visible files and find the real flag. Some visible content is a distraction. No administrator privileges are needed.\n\n### Getting started\nDownload the attached file. The three hints are free; open them one at a time if you get stuck. Submit the complete flag in the answer field. No scanning or brute force is needed.",
+      "hints": [
+        "Compare the output of ls and ls -a inside linux_easyyy-lab.",
+        "A leading dot is part of the filename. You can pass that exact filename to cat.",
+        "Run: cat .real_flag.txt. Submit the complete flag from that file."
+      ]
+    },
+    "fr": {
+      "name": "Atelier 02 — Le fichier invisible",
+      "description": "**Atelier débutant · 100 points · Indices gratuits**\n\n### Le concept\nSous Linux, un nom de fichier commençant par un point est caché dans la liste habituelle de ls. Il reste lisible. La commande ls -a inclut ces fichiers et cat affiche leur contenu.\n\n### Ta mission\nExtrais `hidden-file.tar.gz`, puis entre dans `linux_easyyy-lab` avec un terminal Linux ou WSL. Ne te limite pas aux fichiers visibles : retrouve le vrai flag. Certains fichiers visibles servent de diversion. Aucun droit administrateur n’est nécessaire.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Soumets le flag complet dans le champ de réponse. Aucun scan ni brute-force n’est nécessaire.",
+      "hints": [
+        "Compare les résultats de ls et ls -a dans linux_easyyy-lab.",
+        "Le point initial fait partie du nom. Tu peux donner ce nom exact à cat.",
+        "Exécute : cat .real_flag.txt. Soumets le flag complet trouvé dans ce fichier."
+      ]
+    },
+    "ar": {
+      "name": "التدريب 02 — الملف غير المرئي",
+      "description": "**تدريب للمبتدئين · 100 نقطة · تلميحات مجانية**\n\n### الفكرة\nفي Linux، لا يظهر الملف الذي يبدأ اسمه بنقطة في نتيجة ls العادية، لكنه يظل قابلا للقراءة. يعرض ls -a الملفات المخفية، ويعرض cat محتوى الملف النصي.\n\n### مهمتك\nفك `hidden-file.tar.gz`، ثم ادخل إلى `linux_easyyy-lab` باستخدام طرفية Linux أو WSL. ابحث عن العلم الحقيقي بين الملفات المخفية أيضا. بعض المحتوى الظاهر مجرد تمويه. لا تحتاج إلى صلاحيات المدير.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية؛ افتحها واحدا تلو الآخر إذا تعثرت. أرسل العلم كاملا في خانة الإجابة. لا تحتاج إلى فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "قارن نتيجة ls بنتيجة ls -a داخل linux_easyyy-lab.",
+        "النقطة الأولى جزء من اسم الملف. يمكنك تمرير الاسم كما هو إلى cat.",
+        "نفّذ: cat .real_flag.txt. أرسل العلم كاملا من هذا الملف."
+      ]
+    }
+  },
+  "archive-maze": {
+    "en": {
+      "name": "Training 03 — The archive maze",
+      "description": "**Beginner training · 100 points · Free hints**\n\n### The concept\nThe find command searches a directory tree, so you do not need to open thousands of files manually. A promising file can contain encoded text: Base64 is an encoding that can be reversed without a password.\n\n### Your mission\nExtract `archive-maze.tar.gz` and enter `linux_lab-easy`. Find the file containing the useful clue among the many notes, then decode its contents to recover the flag. Paths may contain spaces: quote them when running commands.\n\n### Getting started\nDownload the attached file. The three hints are free; open them one at a time if you get stuck. Submit the complete flag in the answer field. No scanning or brute force is needed.",
+      "hints": [
+        "Start with find . -type f. Then narrow the search by filename instead of reading every note.",
+        "Try: find . -type f -iname '*flag*'. Read a matching file with cat, putting its path inside quotes.",
+        "Decode the useful file with base64 -d \"path/to/file\". Submit the decoded flag, not the encoded text."
+      ]
+    },
+    "fr": {
+      "name": "Atelier 03 — Le labyrinthe des archives",
+      "description": "**Atelier débutant · 100 points · Indices gratuits**\n\n### Le concept\nLa commande find parcourt une arborescence sans ouvrir des milliers de fichiers à la main. Un fichier intéressant peut contenir du texte encodé : Base64 se décode sans mot de passe.\n\n### Ta mission\nExtrais `archive-maze.tar.gz`, puis entre dans `linux_lab-easy`. Parmi les nombreux fichiers de notes, retrouve celui qui contient l’indice utile, puis décode son contenu pour récupérer le flag. Certains chemins contiennent des espaces : utilise des guillemets.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Soumets le flag complet dans le champ de réponse. Aucun scan ni brute-force n’est nécessaire.",
+      "hints": [
+        "Commence par find . -type f. Limite ensuite la recherche par nom au lieu de lire chaque note.",
+        "Essaie : find . -type f -iname '*flag*'. Lis un résultat avec cat en plaçant le chemin entre guillemets.",
+        "Décode le fichier utile avec base64 -d \"chemin/du/fichier\". Soumets le flag décodé, pas le texte encodé."
+      ]
+    },
+    "ar": {
+      "name": "التدريب 03 — متاهة الأرشيف",
+      "description": "**تدريب للمبتدئين · 100 نقطة · تلميحات مجانية**\n\n### الفكرة\nيبحث الأمر find داخل شجرة المجلدات دون فتح آلاف الملفات يدويا. قد يحتوي الملف المفيد على نص بترميز Base64، ويمكن فك هذا الترميز دون كلمة مرور.\n\n### مهمتك\nفك `archive-maze.tar.gz`، ثم ادخل إلى `linux_lab-easy`. ابحث عن الملف الذي يحمل الدليل المفيد وسط ملفات الملاحظات، ثم فك ترميز محتواه لاسترجاع العلم. قد تحتوي المسارات على مسافات، لذا ضعها بين علامتي اقتباس.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية؛ افتحها واحدا تلو الآخر إذا تعثرت. أرسل العلم كاملا في خانة الإجابة. لا تحتاج إلى فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "ابدأ بالأمر find . -type f، ثم ضيّق البحث حسب الاسم بدلا من قراءة كل الملاحظات.",
+        "جرّب: find . -type f -iname '*flag*'. اقرأ ملفا مطابقا باستخدام cat مع وضع مساره بين علامتي اقتباس.",
+        "فك ترميز الملف المفيد بالأمر base64 -d \"path/to/file\". أرسل العلم الناتج، وليس النص المرمّز."
+      ]
+    }
+  },
+  "needle-log": {
+    "en": {
+      "name": "Training 04 — Needle in the Log",
+      "description": "**Beginner training · 100 points · Free hints**\n\n### The concept\nA server log records events with timestamps and severity levels such as INFO, WARNING and CRITICAL. grep filters matching lines. A key found in a log may be encoded with Base64 instead of written in plain text.\n\n### Your mission\nA server has crashed and left a large `server.log`. Use the Linux terminal to find the secret key entry, decode its value, and recover the flag. Submit only the complete flag, without the log prefix or field name.\n\n### Getting started\nDownload the attached file. The three hints are free; open them one at a time if you get stuck. Submit the complete flag in the answer field. No scanning or brute force is needed.",
+      "hints": [
+        "Use head, less or grep to inspect the log. You do not need to read every line manually.",
+        "Try: grep SECRET server.log. Identify the value assigned to SECRET_KEY.",
+        "Copy only that value and decode it with: printf '%s' 'encoded_value' | base64 -d. The decoded text is the flag."
+      ]
+    },
+    "fr": {
+      "name": "Atelier 04 — Une aiguille dans les logs",
+      "description": "**Atelier débutant · 100 points · Indices gratuits**\n\n### Le concept\nUn journal serveur contient des événements avec leur date et leur niveau, comme INFO, WARNING ou CRITICAL. grep filtre les lignes correspondantes. Une clé peut être encodée en Base64 au lieu d’être écrite en clair.\n\n### Ta mission\nUn serveur a planté et laissé un gros fichier `server.log`. Utilise le terminal Linux pour retrouver l’entrée contenant la clé secrète, décode sa valeur et récupère le flag. Soumets seulement le flag complet, sans le préfixe du log ni le nom du champ.\n\n### Pour commencer\nTélécharge le fichier joint. Les trois indices sont gratuits : ouvre-les un par un si tu bloques. Soumets le flag complet dans le champ de réponse. Aucun scan ni brute-force n’est nécessaire.",
+      "hints": [
+        "Utilise head, less ou grep pour examiner le log. Inutile de lire chaque ligne à la main.",
+        "Essaie : grep SECRET server.log. Repère la valeur affectée à SECRET_KEY.",
+        "Copie seulement cette valeur et décode-la avec : printf '%s' 'valeur_encodee' | base64 -d. Le texte obtenu est le flag."
+      ]
+    },
+    "ar": {
+      "name": "التدريب 04 — إبرة في سجل الأحداث",
+      "description": "**تدريب للمبتدئين · 100 نقطة · تلميحات مجانية**\n\n### الفكرة\nيحتوي سجل الخادم على أحداث مع توقيتها ومستوى أهميتها، مثل INFO وWARNING وCRITICAL. يرشّح grep الأسطر المطابقة. قد يكون المفتاح في السجل مرمّزا باستخدام Base64 بدلا من ظهوره كنص واضح.\n\n### مهمتك\nتعطّل خادم وترك ملفا كبيرا اسمه `server.log`. استخدم طرفية Linux لإيجاد السطر الذي يحمل المفتاح السري، ثم فك ترميز قيمته لاسترجاع العلم. أرسل العلم كاملا دون بداية سطر السجل أو اسم الحقل.\n\n### كيف تبدأ\nنزّل الملف المرفق. التلميحات الثلاثة مجانية؛ افتحها واحدا تلو الآخر إذا تعثرت. أرسل العلم كاملا في خانة الإجابة. لا تحتاج إلى فحص الشبكات أو التخمين المتكرر.",
+      "hints": [
+        "استخدم head أو less أو grep لفحص السجل. لا تحتاج إلى قراءة جميع الأسطر يدويا.",
+        "جرّب: grep SECRET server.log. حدد القيمة المسندة إلى SECRET_KEY.",
+        "انسخ القيمة وحدها وفك ترميزها بالأمر: printf '%s' 'encoded_value' | base64 -d. النص الناتج هو العلم."
+      ]
+    }
+  }
+}

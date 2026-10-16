@@ -1,7 +1,7 @@
 # Challenge language
 
 The core-theme challenge board follows the platform language selector (English,
-French, Arabic) for the eight first-steps exercises: cards, descriptions, hints,
+French, Arabic) for the eight first-steps exercises and four supplied training exercises: cards, descriptions, hints,
 tags, categories and challenge controls. Arabic challenge content uses RTL while
 flag inputs keep their left-to-right direction.
 
@@ -32,3 +32,7 @@ Validation: `tests/test_challenge_localization.py` alternates en/fr/ar/en in the
 same process, checks every description and hint, verifies user language preference,
 locked hints and hidden challenges, confirms source-edit fallback, and checks that
 flags, source records and score counts are unchanged.
+
+The four supplied training exercises use `drive-training.json` and the
+`drive-training:<slug>` tag. Their importer and source mapping are documented in
+`challenges/drive-training/README.md`.
