@@ -1,6 +1,7 @@
 # CyberDune website identity and challenge completion
 
-The active public theme restores the owner's original Hack typography, animated
+The active public theme pairs the owner's original Hack technical typography with
+Geist Sans for descriptions, forms and content headings. It retains the animated
 background, glass navigation and red chamfered cards. See
 [Original UI restoration](ORIGINAL-UI-RESTORATION.md) for the archived source,
 animation provenance, accessibility behavior and validation. Fonts are served locally.

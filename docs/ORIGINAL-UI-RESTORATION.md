@@ -19,7 +19,11 @@ to VP9 at 15 fps (2.5 MB instead of the 22 MB GIF). A new 77 KB poster is extrac
 from that GIF's first frame. The shared base template uses one decorative,
 muted, looping, inline video with this poster across all public theme pages.
 
-The restored visual layer uses the original Hack family, glass navigation pills,
+The restored visual layer uses the original Hack family for the wordmark,
+navigation, ticker and technical details, with the already bundled Geist Sans
+for readable descriptions, page headings, challenge titles and forms. The
+typography refinement uses 16 px form fields and descriptions, clearer small
+labels, and responsive heading sizes. It retains the glass navigation pills,
 red active states, two-column homepage panels, DUNE typing/cursor, the 32-second
 text ticker, and the red chamfered challenge-card polygon. Hack regular/bold files
 are hosted locally with their upstream license. Existing responsive forms, error
