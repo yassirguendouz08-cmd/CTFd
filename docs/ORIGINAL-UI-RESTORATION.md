@@ -34,6 +34,14 @@ and Morocco flags. Lightweight stills use the original flag GIFs' first frames.
 The obsolete full-screen boot loader
 and sample sponsor carousel are omitted; the platform stays immediately usable.
 
+The homepage uses the actual remaining space between its header and footer rather
+than a viewport subtraction plus fixed 96 px padding. A compact spacing rule
+keeps both panels and the footer visible in short desktop windows (including the
+effective viewport at browser zoom). Validation covers 1280×450, 1280×590,
+1024×600 and 1440×900 without page overflow. Narrow screens retain normal flow
+when their content genuinely needs more height; no content is clipped to hide a
+scrollbar. Other CTFd pages keep their regular scrolling behavior.
+
 The footer has no motion-status badge or effects button. Reduced-motion users
 receive a still poster without loading the video. The full CYBERDUNE heading
 scrambles on hover or keyboard focus, pausing its DUNE typing until the reveal ends.
