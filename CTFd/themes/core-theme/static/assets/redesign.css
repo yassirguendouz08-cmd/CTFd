@@ -1,11 +1,11 @@
 /* CYBERDUNE design system. Reference-informed geometry; original brand assets. */
 :root {
-  --cd-bg: #000; --cd-surface: #09090b; --cd-surface-raised: #14090b;
-  --cd-text: #f1f5f9; --cd-muted: #a1a1aa; --cd-border: #4a1a1a;
+  --cd-bg: #07090d; --cd-surface: #101318; --cd-surface-raised: #161a21;
+  --cd-text: #edf0f4; --cd-muted: #a1a8b3; --cd-border: #2c313a;
   --cd-accent: #ff0000; --cd-focus: #ff7c86; --cd-radius: 7px;
   --cd-panel-radius: 10px; --cd-control: 48px; --cd-control-sm: 36px;
   --cd-font: 'Geist Sans', system-ui, sans-serif; --cd-mono: 'Geist Mono', monospace;
-  --cd-heading: 'Geist Mono', monospace;
+  --cd-heading: 'Geist Sans', system-ui, sans-serif;
   --cd-space-2: 8px; --cd-space-3: 12px; --cd-space-4: 16px; --cd-space-6: 24px;
   --bs-body-bg: var(--cd-bg); --bs-body-color: var(--cd-text); --bs-primary: #ff0000;
   --bs-border-color: var(--cd-border); --bs-secondary-color: var(--cd-muted);
@@ -386,52 +386,54 @@ button[aria-busy='true']::before, .cd-spinner { content: ''; display: inline-blo
 .cd-footer-brand img { flex: 0 0 44px; width: 44px; height: auto; object-fit: contain; }
 @media (max-width: 767px) { .cd-footer-brand { text-align: left; } }
 
-/* Shared CyberDune website identity: Geist, black surfaces and red borders. */
+/* Shared CyberDune website identity: Geist, charcoal surfaces and red accents. */
 @font-face { font-family: 'Geist Sans'; src: url('../webfonts/geist-sans-variable.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; }
 @font-face { font-family: 'Geist Mono'; src: url('../webfonts/geist-mono-variable.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; }
-.cd-header { background: #000e; border-bottom-color: #dc262633; box-shadow: 0 7px 28px #ff000015; backdrop-filter: blur(16px); }
+.cd-header { background: #090b10ed; border-bottom-color: #ffffff12; box-shadow: none; backdrop-filter: blur(16px); }
 .cd-nav-wrap { max-width: 1280px; }
 .cd-brand strong { font-family: var(--cd-font); }
 .cd-navigation { justify-content: center; }
-.cd-nav-link { font-size: 11px; letter-spacing: .04em; color: #d4d4d8; }
+.cd-nav-link { font: 500 13px/1.5 var(--cd-font); letter-spacing: .01em; text-transform: none; color: #bac0ca; }
 .cd-nav-link:hover, .cd-nav-link[aria-current='page'] { color: #ff6262; }
 .cd-site .btn-primary:hover, .cd-site .btn-success:hover, .cd-site .cyber-btn-submit:hover { background: #cc0000; border-color: #cc0000; }
-.cd-hero { background: radial-gradient(ellipse at 50% 0, #ff000016, transparent 65%), var(--cd-bg); }
+.cd-hero { background: transparent; }
 .cd-hero h1, .cd-auth-brand h2 { font-family: var(--cd-font); }
-.cd-page-head h1, .title_container h1 { text-transform: none; font-size: clamp(32px, 4.5vw, 56px); letter-spacing: -.045em; }
-.cd-site .form-control, .cd-site .form-select, .cd-site .cyber-input { border-color: #4a1a1a; background-color: #09090b; }
+.cd-page-head h1, .title_container h1 { text-transform: none; font-size: clamp(36px, 5vw, 60px); font-weight: 650; letter-spacing: -.055em; }
+.cd-site .form-control, .cd-site .form-select, .cd-site .cyber-input { border-color: #323843; background-color: #0b0e13; }
 .cd-site .form-control:focus, .cd-site .form-select:focus, .cd-site .cyber-input:focus { border-color: #ff0000; box-shadow: 0 0 0 3px #ff000020; }
-.cd-footer { border-top: 1px solid #dc262633; background: #050505; }
-.cd-site .modal-content { background: #09090b; border-color: #6b2020; }
+.cd-footer { border-top: 1px solid #ffffff12; background: #090c11e8; }
+.cd-site .modal-content { background: #101318; border-color: #39414d; }
 
 /* Center both the whole board and incomplete rows of challenge cards. */
 .cd-site .cd-challenges-shell { max-width: 1240px; margin-inline: auto; }
-.cd-challenges-head { text-align: center; position: relative; isolation: isolate; padding: 64px 0 36px; }
-.cd-challenges-head::before { content: ''; position: absolute; z-index: -1; inset: 0 -20px; background: radial-gradient(ellipse at 50% 0, #ff000019, transparent 70%); pointer-events: none; }
-.cd-challenges-head .cd-eyebrow { color: #f87171; margin-bottom: 18px; font-size: 10px; letter-spacing: .2em; }
+.cd-challenges-head { text-align: center; position: relative; padding: 70px 0 34px; }
+.cd-challenges-head::before { content: ''; display: block; width: 28px; height: 3px; margin: 0 auto 22px; background: #f04452; border-radius: 2px; }
+.cd-challenges-head .cd-eyebrow { color: #a9b1bf; margin-bottom: 16px; font-size: 10px; letter-spacing: .15em; }
 .cd-challenges-head p { max-width: 660px; margin-inline: auto; }
 .cd-challenges-head p:last-child:not(:first-of-type) { font-size: 12px; color: #a1a1aa; }
 .cd-category-nav { justify-content: center; gap: 10px; }
-.cd-site .cd-category-nav .btn { border-color: #dc26264d; background: #09090b; }
-.cd-site .cd-category-nav .is-active { color: #fff; background: #ff0000; border-color: #ff0000; }
+.cd-site .cd-category-nav .btn { border-color: #ffffff12; background: #101318b8; color: #a9b1bf; border-radius: 7px; font: 550 13px/1.4 var(--cd-font); letter-spacing: 0; text-transform: none; padding: 10px 17px; }
+.cd-site .cd-category-nav .is-active { color: #fff; background: #27303c; border-color: #647084; box-shadow: inset 0 -2px #f04452; }
 .category-header { display: flex; align-items: center; justify-content: center; gap: 16px; text-align: center; }
-.category-header h3 { margin: 0; font-size: 13px; color: #e4e4e7; }
-.category-header::before, .category-header::after { content: ''; height: 1px; width: 56px; background: #dc26264d; }
+.category-header h3 { margin: 0; font: 600 17px/1.4 var(--cd-font); letter-spacing: -.015em; text-transform: none; color: #d9dee6; }
+.category-header::before, .category-header::after { content: ''; height: 1px; width: 42px; background: #ffffff16; }
 .challenges-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
 .challenge-grid-item { flex: 0 1 calc((100% - 60px) / 4); min-width: 0; }
-.cd-site .challenge-button { align-items: center; text-align: center; min-height: 232px; padding: 24px 20px; background: #09090b; border: 1px solid #dc26264d; border-radius: 12px; }
-.cd-site .challenge-button:hover { background: #17090c; border-color: #ef4444; box-shadow: 0 0 24px #ff000018; }
-.challenge-title { font-family: var(--cd-mono); font-size: 15px; font-weight: 600; }
-.challenge-pill { line-height: 1.6; }
+.cd-site .challenge-button { align-items: center; text-align: center; min-height: 226px; padding: 22px; gap: 17px; background: linear-gradient(160deg, #171c24f5, #0f131af5); border: 1px solid #ffffff17; border-radius: 10px; box-shadow: 0 7px 20px #0002; transition: border-color .18s, background .18s, transform .18s; }
+.cd-site .challenge-button:hover { background: #1a202a; border-color: #8a4650; box-shadow: 0 9px 24px #0003; transform: translateY(-2px); }
+.cd-card-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; min-height: 25px; }
+.challenge-title { font-family: var(--cd-font); font-size: 17px; font-weight: 550; letter-spacing: -.02em; line-height: 1.45; max-width: 22ch; }
+.challenge-pill { line-height: 1.6; font-size: 10px; letter-spacing: .07em; color: #919baa; }
+.cd-card-header > .challenge-pill::before { content: ''; display: inline-block; vertical-align: middle; width: 5px; height: 5px; background: #d65b65; border-radius: 50%; margin-right: 7px; }
 .cd-card-tags { justify-content: center; }
-.cd-card-tags span { border-color: #4a1a1a; }
-.challenge-stats { border-top-color: #dc262633; }
-.cd-site .challenge-button.challenge-solved { background: #08251b; border: 1px solid #34d399; box-shadow: inset 0 0 0 1px #34d39925; }
-.cd-site .challenge-button.challenge-solved:hover { background: #0b3023; border-color: #6ee7b7; box-shadow: 0 0 24px #34d39915; }
+.cd-card-tags span { border-color: #ffffff12; background: #ffffff04; color: #9da7b5; font-size: 11px; padding: 3px 8px; }
+.challenge-stats { border-top-color: #ffffff12; padding-top: 16px; }
+.cd-site .challenge-button.challenge-solved { background: linear-gradient(155deg, #132a23f5, #0b1b16f5); border: 1px solid #39886d; box-shadow: 0 7px 20px #0002; }
+.cd-site .challenge-button.challenge-solved:hover { background: #16382b; border-color: #6cb89b; box-shadow: 0 9px 24px #0003; }
 .cd-site .challenge-solved .challenge-title { color: #dcfce7; }
 .cd-site .challenge-solved .challenge-pill, .cd-site .challenge-solved .challenge-stat { color: #a7f3d0; }
 .cd-site .challenge-solved .challenge-stats, .cd-site .challenge-solved .cd-card-tags span { border-color: #34d39955; }
-.cd-solved-label { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 5px 10px; color: #a7f3d0; background: #145c3d; border: 1px solid #34d39970; border-radius: 999px; font: 700 11px/1.4 var(--cd-mono); }
+.cd-solved-label { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 4px 7px; color: #b0e1ca; background: #214e3b; border: 1px solid #6ab69340; border-radius: 5px; font: 550 10px/1.4 var(--cd-font); white-space: nowrap; }
 .challenge-solved::after { content: none !important; }
 @media (max-width: 1099px) { .challenge-grid-item { flex-basis: calc((100% - 40px) / 3); } }
 @media (max-width: 849px) { .challenge-grid-item { flex-basis: calc((100% - 20px) / 2); } }
@@ -443,3 +445,21 @@ button[aria-busy='true']::before, .cd-spinner { content: ''; display: inline-blo
   .cd-category-nav { gap: 8px; }
   .cd-site .cd-category-nav .btn { padding-inline: 12px; }
 }
+
+/* Static vector traces add atmosphere without animation or large bitmap assets. */
+body.cd-site { isolation: isolate; -webkit-font-smoothing: antialiased; }
+body.cd-site::before { content: ''; position: fixed; z-index: -1; inset: 0; pointer-events: none; background: url('../img/network-field.svg') center top / max(1440px, 100vw) auto no-repeat; }
+.cd-hero::before { background: linear-gradient(180deg, #07090d00, #07090d50); opacity: 1; }
+.cd-hero h1.cd-hero-title { font-weight: 650; font-size: clamp(34px, 5.2vw, 68px); letter-spacing: -.055em; }
+.cd-hero-logo { width: clamp(150px, 18vw, 230px); margin-bottom: 34px; }
+.cd-auth-brand { background: #101318c9; }
+.cd-auth-brand::before { background: url('../img/network-field.svg') 65% top / auto 1100px; opacity: .7; }
+.cd-auth-brand h2 { font-weight: 600; letter-spacing: -.055em; }
+.cd-site .btn, .cd-site .cyber-btn-submit, .cd-site .btn-cyber-action { font-family: var(--cd-font); font-weight: 600; letter-spacing: .01em; text-transform: none; }
+.cd-site .btn-primary, .cd-site .cyber-btn-submit { background: #e7303c; border-color: #e7303c; }
+.cd-site .btn-primary:hover, .cd-site .cyber-btn-submit:hover { background: #cf2733; border-color: #cf2733; }
+.cd-site .challenge-desc, .cd-site .cyber-desc { font-family: var(--cd-font); font-size: 15px; line-height: 1.8; }
+.cd-site .cd-category-nav .btn { font-weight: 550; }
+.cd-site .challenge-solved .cd-card-header > .challenge-pill::before { background: #7fbda2; }
+.cd-footer-credit { font-size: 11px; color: #bac0ca; }
+@media (prefers-reduced-motion: reduce) { .cd-site .challenge-button:hover { transform: none; } }
