@@ -28,7 +28,10 @@ red active states, two-column homepage panels, DUNE typing/cursor, the 32-second
 text ticker, and the red chamfered challenge-card polygon. Hack regular/bold files
 are hosted locally with their upstream license. Existing responsive forms, error
 messages, modal behavior, navigation routes and original event settings remain.
-The current developer credit is preserved. The obsolete full-screen boot loader
+The developer credit follows the original footer: a small Hack signature at the
+lower left, gray "Developed by" and red "Yassir Guendouz", beneath the Palestine
+and Morocco flags. Lightweight stills use the original flag GIFs' first frames.
+The obsolete full-screen boot loader
 and sample sponsor carousel are omitted; the platform stays immediately usable.
 
 The footer has no motion-status badge or effects button. Reduced-motion users

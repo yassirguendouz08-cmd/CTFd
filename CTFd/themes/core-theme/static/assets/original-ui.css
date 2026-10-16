@@ -89,8 +89,13 @@ body.cd-site::before, .cd-hero::before, .cd-auth-brand::before { content: none; 
 .cd-auth-brand h2 { font-family: var(--cd-heading); font-weight: 650; font-size: clamp(36px, 4.6vw, 62px); line-height: 1.12; letter-spacing: -.045em; }
 .cd-auth main { background: #080808a6; }
 .cd-auth-tabs a { font-family: var(--cd-font); }
-.cd-footer { background: #090909f2; border-color: #da00004d; }
-.cd-footer-credit { color: #ff8b8b; font: 500 12px/1.6 var(--cd-font); }
+.cd-footer { background: #090909f2; border-color: #da00004d; padding: 16px 0; }
+.cd-site .cd-footer-inner { max-width: none; padding-inline: 5%; }
+.cd-footer-signature { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.cd-footer-flags { display: flex; align-items: center; justify-content: center; gap: 16px; }
+.cd-footer-flags img { display: block; width: 40px; height: 28px; object-fit: contain; }
+.cd-footer-credit { color: #969696; font: 400 11px/1.6 var(--cd-mono); letter-spacing: .02em; }
+.cd-footer-credit-name { color: #ff3b3b; }
 .cd-footer p { font: 400 12px/1.7 var(--cd-font); }
 .cd-footer-inner { flex-wrap: wrap; }
 /* Original introduction panels; retain actual event configuration and routes. */
