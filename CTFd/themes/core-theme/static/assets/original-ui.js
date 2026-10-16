@@ -4,13 +4,12 @@
 (() => {
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const background = document.getElementById('cd-original-background');
-  const toggle = document.querySelector('[data-motion-toggle]');
   const typing = document.querySelector('[data-original-typing]');
   const active = new Map();
-  let paused = false;
   let typingTimer;
-  try { paused = localStorage.getItem('cyberdune-effects-paused') === 'true'; } catch (_) { /* Optional preference storage. */ }
-  const canAnimate = () => !paused && !reducedMotion.matches && !document.hidden;
+  const canAnimate = () => !reducedMotion.matches && !document.hidden;
+  // The brand's brief, deliberately triggered reveal also works with reduced motion.
+  const canScramble = element => !document.hidden && (!reducedMotion.matches || element.hasAttribute('data-scramble-brand'));
 
   function resetTyping() {
     clearTimeout(typingTimer);
@@ -18,7 +17,7 @@
   }
   function startTyping() {
     resetTyping();
-    if (!typing || !canAnimate()) return;
+    if (!typing || !canAnimate() || document.querySelector('[data-scramble-brand].cd-scramble-running')) return;
     let length = 4;
     let deleting = true;
     const step = () => {
@@ -36,12 +35,6 @@
   function syncMotion() {
     const stopped = !canAnimate();
     document.documentElement.toggleAttribute('data-effects-paused', stopped);
-    if (toggle) {
-      toggle.hidden = false;
-      toggle.disabled = reducedMotion.matches;
-      toggle.setAttribute('aria-pressed', String(paused || reducedMotion.matches));
-      toggle.textContent = reducedMotion.matches ? 'Reduced motion enabled' : (paused ? 'Resume effects' : 'Pause effects');
-    }
     if (background) {
       if (stopped) background.pause();
       else {
@@ -53,11 +46,6 @@
     if (stopped) for (const animation of [...active.values()]) animation.stop();
     startTyping();
   }
-  toggle?.addEventListener('click', () => {
-    paused = !paused;
-    try { localStorage.setItem('cyberdune-effects-paused', String(paused)); } catch (_) { /* Effects still work without storage. */ }
-    syncMotion();
-  });
   reducedMotion.addEventListener('change', syncMotion);
   document.addEventListener('visibilitychange', syncMotion);
   window.addEventListener('pagehide', () => {
@@ -82,7 +70,9 @@
     return element ? {element, scope: scope || element} : null;
   }
   function startScramble({element, scope}) {
-    if (!canAnimate() || active.has(element)) return;
+    if (!canScramble(element) || active.has(element)) return;
+    const brand = element.hasAttribute('data-scramble-brand');
+    if (brand) resetTyping();
     const original = element.innerText.trim();
     if (!original || original.length > 160) return;
     element.setAttribute('data-scramble', '');
@@ -93,6 +83,7 @@
     visual.textContent = scrambleText(original, 0);
     element.appendChild(visual);
     element.classList.add('cd-scramble-running');
+    const duration = reducedMotion.matches ? 240 : 900;
     let frame;
     let start;
     let last = -30;
@@ -101,14 +92,15 @@
       visual.remove();
       element.classList.remove('cd-scramble-running');
       active.delete(element);
+      if (brand) startTyping();
     }
     active.set(element, {scope, stop});
     function tick(now) {
       if (start === undefined) start = now;
       const elapsed = now - start;
-      if (!canAnimate() || !element.isConnected || !visual.isConnected || elapsed >= 900) { stop(); return; }
+      if (!canScramble(element) || !element.isConnected || !visual.isConnected || elapsed >= duration) { stop(); return; }
       if (elapsed - last >= 30) {
-        visual.textContent = scrambleText(original, elapsed / 900);
+        visual.textContent = scrambleText(original, elapsed / duration);
         last = elapsed;
       }
       frame = requestAnimationFrame(tick);

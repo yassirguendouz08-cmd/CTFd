@@ -82,9 +82,6 @@ body.cd-site::before, .cd-hero::before, .cd-auth-brand::before { content: none; 
 .cd-auth-tabs a { font-family: var(--cd-font); }
 .cd-footer { background: #090909f2; border-color: #da00004d; }
 .cd-footer-credit { color: #ff7171; font-size: 10px; }
-.cd-motion-toggle { background: #161616; color: #ddd; border: 1px solid #ffffff38; border-radius: 18px; padding: 8px 12px; min-height: 36px; font: 400 10px var(--cd-font); }
-.cd-motion-toggle:hover { border-color: #ff7676; color: white; }
-.cd-site .cd-motion-toggle:disabled { color: #ccc; opacity: 1; cursor: default; }
 .cd-footer-inner { flex-wrap: wrap; }
 /* Original introduction panels; retain actual event configuration and routes. */
 .cd-original-home { min-height: calc(100dvh - 194px); padding: 96px 0; }
@@ -114,6 +111,8 @@ body.cd-site::before, .cd-hero::before, .cd-auth-brand::before { content: none; 
 @keyframes cd-original-blink { 50% { opacity: 0; } }
 [data-scramble] { position: relative; }
 .cd-scramble-running { color: transparent !important; text-shadow: none !important; }
+.cd-scramble-running > :not(.cd-scramble-visual) { visibility: hidden; }
+[data-scramble-brand] { cursor: default; }
 .cd-scramble-visual { position: absolute; inset: 0; pointer-events: none; white-space: pre-wrap; font: inherit; letter-spacing: inherit; text-transform: inherit; text-shadow: none; }
 html[data-effects-paused] .cd-original-ticker > div, html[data-effects-paused] .cd-original-cursor { animation-play-state: paused; }
 @media (min-width: 1200px) { .cd-navigation { background: none; position: static; padding: 0; border: 0; box-shadow: none; } }

@@ -8,7 +8,7 @@
       <p data-scramble>{{ presentation.briefing or Configs.ctf_description }}</p>
       <div class="cd-event-dates"><time datetime="{{ presentation.start_date }}">{{ presentation.start_date[:10] }} · {{ presentation.start_date[11:16] }} UTC</time><span>—</span><time datetime="{{ presentation.end_date }}">{{ presentation.end_date[:10] }} · {{ presentation.end_date[11:16] }} UTC</time></div>
     {% else %}
-      <h1 aria-label="CYBERDUNE">CYBER<span class="cd-original-word" data-original-typing aria-hidden="true">DUNE</span><span class="cd-original-cursor" aria-hidden="true"></span></h1>
+      <h1 aria-label="CYBERDUNE" data-scramble data-scramble-brand tabindex="0">CYBER<span class="cd-original-word" data-original-typing aria-hidden="true">DUNE</span><span class="cd-original-cursor" aria-hidden="true"></span></h1>
       <p data-scramble>Welcome to the CyberDune CTF platform.<br>Test your skills and capture the flag.</p>
     {% endif %}
     <div class="cd-hero-actions">

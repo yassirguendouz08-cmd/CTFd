@@ -27,8 +27,11 @@ messages, modal behavior, navigation routes and original event settings remain.
 The current developer credit is preserved. The obsolete full-screen boot loader
 and sample sponsor carousel are omitted; the platform stays immediately usable.
 
-A footer control pauses effects and remembers the choice when storage is available.
-Reduced-motion users receive a still poster without loading the video. Hidden
+The footer has no motion-status badge or effects button. Reduced-motion users
+receive a still poster without loading the video. The full CYBERDUNE heading
+scrambles on hover or keyboard focus, pausing its DUNE typing until the reveal ends.
+This deliberately triggered brand reveal takes 240 ms with reduced motion,
+compared with the normal 900 ms; other scramble effects honor the OS preference. Hidden
 tabs pause playback and text timers. Video playback failure leaves the poster.
 Solved cards retain the requested green state and checkmarked label; admin-only
 hidden flag previews remain separate from scored submissions.
@@ -48,7 +51,7 @@ Validation:
 - A disposable CTFd database confirms login, a correct flag, immediate Solved state,
   refresh persistence, teammate completion and administrator preview.
 - Playback advances, scramble overlays disappear with original labels intact,
-  pause/resume persists, and reduced-motion pages omit the video source.
+  the motion badge is absent, and reduced-motion pages omit the video source.
   The local fixture explicitly enables normal motion for one test because the
   browser host itself requests reduced motion; this override is never deployed.
 - Six isolated CTFd visibility checks cover hidden/admin challenges, signed file

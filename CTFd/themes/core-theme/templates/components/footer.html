@@ -4,7 +4,6 @@
     <div><strong>CYBERDUNE</strong><p>Capture the flag. Build your skills.</p></div>
   </div>
   <span class="cd-footer-credit">Developed by Yassir Guendouz</span>
-  <button class="cd-motion-toggle" type="button" data-motion-toggle aria-pressed="false" hidden>Pause effects</button>
   <div class="cd-footer-language"><label for="language-select">Language</label>
     <select id="language-select" class="form-select" x-data="LanguageForm" @change="set({target: $event.target.selectedOptions[0]})">
       {% for code, name in [('en', 'English'), ('fr', 'Français'), ('ar', 'العربية')] %}<option value="{{ code }}" {% if get_locale() == code %}selected{% endif %}>{{ name }}</option>{% endfor %}
