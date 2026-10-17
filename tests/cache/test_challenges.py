@@ -29,6 +29,7 @@ def test_adding_challenge_clears_cache():
 
             challenge_data = {
                 "name": "name",
+                "attribution": "Soussi",
                 "category": "category",
                 "description": "description",
                 "value": 100,
@@ -42,6 +43,7 @@ def test_adding_challenge_clears_cache():
             req = client.get("/api/v1/challenges")
             data = req.get_json()
             assert data["data"] != []
+            assert data["data"][0]["attribution"] == "Soussi"
     destroy_ctfd(app)
 
 

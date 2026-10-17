@@ -55,6 +55,6 @@ printf '\nReady to create a HIDDEN dynamic_iac challenge.\n'
 printf 'Scenario: scenario-registry:5000/scenarios/%s@%s\n' "$artifact_tag" "$digest"
 printf '\nAdvanced → Challenge configuration: add these three rows, then click Apply:\n'
 printf 'image      %s\nport       8080\nflag_seed  %s\n' "$image" "$seed"
-printf '\nSharing: Disabled; Mana: 1; Timeout: 600s; Pool Min/Max: 0/0.\n'
+printf '\nSharing: Disabled; Mana: 1; Timeout: 600 (seconds); Pool Min/Max: 0/0.\n'
 printf 'Leave static flags empty. Keep the seed private and retain it for updates.\n'
 printf 'Targets bind to VPS loopback only; see docs/WEB-INSTANCE-TEST.md for SSH access.\n'

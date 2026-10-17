@@ -264,6 +264,7 @@ class ChallengeList(Resource):
                     "id": challenge.id,
                     "type": challenge_type.name,
                     "name": challenge.name,
+                    "attribution": challenge.attribution,
                     "value": challenge.value,
                     "position": challenge.position,
                     "solves": solve_counts.get(challenge.id, solve_count_dfl),

@@ -74,6 +74,11 @@
                       </div>
 
                       <p class="challenge-title" data-scramble x-text="c.name"></p>
+                      <div class="challenge-stat small" x-show="c.attribution" x-cloak>
+                        <i class="fas fa-user" aria-hidden="true"></i>
+                        <span>{{ challenge_copy("Author:") }}</span>
+                        <span x-text="c.attribution"></span>
+                      </div>
 
                       {% if is_admin() %}<span class="challenge-pill" x-show="c.state === 'hidden'" x-cloak>{{ challenge_copy("Hidden · admins only") }}</span>{% endif %}
                       <div class="cd-card-tags"><template x-for="tag in (c.tags || []).slice(0, 2)" :key="tag.value"><span x-text="tag.value"></span></template></div>

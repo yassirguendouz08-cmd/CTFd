@@ -78,6 +78,7 @@
 						</td>
 						<th class="sort-col text-center"><b>ID</b></th>
 						<th class="sort-col"><b>Name</b></th>
+						<th class="sort-col"><b>Author</b></th>
 						<th class="sort-col"><b>Category</b></th>
 						<th class="sort-col"><b>Module</b></th>
 						<th class="sort-col text-center"><b>Value</b></th>
@@ -96,6 +97,7 @@
 							</td>
 							<td class="text-center">{{ challenge.id }}</td>
 							<td><a href="{{ url_for('admin.challenges_detail', challenge_id=challenge.id) }}">{{ challenge.name }}</a></td>
+							<td>{{ challenge.attribution or '' }}</td>
 							<td>{{ challenge.category }}</td>
 							<td>
 								{% if challenge.module %}

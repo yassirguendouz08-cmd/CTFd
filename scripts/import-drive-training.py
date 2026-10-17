@@ -80,6 +80,7 @@ def import_pack(app, directory):
                         uploaded.append(location)
                         db.session.add(ChallengeFiles(challenge_id=challenge.id, location=location,
                                                       sha1sum=hashlib.sha1(path.read_bytes()).hexdigest()))
+                challenge.attribution = "Soussi" if item["category"] == "Linux" else "Yass1ir"
                 report.append({"id": challenge.id, "slug": item["slug"], "name": challenge.name,
                                "category": challenge.category, "state": challenge.state,
                                "admin_url": f"/admin/challenges/{challenge.id}"})

@@ -41,11 +41,25 @@ instance identity and the challenge seed; the SDK exports them to the backend.
 
 ## Create the challenge in CTFd
 
+For the simple admin workflow, open **Plugins → Chall-Manager → Settings →
+New web challenge**, enter a name and the Docker image, then click Create.
+It generates a new flag seed and fills the scenario, private sharing, 10-minute
+timeout, mana and constant points automatically. Description/points/port are
+optional. The first test image is `cyberdune/cookie-mirage:v1`.
+The installed default launcher is `scenario-registry:5000/scenarios/web-container:v1-amd64`.
+You can save a digest-pinned reference once in the **Web scenario** setting;
+all subsequent quick creations use it. Image content still needs to be built
+or made available on the worker once per new app; the admin form cannot create
+a new application from only its name. No terminal command is needed to reuse
+an existing image or to launch players' instances.
+
+For other scenario types, the complete dynamic_iac form is still available:
+
 - Type: dynamic_iac; Name: Cookie Mirage; Category: Web.
 - Description: The portal trusts your browser a little too much. Can you reach the admin page?
 - Initial and Minimum: 100; Linear Decay: 10.
 - Sharing: Disabled; Destroy on flag: Disabled; Mana Cost: 1.
-- Until: empty; Timeout: **600s** (include the unit).
+- Until: empty; Timeout: **600** (seconds; the plugin adds the unit for the API).
 - Scenario: copy the exact digest-pinned address printed by the helper.
 - Advanced: add `image`, `port`, `flag_seed` with the printed values; click **Apply**.
 - Pool Min and Max: 0. Create it, keep it Hidden and leave static flags empty.

@@ -25,6 +25,7 @@ ChallengeFields = [
     "position",
     "module_id",
     "state",
+    "attribution",
 ]
 Challenge = namedtuple(
     "Challenge",
@@ -75,6 +76,7 @@ def get_all_challenges(admin=False, field=None, q=None, **query_args):
             position=c.position,
             module_id=c.module_id,
             state=c.state,
+            attribution=c.attribution,
         )
         results.append(ct)
     return results
