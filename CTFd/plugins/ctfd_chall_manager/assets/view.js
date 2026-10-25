@@ -5,7 +5,8 @@
   challenge.data = undefined;
   challenge.renderer = challenge.render = null;
   challenge.preRender = () => {};
-  let panel, busy = false, countdown, polling, closed = false;
+  let panel, busy = false, countdown, polling, closed = false, connectable = false;
+  const t = value => window.cyberduneChallengeCopy?.[value] ?? value;
   const node = id => panel?.querySelector('#' + id);
   const show = (id, visible) => { const el = node(id); if (el) el.hidden = !visible; };
   const text = (id, value) => { const el = node(id); if (el) el.textContent = value; };
@@ -13,13 +14,17 @@
   const message = (state, value) => {
     if (!valid()) return;
     panel.dataset.state = state;
-    text('cm-instance-message', value);
+    const labels = {loading: 'Checking', stopped: 'Not started', starting: 'Starting', ready: 'Ready', expired: 'Expired', failed: 'Needs attention', stopping: 'Stopping', extending: 'Extending'};
+    text('cm-instance-state', t(labels[state] || 'Checking'));
+    text('cm-instance-message', t(value));
   };
   const setBusy = value => {
     busy = value;
     if (!valid()) return;
     panel.setAttribute('aria-busy', String(value));
     panel.querySelectorAll('button').forEach(button => button.disabled = value);
+    if (node('cm-copy-connection')) node('cm-copy-connection').disabled = value || !connectable;
+    if (value) show('cm-open-connection', false);
   };
   const api = async (method, id) => {
     const controller = new AbortController();
@@ -49,23 +54,44 @@
     clearInterval(countdown);
     show('cm-panel-loading', false);
     show('cm-retry', false);
-    const expired = data?.until && Date.parse(data.until) <= Date.now();
+    const deadline = data?.until ? Date.parse(data.until) : null;
+    const invalidExpiry = !!data?.until && !Number.isFinite(deadline);
+    const expired = deadline !== null && deadline <= Date.now();
+    connectable = !!data?.connectionInfo && !expired && !invalidExpiry;
     show('whale-panel-stopped', !data && !challenge.data.shared);
     show('whale-panel-started', !!data);
-    show('cm-panel-until', !!data?.until);
+    show('cm-panel-until', deadline !== null && !invalidExpiry);
     text('whale-challenge-lan-domain', data?.connectionInfo || '');
-    message(expired ? 'expired' : data ? 'ready' : 'stopped', expired ? 'Instance expired. Stop it before launching a new one.' :
-      data ? 'Instance ready.' : challenge.data.shared ? 'The shared instance is not running. Contact an administrator.' : 'Instance not started.');
-    if (data?.until) {
+    text('cm-copy-feedback', '');
+    show('cm-connection', connectable);
+    show('cm-open-connection', false);
+    node('cm-open-connection').removeAttribute('href');
+    node('cm-copy-connection').disabled = !connectable || busy;
+    if (connectable) {
+      try {
+        const url = new URL(data.connectionInfo);
+        if (['http:', 'https:'].includes(url.protocol) && !url.username && !url.password) {
+          node('cm-open-connection').href = url.href;
+          show('cm-open-connection', !busy);
+        }
+      } catch (_) { /* SSH and other connection instructions remain copyable text. */ }
+    }
+    const pending = !!data && !expired && !invalidExpiry && !connectable;
+    show('cm-retry', expired || pending || invalidExpiry);
+    message(invalidExpiry ? 'failed' : expired ? 'expired' : pending ? 'starting' : data ? 'ready' : 'stopped', invalidExpiry ? 'Instance expiry could not be read. Check status again.' : expired ? 'Instance expired. Stop it before launching a new one.' :
+      pending ? 'The instance is starting. Check status again shortly.' : data ? 'Instance ready.' : challenge.data.shared ? 'The shared instance is not running. Contact an administrator.' : 'Instance not started.');
+    if (deadline !== null && !invalidExpiry) {
       const tick = () => {
         if (!valid()) { clearInterval(countdown); return; }
-        const seconds = Math.max(0, Math.ceil((Date.parse(data.until) - Date.now()) / 1000));
+        const seconds = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
         text('whale-challenge-count-down', Math.floor(seconds / 60) + 'm ' + String(seconds % 60).padStart(2, '0') + 's');
         if (!seconds) {
           clearInterval(countdown);
           message('expired', 'Instance expired. Check status to launch again.');
           show('cm-retry', true);
+          connectable = false;
           node('cm-copy-connection').disabled = true;
+          show('cm-connection', false);
         }
       };
       tick(); countdown = setInterval(tick, 1000);
@@ -109,7 +135,10 @@
       if (valid() && panel === operationPanel) { message('failed', error.message); show('cm-retry', true); }
     } finally {
       clearTimeout(polling);
-      if (panel === operationPanel) setBusy(false);
+      if (panel === operationPanel) {
+        setBusy(false);
+        if (connectable && node('cm-open-connection')?.href) show('cm-open-connection', true);
+      }
     }
   };
   challenge.boot = () => perform('POST');
@@ -118,10 +147,11 @@
   challenge.restart = () => perform('RESTART');
   challenge.refreshInstance = load;
   challenge.copyConnection = async () => {
+    if (!valid() || !connectable || busy) return;
     try {
       await navigator.clipboard.writeText(node('whale-challenge-lan-domain').textContent);
-      message('ready', 'Connection information copied.');
-    } catch (_) { message('ready', 'Copy is unavailable. Select and copy the connection information above.'); }
+      text('cm-copy-feedback', t('Connection information copied.'));
+    } catch (_) { text('cm-copy-feedback', t('Copy is unavailable. Select and copy the connection information above.')); }
   };
   const cleanup = () => { closed = true; clearInterval(countdown); clearTimeout(polling); };
   window.CyberduneInstanceCleanup = cleanup;

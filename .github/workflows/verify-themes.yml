@@ -7,11 +7,17 @@ on:
       - master
     paths:
       - 'CTFd/themes/**'
+      - 'CTFd/plugins/ctfd_chall_manager/assets/**'
+      - 'tests/frontend/**'
+      - '.github/workflows/verify-themes.yml'
   pull_request:
     branches:
       - master
     paths:
       - 'CTFd/themes/**'
+      - 'CTFd/plugins/ctfd_chall_manager/assets/**'
+      - 'tests/frontend/**'
+      - '.github/workflows/verify-themes.yml'
 
 jobs:
   build:
@@ -44,3 +50,12 @@ jobs:
             yarn install --frozen-lockfile
             yarn verify
         working-directory: ./CTFd/themes/core
+
+      - name: Test custom challenge board recovery and filters
+        run: node --test tests/frontend/*.test.cjs
+
+      - name: Build deployed CyberDune theme
+        run: |
+            npm ci
+            npm run build
+        working-directory: ./CTFd/themes/core-theme

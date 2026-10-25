@@ -38,3 +38,28 @@ func TestPublishedPort(t *testing.T) {
 		}
 	}
 }
+
+func TestPublicRoutingIsExplicit(t *testing.T) {
+	if bind, err := publicBinding(""); err != nil || bind != "127.0.0.1" {
+		t.Fatal("private launch must remain the default", bind, err)
+	}
+	for _, host := range []string{"targets.example.test", "192.0.2.10", "2001:db8::10"} {
+		if bind, err := publicBinding(host); err != nil || bind != "0.0.0.0" {
+			t.Fatal("valid explicit worker host rejected", host, err)
+		}
+	}
+	for _, host := range []string{"localhost", "127.0.0.1", "0.0.0.0", "https://example.test", "user@example.test", "example.test/path", "example.test:80"} {
+		if _, err := publicBinding(host); err == nil {
+			t.Fatal("invalid public host accepted", host)
+		}
+	}
+	if connectionInfo("targets.example.test", 32771) != "http://targets.example.test:32771/" {
+		t.Fatal("incorrect player endpoint")
+	}
+	if connectionInfo("2001:db8::10", 32771) != "http://[2001:db8::10]:32771/" {
+		t.Fatal("incorrect IPv6 endpoint")
+	}
+	if _, err := publishedPortOn(strings.NewReader(`{"NetworkSettings":{"Ports":{"8080/tcp":[{"HostIp":"0.0.0.0","HostPort":"32771"}]}}}`), 8080, "0.0.0.0"); err != nil {
+		t.Fatal("public gateway binding rejected", err)
+	}
+}

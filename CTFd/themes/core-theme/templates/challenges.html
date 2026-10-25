@@ -43,12 +43,44 @@
         </div>
       </div>
 
-      <div x-show="loaded" x-data="{ selectedCategory: null }">
+      <div x-show="error" x-cloak role="alert" class="alert alert-danger">
+        <p x-text="error"></p>
+        <button type="button" class="btn btn-secondary" :disabled="loading" @click="loadChallenges()">{{ challenge_copy("Try again") }}</button>
+        <a href="{{ url_for('auth.login', next=url_for('challenges.listing')) }}">{{ challenge_copy("Log in") }}</a>
+      </div>
+      <p x-show="openError" x-cloak role="alert" class="alert alert-danger" x-text="openError"></p>
+      <div x-show="loaded" x-data="{ selectedCategory: null }" @input="selectedCategory=null" @change="selectedCategory=null">
+        {% if authed() %}
+        <section class="cd-progress-panel" aria-label="{{ challenge_copy('Your progress') }}" x-show="!error || challenges.length" x-cloak>
+          <div class="cd-progress-account"><span class="cd-eyebrow">{{ challenge_copy('Your team' if Configs.user_mode == 'teams' else 'Your progress') }}</span><strong>{{ Team.name if Configs.user_mode == 'teams' else User.name }}</strong><span>{{ challenge_copy('Every flag moves you forward.') }}</span></div>
+          <div class="cd-progress-stat"><span>{{ challenge_copy('Solved') }}</span><strong><span x-text="solvedCount"></span><small x-text="' / ' + progressChallenges.length"></small></strong></div>
+          <div class="cd-progress-stat"><span>{{ challenge_copy('Score') }}</span><strong x-text="accountStats ? accountStats.score.toLocaleString() : '—'"></strong></div>
+          <div class="cd-progress-stat"><span>{{ challenge_copy('Rank') }}</span><strong x-text="accountStats?.place ?? '—'"></strong><small x-show="accountStats && !accountStats.place">{{ challenge_copy('Not ranked yet or ranking hidden') }}</small></div>
+          <div class="cd-progress-track"><progress max="100" :value="progressPercent" aria-label="{{ challenge_copy('Challenge completion') }}"></progress><span x-text="progressPercent + '%'"></span></div>
+          <p class="cd-progress-warning" x-show="statsError" x-cloak role="status">{{ challenge_copy('Score and rank could not be refreshed.') }} <button type="button" class="cd-text-button" :disabled="statsLoading" @click="loadProgress()">{{ challenge_copy('Try again') }}</button></p>
+        </section>
+        <section class="cd-onboarding" x-show="!error && challenges.length && solvedCount === 0 && !onboardingDismissed" x-cloak aria-label="{{ challenge_copy('Get started') }}">
+          <div class="cd-onboarding-heading"><div><span class="cd-eyebrow">{{ challenge_copy('Get started') }}</span><h2>{{ challenge_copy('Your first flag starts here.') }}</h2></div><button type="button" class="cd-text-button" @click="dismissOnboarding()">{{ challenge_copy('Dismiss guide') }}</button></div>
+          {% include 'components/get-started.html' %}
+        </section>
+        <button class="cd-text-button cd-guide-restore" type="button" x-show="onboardingDismissed && solvedCount === 0" x-cloak @click="onboardingDismissed=false">{{ challenge_copy('Show getting started guide') }}</button>
+        {% endif %}
+        <div class="cd-challenge-filters">
+          <label for="challenge-search">{{ challenge_copy("Search challenges") }}</label>
+          <input id="challenge-search" type="search" class="form-control" x-model.debounce.150ms="search" placeholder="{{ challenge_copy('Name, category, author or tag') }}">
+          <label for="challenge-solve-filter">{{ challenge_copy("Progress") }}</label>
+          <select id="challenge-solve-filter" class="form-select" x-model="solveFilter">
+            <option value="all">{{ challenge_copy("All challenges") }}</option>
+            <option value="solved">{{ challenge_copy("Solved") }}</option>
+            <option value="unsolved">{{ challenge_copy("Unsolved") }}</option>
+          </select>
+        </div>
         <nav class="cd-category-nav" aria-label="{{ challenge_copy('Challenge categories') }}">
           <button type="button" class="btn btn-secondary btn-sm" :class="{ 'is-active': selectedCategory === null }" @click="selectedCategory=null">{{ challenge_copy("All challenges") }}</button>
           <template x-for="category in getCategories()" :key="category"><button type="button" class="btn btn-secondary btn-sm" :class="{ 'is-active': selectedCategory === category }" @click="selectedCategory=category" x-text="category"></button></template>
         </nav>
-        <div class="empty-state" x-show="!getCategories().length"><h3>{{ challenge_copy("No challenges available") }}</h3><p>{{ challenge_copy("Published challenges will appear here.") }}</p></div>
+        <div class="empty-state" x-show="!error && !challenges.length"><h3>{{ challenge_copy("No challenges available") }}</h3><p>{{ challenge_copy("Published challenges will appear here.") }}</p></div>
+        <div class="empty-state" x-show="challenges.length && !visibleChallenges().length"><h3>{{ challenge_copy("No matching challenges") }}</h3><p>{{ challenge_copy("Change your search or progress filter.") }}</p></div>
         <template x-for="(category, idx) in getCategories()" :key="idx">
           <section class="container-challenges" x-show="selectedCategory === null || selectedCategory === category">
             <div class="category-header mb-1r">
@@ -70,6 +102,7 @@
                     >
                       <div class="cd-card-header">
                         <span class="challenge-pill" x-text="category"></span>
+                        <span class="cd-difficulty" x-show="difficulty(c)" x-text="t(difficulty(c))"></span>
                         <span class="cd-solved-label" x-show="c.solved_by_me || c.solved || c.preview_solved" x-cloak><i class="fas fa-check-circle" aria-hidden="true"></i><span x-text="t(c.preview_solved && !c.solved_by_me ? 'Solved · preview' : 'Solved')"></span></span>
                       </div>
 
@@ -81,18 +114,20 @@
                       </div>
 
                       {% if is_admin() %}<span class="challenge-pill" x-show="c.state === 'hidden'" x-cloak>{{ challenge_copy("Hidden · admins only") }}</span>{% endif %}
-                      <div class="cd-card-tags"><template x-for="tag in (c.tags || []).slice(0, 2)" :key="tag.value"><span x-text="tag.value"></span></template></div>
+                      <div class="cd-card-tags" x-show="(c.tags || []).some(tag => tag.value !== difficulty(c))"><template x-for="tag in (c.tags || []).filter(tag => tag.value !== difficulty(c)).slice(0, 2)" :key="tag.value"><span x-text="tag.value"></span></template></div>
 
                       <div class="challenge-stats">
                         <div class="challenge-stat">
                           <i class="fas fa-flag"></i>
                           <!-- Works across different API fields (CTFd versions/plugins) -->
                           <span x-text="(c.solves ?? c.solves_count ?? c.solve_count ?? 0)"></span>
+                          <span>{{ challenge_copy('solves') }}</span>
                         </div>
 
                         <div class="challenge-stat">
                           <i class="fas fa-star"></i>
                           <span x-text="c.value"></span>
+                          <span>{{ challenge_copy('points') }}</span>
                         </div>
                       </div>
                     </button>

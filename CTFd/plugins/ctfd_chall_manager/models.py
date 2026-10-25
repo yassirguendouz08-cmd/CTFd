@@ -38,6 +38,7 @@ from CTFd.plugins.ctfd_chall_manager.utils.logger import configure_logger
 from CTFd.plugins.dynamic_challenges import DynamicChallenge, DynamicValueChallenge
 from CTFd.utils import user as current_user
 from CTFd.utils.config import is_teams_mode
+from CTFd.utils.dates import parse_iso_datetime
 from flask import Blueprint
 
 logger = configure_logger(__name__)
@@ -98,7 +99,7 @@ class DynamicIaCValueChallenge(DynamicValueChallenge):
     scripts = {  # Scripts that are loaded when a template is loaded
         "create": "/plugins/ctfd_chall_manager/assets/create.js",
         "update": "/plugins/ctfd_chall_manager/assets/update.js",
-        "view": "/plugins/ctfd_chall_manager/assets/view.js?v=20261012-polish",
+        "view": "/plugins/ctfd_chall_manager/assets/view.js?v=20261025-workspace",
     }
     # Route at which files are accessible.
     # This must be registered using register_plugin_assets_directory()
@@ -130,8 +131,10 @@ class DynamicIaCValueChallenge(DynamicValueChallenge):
 
         try:
             data = prepare_ctfdcm_database(data)
+            if not isinstance(data.get("scenario"), str) or not data["scenario"].strip():
+                raise ChallManagerPluginException("A deployment scenario is required.")
         except ChallManagerPluginException as e:
-            raise ChallengeCreateException from e
+            raise ChallengeCreateException(str(e), status_code=400) from e
 
         challenge = cls.challenge_model(**data)
         db.session.add(challenge)
@@ -209,7 +212,7 @@ class DynamicIaCValueChallenge(DynamicValueChallenge):
         try:
             data = prepare_ctfdcm_database(data)
         except ChallManagerPluginException as e:
-            raise ChallengeUpdateException from e
+            raise ChallengeUpdateException(str(e), status_code=400) from e
 
         # update on database
         for attr, value in data.items():
@@ -231,6 +234,7 @@ class DynamicIaCValueChallenge(DynamicValueChallenge):
             update_challenge(challenge.id, **params)
         except ChallManagerException as e:
             logger.error("error while patching the challenge: %s", e)
+            db.session.rollback()
             raise ChallengeUpdateException(e.message) from e
 
         return super().calculate_value(challenge)
@@ -424,6 +428,14 @@ def prepare_ctfdcm_database(data) -> dict | ChallManagerPluginException:
     to prevent inconsistencies with chall-manager API.
     """
 
+    data = dict(data)
+    if "scheduled_at" in data:
+        try:
+            data["scheduled_at"] = parse_iso_datetime(data["scheduled_at"])
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ChallManagerPluginException("Invalid scheduled_at: use an ISO 8601 datetime.") from exc
+    if "scenario" in data and (not isinstance(data["scenario"], str) or not data["scenario"].strip()):
+        raise ChallManagerPluginException("A deployment scenario is required.")
     defaults = {
         # integer
         "mana_cost": 0,
@@ -442,11 +454,13 @@ def prepare_ctfdcm_database(data) -> dict | ChallManagerPluginException:
         if k in data.keys():
             try:
                 data[k] = int(data[k]) if data[k] != "" else defaults[k]
-            except ValueError as e:
+            except (TypeError, ValueError) as e:
                 logger.error("%s cannot be convert into int, got %s", k, data[k])
                 raise ChallManagerPluginException(
                     f"{k} cannot be convert into int, got {data[k]}"
                 ) from e
+            if data[k] < 0:
+                raise ChallManagerPluginException(f"{k} cannot be negative")
 
     # Boolean
     for k in ["shared", "destroy_on_flag"]:
@@ -475,15 +489,9 @@ def prepare_ctfdcm_database(data) -> dict | ChallManagerPluginException:
                     found {data['additional']}"
                 ) from e
         elif not isinstance(data["additional"], dict):
-            logger.error(
-                "error while decoding additional configuration, found %s : %s",
-                data["additional"],
-                e,
-            )
-            raise ChallManagerPluginException(
-                f"error while decoding additional configuration,\
-                found {data['additional']}"
-            ) from e
+            raise ChallManagerPluginException("Additional configuration must be a JSON object.")
+        if not isinstance(data["additional"], dict):
+            raise ChallManagerPluginException("Additional configuration must be a JSON object.")
 
     return data
 

@@ -8,6 +8,11 @@
     </div>
   </div>
   <div class="container">
+    <section class="cd-onboarding" aria-label="{{ challenge_copy('Get started') }}">
+      <div class="cd-onboarding-heading"><h2>{{ challenge_copy('One team. Your first flag.') }}</h2></div>
+      {% set cd_onboarding_team_needed = true %}
+      {% include 'components/get-started.html' %}
+    </section>
     <div class="row justify-content-center">
       <div class="col-md-6 text-center">
         <p class="h2">{% trans %}Welcome to{% endtrans %} {{ Configs.ctf_name }}!</p>

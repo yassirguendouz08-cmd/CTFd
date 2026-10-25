@@ -333,8 +333,78 @@ Alpine.data("ChallengeBoard", () => ({
   challenge: null,
   opening: false,
   previewSolves: [],
+  loading: false,
+  error: "",
+  openError: "",
+  search: "",
+  solveFilter: "all",
+  accountStats: null,
+  statsError: false,
+  statsLoading: false,
+  onboardingDismissed: false,
+
+  get progressChallenges() {
+    return this.challenges.filter(challenge => challenge.state !== "hidden");
+  },
+
+  get solvedCount() {
+    return this.progressChallenges.filter(challenge => challenge.solved_by_me || challenge.solved).length;
+  },
+
+  get progressPercent() {
+    return this.progressChallenges.length ? Math.round(this.solvedCount / this.progressChallenges.length * 100) : 0;
+  },
+
+  difficulty(challenge) {
+    const labels = ["beginner", "easy", "medium", "hard", "expert", "débutant", "facile", "moyen", "difficile", "مبتدئ", "سهل", "متوسط", "صعب", "خبير"];
+    return (challenge.tags || []).find(tag => labels.includes(tag.value.toLocaleLowerCase()))?.value || "";
+  },
+
+  dismissOnboarding() {
+    this.onboardingDismissed = true;
+    try { localStorage.setItem(`cyberdune-welcome:${window.init.userId}`, "dismissed"); } catch (_) { /* Optional preference. */ }
+  },
+
+  async loadProgress() {
+    if (!window.init.userId || this.statsLoading) return;
+    if (window.init.userMode === "teams" && !window.init.teamId) return;
+    this.statsLoading = true;
+    this.statsError = false;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    try {
+      const account = window.init.userMode === "teams" ? "teams" : "users";
+      const response = await CTFd.fetch(`${window.init.urlRoot || ""}/api/v1/${account}/me`, { signal: controller.signal });
+      if (!response.ok) throw new Error("Progress unavailable");
+      const result = await response.json();
+      if (!result.success || typeof result.data?.score !== "number") throw new Error("Invalid progress");
+      this.accountStats = { score: result.data.score, place: result.data.place ?? null };
+    } catch (_) {
+      this.statsError = true;
+    } finally {
+      clearTimeout(timeout);
+      this.statsLoading = false;
+    }
+  },
+
+  isSolved(challenge) {
+    return !!(challenge.solved_by_me || challenge.solved || challenge.preview_solved);
+  },
+
+  visibleChallenges() {
+    const query = this.search.trim().toLocaleLowerCase();
+    return this.challenges.filter(challenge => {
+      const solved = this.isSolved(challenge);
+      if (this.solveFilter === "solved" && !solved) return false;
+      if (this.solveFilter === "unsolved" && solved) return false;
+      const text = [challenge.name, challenge.category, challenge.attribution,
+        ...(challenge.tags || []).map(tag => tag.value)].filter(Boolean).join(" ");
+      return !query || text.toLocaleLowerCase().includes(query);
+    });
+  },
 
   async init() {
+    try { this.onboardingDismissed = localStorage.getItem(`cyberdune-welcome:${window.init.userId}`) === "dismissed"; } catch (_) { /* Storage can be disabled. */ }
     try {
       const saved = JSON.parse(sessionStorage.getItem(this.previewKey()) || "[]");
       this.previewSolves = Array.isArray(saved)
@@ -344,9 +414,8 @@ Alpine.data("ChallengeBoard", () => ({
       this.previewSolves = [];
     }
     await this.loadChallenges();
-    this.loaded = true;
-
-    if (window.location.hash) {
+    if (!this.error && window.location.hash) {
+      try {
       let chalHash = decodeURIComponent(window.location.hash.substring(1));
       let idx = chalHash.lastIndexOf("-");
       if (idx >= 0) {
@@ -354,13 +423,16 @@ Alpine.data("ChallengeBoard", () => ({
         let id = pieces[1];
         await this.loadChallenge(id);
       }
+      } catch (_) {
+        this.openError = t("This challenge link is invalid. Select a challenge from the board.");
+      }
     }
   },
 
   getCategories() {
     const categories = [];
 
-    this.challenges.forEach(challenge => {
+    this.visibleChallenges().forEach(challenge => {
       const { category } = challenge;
 
       if (!categories.includes(category)) {
@@ -384,10 +456,10 @@ Alpine.data("ChallengeBoard", () => ({
   },
 
   getChallenges(category) {
-    let challenges = this.challenges;
+    let challenges = this.visibleChallenges();
 
     if (category !== null) {
-      challenges = this.challenges.filter(challenge => challenge.category === category);
+      challenges = challenges.filter(challenge => challenge.category === category);
     }
 
     try {
@@ -406,13 +478,24 @@ Alpine.data("ChallengeBoard", () => ({
   },
 
   async loadChallenges() {
-    const challenges = await CTFd.pages.challenges.getChallenges();
-    this.challenges = challenges.map(challenge => ({
-      ...challenge,
-      preview_solved:
-        challenge.state === "hidden" &&
-        this.previewSolves.includes(String(challenge.id)),
-    }));
+    if (this.loading) return;
+    this.loading = true;
+    this.error = "";
+    try {
+      const challenges = await CTFd.pages.challenges.getChallenges();
+      if (!Array.isArray(challenges)) throw new Error("Invalid challenge response");
+      this.challenges = challenges.map(challenge => ({
+        ...challenge,
+        preview_solved: challenge.state === "hidden" &&
+          this.previewSolves.includes(String(challenge.id)),
+      }));
+      this.loadProgress();
+    } catch (_) {
+      this.error = t("Challenges could not be loaded. Check your connection or sign in again, then retry.");
+    } finally {
+      this.loading = false;
+      this.loaded = true;
+    }
   },
 
   previewKey() {
@@ -438,6 +521,7 @@ Alpine.data("ChallengeBoard", () => ({
   async loadChallenge(challengeId) {
     if (this.opening) return;
     this.opening = true;
+    this.openError = "";
     try {
       await CTFd.pages.challenge.displayChallenge(challengeId, challenge => {
         challenge.data.view = addTargetBlank(challenge.data.view);
@@ -460,6 +544,8 @@ Alpine.data("ChallengeBoard", () => ({
           history.replaceState(null, null, `#${challenge.data.name}-${challengeId}`);
         });
       });
+    } catch (_) {
+      this.openError = t("This challenge could not be opened. Please try again.");
     } finally {
       this.opening = false;
     }

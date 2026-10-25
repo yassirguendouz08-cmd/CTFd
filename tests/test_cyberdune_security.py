@@ -11,6 +11,7 @@ class SecurityTests(unittest.TestCase):
     def setUp(self):
         self.app = Flask(__name__)
         self.app.config.update(TESTING=True, SECRET_KEY='disposable-security-tests')
+        self.app.config.update(SECURITY_REGISTER_IP_MINUTE=3, SECURITY_REGISTER_IP_HOUR=10)
         self.app.jinja_loader = DictLoader({'security_notice.html': '{{ message }}'})
         self.settings = {'verify_emails': False, 'cyberdune_https': True}
         self.patches = [patch.object(security, 'get_config', side_effect=lambda name: self.settings.get(name)), patch.object(security, 'cache', SimpleNamespace(cache=SimpleNamespace())), patch.object(security, 'is_admin', return_value=False), patch.object(security, 'is_verified', return_value=False), patch.object(security, 'can_send_mail', return_value=False)]
@@ -40,6 +41,12 @@ class SecurityTests(unittest.TestCase):
         for n in range(20):
             self.assertEqual(self.client.post('/login', data={'name':'Alice'}, environ_overrides={'REMOTE_ADDR':f'192.0.2.{n}'}).status_code, 200)
         self.assertEqual(self.client.post('/login', data={'name':'  ALICE  '}, environ_overrides={'REMOTE_ADDR':'192.0.2.250'}).status_code, 429)
+
+    def test_shared_network_allows_distinct_attendees_without_removing_account_limits(self):
+        self.app.config.update(SECURITY_REGISTER_IP_MINUTE=30, SECURITY_REGISTER_IP_HOUR=300)
+        for n in range(20):
+            self.assertEqual(self.client.post('/register', data={'email':f'attendee{n}@example.test'}).status_code, 200)
+            self.assertEqual(self.client.post('/login', data={'name':f'attendee{n}'}).status_code, 200)
 
     def test_reset_email_limit_across_ips(self):
         for n in range(3): self.assertEqual(self.client.post('/reset_password', data={'email':'a@example.test'}, environ_overrides={'REMOTE_ADDR':f'192.0.2.{n}'}).status_code, 200)

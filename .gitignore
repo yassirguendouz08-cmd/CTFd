@@ -112,6 +112,7 @@ CTFd/themes/*
 .env.*
 !.env.example
 !.env.instances.example
+!.env.production.example
 *.sql
 *.sql.gz
 *.sqlite

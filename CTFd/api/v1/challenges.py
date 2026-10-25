@@ -307,7 +307,7 @@ class ChallengeList(Resource):
         try:
             challenge = challenge_class.create(request)
         except ChallengeCreateException as e:
-            return {"success": False, "errors": {"": [str(e)]}}, 500
+            return {"success": False, "errors": {"": [str(e)]}}, e.status_code
 
         response = challenge_class.read(challenge)
 
@@ -642,7 +642,7 @@ class Challenge(Resource):
         try:
             challenge = challenge_class.update(challenge, request)
         except ChallengeUpdateException as e:
-            return {"success": False, "errors": {"": [str(e)]}}, 500
+            return {"success": False, "errors": {"": [str(e)]}}, e.status_code
 
         response = challenge_class.read(challenge)
 

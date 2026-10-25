@@ -10,7 +10,7 @@ import requests
 
 from CTFd.cache import cache, clear_challenges
 from CTFd.config import TestingConfig
-from CTFd.models import Challenges, Users, db
+from CTFd.models import Challenges, Modules, Submissions, Users, db
 from CTFd.utils import set_config
 from tests.helpers import create_ctfd, gen_challenge, gen_flag, gen_team, gen_user, login_as_user
 
@@ -99,6 +99,8 @@ class TestCyberduneInstances(unittest.TestCase):
             set_config("start", None)
             set_config("end", None)
             set_config("challenge_visibility", "public")
+            set_config("chall-manager:chall-manager_mana_total", 3)
+            Submissions.query.filter(Submissions.user_id.in_([self.first_id, self.second_id])).delete(synchronize_session=False)
             for uid in [self.first_id, self.second_id]:
                 Users.query.get(uid).team_id = None
             db.session.commit()
@@ -224,3 +226,61 @@ class TestCyberduneInstances(unittest.TestCase):
         result = self.first.post("/api/v1/challenges/attempt", json={"challenge_id": self.id, "submission": data["flags"][0]}).get_json()
         self.assertEqual(result["data"]["status"], "incorrect")
         self.assertIn("Expired", result["data"]["message"])
+
+    def test_mutations_authorize_the_body_id_and_reject_conflicts(self):
+        created = self.admin.post("/api/v1/challenges", json={
+            "name": "Allowed instance", "type": "dynamic_iac", "initial": 100,
+            "minimum": 100, "decay": 10, "function": "linear", "state": "visible",
+            "scenario": "registry.example.test/scenario:v1", "timeout": 600})
+        allowed = created.get_json()["data"]["id"]
+        for restriction in ("hidden", "locked", "future", "prerequisite", "module"):
+            with self.subTest(restriction=restriction):
+                with self.app.app_context():
+                    target = Challenges.query.get(self.id)
+                    target.state, target.scheduled_at, target.requirements, target.module_id = "visible", None, None, None
+                    if restriction in ("hidden", "locked"): target.state = restriction
+                    elif restriction == "future": target.scheduled_at = datetime.utcnow() + timedelta(hours=1)
+                    elif restriction == "prerequisite": target.requirements = {"prerequisites": [self.normal_id]}
+                    else:
+                        module = Modules(name="Restricted audit module")
+                        db.session.add(module)
+                        db.session.flush()
+                        target.module_id = module.id
+                    db.session.commit()
+                    clear_challenges()
+                    self.app.extensions.get('cyberdune_security_counters', {}).clear()
+                for method in ("post", "patch"):
+                    self.assertEqual(getattr(self.first, method)(self.url, json={"challengeId": self.id}).status_code, 403)
+                    self.assertEqual(getattr(self.first, method)(self.url + f"?challengeId={allowed}", json={"challengeId": self.id}).status_code, 400)
+                self.assertNotIn((str(self.id), str(self.first_id)), self.manager.instances)
+
+    def test_invalid_instance_ids_are_client_errors(self):
+        for payload in ([self.id], {"challengeId": True}, {"challengeId": [self.id]}, {"challengeId": -1}):
+            with self.subTest(payload=payload):
+                self.assertEqual(self.first.post(self.url, json=payload).status_code, 400)
+        self.assertEqual(self.first.get(self.url + f"?challengeId={self.id}&challengeId={self.normal_id}").status_code, 400)
+        self.assertEqual(self.first.head(self.url + f"?challengeId={self.id}&challengeId={self.normal_id}").status_code, 400)
+        self.assertEqual(self.first.post(self.url + f"?challengeId={self.id}", json={"challengeId": self.id}).status_code, 200)
+        self.assertEqual(self.first.head(self.url + f"?challengeId={self.id}").status_code, 200)
+
+    def test_usage_errors_never_grant_more_mana(self):
+        with self.app.app_context(): set_config("chall-manager:chall-manager_mana_total", 1)
+        for status, body in ((500, b'{"message":"unavailable"}'), (200, b'{"error":{"code":13}}'), (200, b'{"unexpected":true}'), (200, b'{"result":{"challengeId":"1","sourceId":"999"}}')):
+            with self.subTest(status=status, body=body):
+                response = requests.Response()
+                response.status_code, response._content, response._content_consumed = status, body, True
+                with patch("requests.Session.get", return_value=response):
+                    self.assertEqual(self.first.post(self.url, json={"challengeId": self.id}).status_code, 403)
+                self.assertFalse(self.manager.instances)
+
+    def test_instance_schedule_and_invalid_configuration(self):
+        response = self.admin.patch(f"/api/v1/challenges/{self.id}", json={"scheduled_at": "2031-06-15T14:00:00+02:00"})
+        self.assertEqual(response.status_code, 200, response.get_json())
+        with self.app.app_context():
+            self.assertEqual(Challenges.query.get(self.id).scheduled_at, datetime(2031, 6, 15, 12))
+        self.assertEqual(self.first.post(self.url, json={"challengeId": self.id}).status_code, 403)
+        self.assertEqual(self.admin.patch(f"/api/v1/challenges/{self.id}", json={"scheduled_at": None}).status_code, 200)
+        for data in ({"scheduled_at": "nonsense"}, {"additional": []}, {"additional": "[]"}, {"scenario": ""}, {"mana_cost": -1}):
+            self.assertEqual(self.admin.patch(f"/api/v1/challenges/{self.id}", json=data).status_code, 400)
+        missing = self.admin.post("/api/v1/challenges", json={"name":"Missing scenario", "type":"dynamic_iac", "initial":100, "minimum":100, "decay":10})
+        self.assertEqual(missing.status_code, 400)

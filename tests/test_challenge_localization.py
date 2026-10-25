@@ -33,7 +33,7 @@ def test_challenge_languages_follow_locale_without_mutating_sources():
         # Alternate on the same process/cache, including a return to English.
         for language in ("en", "fr", "ar", "en"):
             client = app.test_client()
-            client.set_cookie("localhost", "language", language)
+            client.set_cookie("language", language, domain="localhost")
             listing = client.get("/api/v1/challenges?localized=1").get_json()["data"]
             by_id = {row["id"]: row for row in listing}
             assert hidden not in by_id
@@ -75,7 +75,7 @@ def test_challenge_languages_follow_locale_without_mutating_sources():
             from CTFd.cache import clear_user_session
             with app.app_context():
                 clear_user_session(user_id=uid)
-            player.set_cookie("localhost", "language", "en")
+            player.set_cookie("language", "en", domain="localhost")
             response = player.get(f"/api/v1/challenges/{cid}?localized=1").get_json()["data"]
             assert response["name"] == catalog()["web-source"]["ar"]["name"]
             assert response["hints"][0]["content"] == catalog()["web-source"]["ar"]["hints"][0]
@@ -85,7 +85,7 @@ def test_challenge_languages_follow_locale_without_mutating_sources():
             chal.description = "Organizer edited this description."
             app.db.session.commit()
         client = app.test_client()
-        client.set_cookie("localhost", "language", "en")
+        client.set_cookie("language", "en", domain="localhost")
         edited = client.get(f"/api/v1/challenges/{cid}?localized=1").get_json()["data"]
         assert edited["description"] == "Organizer edited this description."
         with app.app_context():

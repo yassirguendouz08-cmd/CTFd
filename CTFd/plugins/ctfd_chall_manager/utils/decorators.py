@@ -25,21 +25,31 @@ def challenge_visible(func):
     @check_challenge_visibility
     @require_verified_emails
     def _challenge_visible(*args, **kwargs):
-        # Get challengeId from query string
-        challenge_id = request.args.get("challengeId")
+        # Parse once, then pass the authorized ID to the operation. Mutations
+        # require JSON; a query parameter must never authorize another body ID.
+        query_ids = request.args.getlist("challengeId")
+        if len(query_ids) > 1:
+            abort(400, "duplicate challengeId", success=False)
+        read_request = request.method in ("GET", "HEAD")
+        data = None if read_request else request.get_json(silent=True)
+        if not read_request and not isinstance(data, dict):
+            abort(400, "expected a JSON object", success=False)
+        value = query_ids[0] if read_request and query_ids else (data or {}).get("challengeId")
 
-        if not challenge_id:
-            data = request.get_json(silent=True)
-            if data:
-                challenge_id = data.get("challengeId")
+        def parse_id(value):
+            if isinstance(value, bool) or not isinstance(value, (str, int)):
+                abort(400, "invalid challengeId", success=False)
+            try:
+                result = int(value)
+            except (TypeError, ValueError, OverflowError):
+                abort(400, "invalid challengeId", success=False)
+            if result <= 0:
+                abort(400, "invalid challengeId", success=False)
+            return result
 
-        if not challenge_id:
-            abort(400, "missing args", success=False)
-
-        try:
-            challenge_id = int(challenge_id)
-        except (TypeError, ValueError):
-            abort(400, "invalid challengeId", success=False)
+        challenge_id = parse_id(value)
+        if query_ids and parse_id(query_ids[0]) != challenge_id:
+            abort(400, "conflicting challengeId", success=False)
         challenge = Challenges.query.get(challenge_id)
         if challenge is None or challenge.type != "dynamic_iac":
             abort(404, "no instance challenge", success=False)
@@ -59,6 +69,6 @@ def challenge_visible(func):
                 solved = {s.challenge_id for s in Solves.query.filter_by(account_id=user.account_id).all()}
                 if not set(requirements).intersection(existing).issubset(solved):
                     abort(403, "challenge prerequisites not solved", success=False)
-        return func(*args, **kwargs)
+        return func(*args, {"challengeId": challenge_id}, **kwargs)
 
     return _challenge_visible

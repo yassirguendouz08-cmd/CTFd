@@ -12,7 +12,28 @@ import threading
 import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'CTFd/plugins/ctfd_chall_manager'))
-from zip_archive import extract_archive
+from zip_archive import MAX_EXTRACTED_BYTES, extract_archive
+
+
+def cleanup_jobs(root, retention_days=7, now=None):
+    """Remove only expired, finished queue jobs; retain images used by challenges."""
+    cutoff = (time.time() if now is None else now) - retention_days * 86400
+    removed = 0
+    for folder in Path(root).iterdir():
+        if (folder.is_symlink() or not folder.is_dir() or len(folder.name) != 32
+                or any(c not in '0123456789abcdef' for c in folder.name)):
+            continue
+        status = folder / 'status.json'
+        try:
+            if status.is_symlink() or status.stat().st_mtime >= cutoff:
+                continue
+            if json.loads(status.read_text()).get('state') not in ('ready', 'failed'):
+                continue
+        except (OSError, ValueError, AttributeError):
+            continue
+        shutil.rmtree(folder)
+        removed += 1
+    return removed
 
 
 def write_status(folder, state, message, uid, gid):
@@ -29,6 +50,8 @@ def build(folder, uid, gid):
     log_path = folder / 'build.log'
     process = None
     try:
+        if shutil.disk_usage(folder).free < MAX_EXTRACTED_BYTES + 512 * 1024 * 1024:
+            raise ValueError('Not enough free disk space to build safely. Ask an administrator to free space.')
         request = json.loads((folder / 'request.json').read_text())
         image = request['payload']['additional']['image']
         if image != f'cyberdune/zip-{folder.name}:v1':
@@ -81,7 +104,10 @@ def main():
     parser.add_argument('--jobs', type=Path, required=True)
     parser.add_argument('--uid', type=int, required=True)
     parser.add_argument('--gid', type=int, required=True)
+    parser.add_argument('--retention-days', type=int, default=7)
     args = parser.parse_args()
+    if args.retention_days < 1:
+        parser.error('--retention-days must be at least 1')
     args.jobs.mkdir(parents=True, exist_ok=True)
     os.chown(args.jobs, args.uid, args.gid)
     args.jobs.chmod(0o750)
@@ -95,10 +121,17 @@ def main():
             time.sleep(2)
 
     for status_path in args.jobs.glob('*/status.json'):
-        if json.loads(status_path.read_text()).get('state') == 'building':
-            write_status(status_path.parent, 'failed', 'The builder restarted during this build. Please upload the ZIP again.', args.uid, args.gid)
+        try:
+            if json.loads(status_path.read_text()).get('state') == 'building':
+                write_status(status_path.parent, 'failed', 'The builder restarted during this build. Please upload the ZIP again.', args.uid, args.gid)
+        except (OSError, ValueError, AttributeError):
+            continue
     threading.Thread(target=heartbeat, daemon=True).start()
+    last_cleanup = 0
     while True:
+        if time.monotonic() - last_cleanup >= 3600:
+            cleanup_jobs(args.jobs, args.retention_days)
+            last_cleanup = time.monotonic()
         for request in sorted(args.jobs.glob('*/request.json'), key=lambda p: p.stat().st_mtime):
             if len(request.parent.name) != 32 or any(c not in '0123456789abcdef' for c in request.parent.name):
                 continue

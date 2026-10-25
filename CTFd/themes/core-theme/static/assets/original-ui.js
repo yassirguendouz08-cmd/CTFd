@@ -6,10 +6,12 @@
   const background = document.getElementById('cd-original-background');
   const typing = document.querySelector('[data-original-typing]');
   const active = new Map();
+  const motionButton = document.querySelector('[data-motion-toggle]');
+  // Inner pages start with the poster so reading and solving stay calm.
+  let backgroundEnabled = document.body.classList.contains('cd-home');
   let typingTimer;
   const canAnimate = () => !reducedMotion.matches && !document.hidden;
-  // The brand's brief, deliberately triggered reveal also works with reduced motion.
-  const canScramble = element => !document.hidden && (!reducedMotion.matches || element.hasAttribute('data-scramble-brand'));
+  const canScramble = () => canAnimate();
 
   function resetTyping() {
     clearTimeout(typingTimer);
@@ -36,8 +38,15 @@
     const stopped = !canAnimate();
     document.documentElement.toggleAttribute('data-effects-paused', stopped);
     document.documentElement.toggleAttribute('data-ticker-paused', document.hidden);
+    if (motionButton) {
+      motionButton.hidden = false;
+      motionButton.disabled = reducedMotion.matches;
+      motionButton.setAttribute('aria-pressed', String(backgroundEnabled && !reducedMotion.matches));
+      motionButton.textContent = reducedMotion.matches ? motionButton.dataset.reducedLabel :
+        backgroundEnabled ? motionButton.dataset.pauseLabel : motionButton.dataset.playLabel;
+    }
     if (background) {
-      if (stopped) background.pause();
+      if (stopped || !backgroundEnabled) background.pause();
       else {
         if (!background.hasAttribute('src')) background.src = background.dataset.src;
         background.muted = true;
@@ -47,6 +56,7 @@
     if (stopped) for (const animation of [...active.values()]) animation.stop();
     startTyping();
   }
+  motionButton?.addEventListener('click', () => { backgroundEnabled = !backgroundEnabled; syncMotion(); });
   reducedMotion.addEventListener('change', syncMotion);
   document.addEventListener('visibilitychange', syncMotion);
   window.addEventListener('pagehide', () => {
@@ -159,7 +169,7 @@
       exploreButton.focus();
     }
   }, true);
-  matchMedia('(min-width: 1200px)').addEventListener('change', closeExplore);
+  matchMedia('(min-width: 1024px)').addEventListener('change', closeExplore);
   explore?.addEventListener('focusout', event => { if (!explore.contains(event.relatedTarget)) closeExplore(); });
   exploreMenu?.querySelectorAll('a').forEach(link => {
     if (new URL(link.href, location.href).pathname === location.pathname) {

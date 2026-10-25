@@ -11,6 +11,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strconv"
 	"time"
 
@@ -30,6 +31,10 @@ func instanceFlag(seed, identity string) (string, error) {
 }
 
 func publishedPort(reader io.Reader, internal int) (int, error) {
+	return publishedPortOn(reader, internal, "127.0.0.1")
+}
+
+func publishedPortOn(reader io.Reader, internal int, bind string) (int, error) {
 	var inspection struct {
 		NetworkSettings struct {
 			Ports map[string][]struct {
@@ -43,14 +48,14 @@ func publishedPort(reader io.Reader, internal int) (int, error) {
 	}
 	for _, binding := range inspection.NetworkSettings.Ports[fmt.Sprintf("%d/tcp", internal)] {
 		port, err := strconv.Atoi(binding.HostPort)
-		if err == nil && port > 0 && port <= 65535 && binding.HostIp == "127.0.0.1" {
+		if err == nil && port > 0 && port <= 65535 && binding.HostIp == bind {
 			return port, nil
 		}
 	}
 	return 0, fmt.Errorf("Docker did not publish the requested loopback port")
 }
 
-func inspectPublishedPort(id string, internal int) (int, error) {
+func inspectPublishedPort(id string, internal int, bind string) (int, error) {
 	transport := &http.Transport{DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
 		return (&net.Dialer{}).DialContext(ctx, "unix", "/var/run/docker.sock")
 	}}
@@ -64,7 +69,28 @@ func inspectPublishedPort(id string, internal int) (int, error) {
 	if response.StatusCode != http.StatusOK {
 		return 0, fmt.Errorf("Docker inspection returned %d", response.StatusCode)
 	}
-	return publishedPort(io.LimitReader(response.Body, 1024*1024), internal)
+	return publishedPortOn(io.LimitReader(response.Body, 1024*1024), internal, bind)
+}
+
+func publicBinding(host string) (string, error) {
+	if host == "" {
+		return "127.0.0.1", nil
+	}
+	if ip := net.ParseIP(host); ip != nil {
+		if !ip.IsGlobalUnicast() || ip.IsLoopback() {
+			return "", fmt.Errorf("public_host must be a reachable worker hostname or IP")
+		}
+	} else if len(host) > 253 || !regexp.MustCompile(`^[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?$`).MatchString(host) || host == "localhost" {
+		return "", fmt.Errorf("public_host must contain only a worker hostname, without scheme, path or port")
+	}
+	return "0.0.0.0", nil
+}
+
+func connectionInfo(host string, published int) string {
+	if host != "" {
+		return "http://" + net.JoinHostPort(host, strconv.Itoa(published)) + "/"
+	}
+	return fmt.Sprintf("Private test instance: http://127.0.0.1:%d/ on the VPS. Forward this port through SSH to open it on your computer.", published)
 }
 
 func inspectTargetAddress(id string) (string, error) {
@@ -102,6 +128,11 @@ func main() {
 		image := req.Config.Additional["image"]
 		if image == "" {
 			return fmt.Errorf("Additional image is required")
+		}
+		publicHost := req.Config.Additional["public_host"]
+		bind, err := publicBinding(publicHost)
+		if err != nil {
+			return err
 		}
 		flag, err := instanceFlag(req.Config.Additional["flag_seed"], req.Config.Identity)
 		if err != nil {
@@ -167,7 +198,7 @@ func main() {
 				docker.ContainerNetworksAdvancedArgs{Name: network.Name},
 				docker.ContainerNetworksAdvancedArgs{Name: ingress.Name},
 			},
-			Ports: docker.ContainerPortArray{docker.ContainerPortArgs{Internal: pulumi.Int(8080), External: pulumi.Int(0), Ip: pulumi.String("127.0.0.1"), Protocol: pulumi.String("tcp")}},
+			Ports: docker.ContainerPortArray{docker.ContainerPortArgs{Internal: pulumi.Int(8080), External: pulumi.Int(0), Ip: pulumi.String(bind), Protocol: pulumi.String("tcp")}},
 			Rm:    pulumi.Bool(true),
 		}, opts...)
 		if err != nil {
@@ -176,11 +207,11 @@ func main() {
 		resp.Flags = pulumi.StringArray{pulumi.String(flag)}.ToStringArrayOutput()
 		// Read the actual binding from Docker; provider Ports can retain input-only values.
 		resp.ConnectionInfo = gateway.ID().ApplyT(func(id pulumi.ID) (string, error) {
-			published, err := inspectPublishedPort(string(id), 8080)
+			published, err := inspectPublishedPort(string(id), 8080, bind)
 			if err != nil {
 				return "", err
 			}
-			return fmt.Sprintf("Private test instance: http://127.0.0.1:%d/ on the VPS. Forward this port through SSH to open it on your computer.", published), nil
+			return connectionInfo(publicHost, published), nil
 		}).(pulumi.StringOutput)
 		return nil
 	})

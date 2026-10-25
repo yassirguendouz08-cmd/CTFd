@@ -1,5 +1,6 @@
 from flask import Blueprint, current_app
 from flask_restx import Api
+from werkzeug.exceptions import SecurityError
 
 from CTFd.api.v1.audiences import audiences_namespace
 from CTFd.api.v1.awards import awards_namespace
@@ -31,8 +32,17 @@ from CTFd.api.v1.topics import topics_namespace
 from CTFd.api.v1.unlocks import unlocks_namespace
 from CTFd.api.v1.users import users_namespace
 
+class CTFdApi(Api):
+    def error_router(self, original_handler, error):
+        # Flask rejects an untrusted host before routing. RESTX must not create
+        # another URL adapter for that same rejected host while handling it.
+        if isinstance(error, SecurityError):
+            return error.get_response()
+        return super().error_router(original_handler, error)
+
+
 api = Blueprint("api", __name__, url_prefix="/api/v1")
-CTFd_API_v1 = Api(
+CTFd_API_v1 = CTFdApi(
     api,
     version="v1",
     doc=current_app.config.get("SWAGGER_UI_ENDPOINT"),

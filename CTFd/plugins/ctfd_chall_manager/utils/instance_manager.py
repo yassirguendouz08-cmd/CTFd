@@ -215,12 +215,17 @@ def query_instance(source_id: int) -> list | ChallManagerException:
 
     try:
         with s.get(url, headers=None, stream=True, timeout=api_timeout()) as resp:
+            resp.raise_for_status()
             for line in resp.iter_lines():
                 if line:
                     res = line.decode("utf-8")
                     res = json.loads(res)
-                    if "result" in res.keys():
-                        result.append(res["result"])
+                    if not isinstance(res, dict) or "error" in res or not isinstance(res.get("result"), dict):
+                        raise ValueError("Invalid instance listing response")
+                    instance = res["result"]
+                    if "challengeId" not in instance or "sourceId" not in instance or str(instance["sourceId"]) != str(source_id):
+                        raise ValueError("Invalid instance listing ownership")
+                    result.append(instance)
         logger.debug("queried %s instances", len(result))
     except Exception as e:
         logger.error("connection error: %s", e)

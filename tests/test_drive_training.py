@@ -45,7 +45,7 @@ def test_drive_training_import_localization_and_access():
                 register_user(app)
             with login_as_user(app, "admin") as admin:
                 for language in ("en", "fr", "ar", "en"):
-                    admin.set_cookie("localhost", "language", language)
+                    admin.set_cookie("language", language, domain="localhost")
                     listing = admin.get("/api/v1/challenges?localized=1").get_json()["data"]
                     by_id = {c["id"]: c for c in listing}
                     for row in first:

@@ -4,14 +4,14 @@ Registration and authentication protection uses atomic Redis counters shared by 
 
 | Operation | Limits |
 | --- | --- |
-| Signup | 3 attempts/minute and 10/hour per IP |
-| Login | 10/minute and 60/15 minutes per IP; 20/15 minutes per normalized account |
-| Confirmation resend | 1/minute and 3/15 minutes per user; 10/15 minutes per IP |
-| Password reset | 5/15 minutes per IP; 3/hour per normalized email |
-| Instance changes | 12/minute per user and 60/minute per IP |
+| Signup | 30 attempts/minute and 300/hour per IP; 3/hour per email |
+| Login | 100/minute and 600/15 minutes per IP; 20/15 minutes per normalized account |
+| Confirmation resend | 1/minute and 3/15 minutes per user; 100/15 minutes per IP |
+| Password reset | 50/15 minutes per IP; 3/hour per normalized email |
+| Instance changes | 12/minute per user and 600/minute per IP |
 | Instance status | 120/minute per authenticated user |
 | ZIP upload | 5/5 minutes per admin |
-| Team creation/join | 10/5 minutes per IP |
+| Team creation/join | 100/5 minutes per IP |
 
 Counters hash identities instead of storing raw email addresses in Redis key names. Rejected requests do not extend the expiration. Login counters include successful attempts, and limits can affect shared networks; tune `rules()` for a large bootcamp. Limits reduce abuse; they do not guarantee that a determined distributed attacker cannot create accounts.
 

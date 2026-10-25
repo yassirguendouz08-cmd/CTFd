@@ -193,3 +193,7 @@ The `dynamic_iac` challenge type is included for challenges that need per-user
 or per-team environments. Backend activation, image/scenario authoring and
 deployment verification are documented in [docs/INSTANCES.md](docs/INSTANCES.md).
 Normal Docker Compose startup keeps this backend off.
+
+## October 2026 audit fixes
+
+Security, instance authorization/quota/scheduling and challenge-board recovery fixes are documented in [the deployment and verification guide](docs/AUDIT-FIXES-2026-10-24.md). Rebuild the application image when deploying these Python dependency changes. Configure the real public origin, preserve the existing signing key and keep all data volumes.

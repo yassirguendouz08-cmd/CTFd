@@ -64,7 +64,7 @@ class CachingSessionInterface(SessionInterface):
         self.permanent = permanent
 
     def open_session(self, app, request):
-        sid = request.cookies.get(app.session_cookie_name)
+        sid = request.cookies.get(self.get_cookie_name(app))
         if not sid:
             sid = self._generate_sid()
             return self.session_class(sid=sid, permanent=self.permanent)
@@ -89,6 +89,10 @@ class CachingSessionInterface(SessionInterface):
         return self.session_class(sid=sid, permanent=self.permanent)
 
     def save_session(self, app, session, response):
+        # The page includes session-specific navigation and CSRF tokens.
+        response.vary.add("Cookie")
+        if session.get("id"):
+            response.headers["Cache-Control"] = "private, no-store"
         domain = self.get_cookie_domain(app)
         path = self.get_cookie_path(app)
 
@@ -96,7 +100,7 @@ class CachingSessionInterface(SessionInterface):
             if session.modified:
                 cache.delete(self.key_prefix + session.sid)
                 response.delete_cookie(
-                    app.session_cookie_name, domain=domain, path=path
+                    self.get_cookie_name(app), domain=domain, path=path
                 )
             return
 
@@ -121,8 +125,11 @@ class CachingSessionInterface(SessionInterface):
             else:
                 session_id = session.sid
 
+            if isinstance(session_id, bytes):
+                session_id = session_id.decode("utf-8")
+
             response.set_cookie(
-                app.session_cookie_name,
+                self.get_cookie_name(app),
                 session_id,
                 expires=expires,
                 httponly=httponly,

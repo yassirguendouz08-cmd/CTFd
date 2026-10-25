@@ -45,14 +45,13 @@ def test_api_challenges_admins_can_bypass_requirements():
 
         # Confirm that admins
         with login_as_user(app, name="admin") as admin:
-            # Admins see as regular users
+            # The custom admin board previews all challenges.
             r = admin.get("/api/v1/challenges")
             assert r.status_code == 200
             data = r.get_json()["data"]
-            assert len(data) == 1
-            assert data[0]["id"] == 1
+            assert {item["id"] for item in data} == {1, 2}
 
-            # Now admins can see all challenges
+            # An explicit admin view has the same permissions
             r = admin.get("/api/v1/challenges?view=admin")
             assert r.status_code == 200
             data = r.get_json()["data"]
@@ -238,6 +237,7 @@ def test_api_challenges_challenge_with_requirements_no_user():
         prereq_id = gen_challenge(app.db).id
         chal_obj = gen_challenge(app.db)
         chal_obj.requirements = {"prerequisites": [prereq_id]}
+        app.db.session.commit()
         # Create a new user which will solve the prerequisite
         register_user(app)
         # Confirm that only the prerequisite challenge is listed publicly

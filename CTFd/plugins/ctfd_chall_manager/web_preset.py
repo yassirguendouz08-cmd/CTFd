@@ -1,6 +1,7 @@
 """Admin-only shortcuts for the reusable CyberDune web scenario."""
 import re
 import secrets
+import os
 
 from flask import redirect, render_template, request
 
@@ -10,7 +11,7 @@ from CTFd.plugins.ctfd_chall_manager.models import DynamicIaCValueChallenge
 from CTFd.utils import get_config
 from CTFd.utils.decorators import admins_only
 
-DEFAULT_WEB_SCENARIO = "scenario-registry:5000/scenarios/web-container:v1-amd64"
+DEFAULT_WEB_SCENARIO = "scenario-registry:5000/scenarios/web-container:v4-amd64"
 
 
 def web_payload(values):
@@ -28,7 +29,7 @@ def web_payload(values):
     if not 1 <= points <= 1000000 or not 1 <= port <= 65535:
         raise ValueError("Use positive points and an internal port between 1 and 65535.")
     scenario = get_config("chall-manager:web_scenario") or DEFAULT_WEB_SCENARIO
-    return {
+    payload = {
         "type": "dynamic_iac", "name": name, "category": "Web",
         "description": values.get("description", "").strip() or "Find the flag in your private web instance.",
         "initial": points, "minimum": points, "decay": 10, "function": "linear",
@@ -37,6 +38,10 @@ def web_payload(values):
         "scenario": scenario,
         "additional": {"image": image, "port": str(port), "flag_seed": secrets.token_hex(32)},
     }
+    public_host = os.getenv("INSTANCE_PUBLIC_HOST", "").strip()
+    if public_host:
+        payload["additional"]["public_host"] = public_host
+    return payload
 
 
 def register_web_preset(blueprint):

@@ -13,7 +13,6 @@ from jinja2 import FileSystemLoader
 from jinja2.sandbox import SandboxedEnvironment
 from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug.utils import safe_join
-from werkzeug.wsgi import get_host
 
 import CTFd.utils.config
 from CTFd import utils
@@ -78,16 +77,6 @@ class CTFdFlask(Flask):
         """Overridden jinja environment constructor"""
         return super(CTFdFlask, self).create_jinja_environment()
 
-    def create_url_adapter(self, request):
-        # TODO: Backport of TRUSTED_HOSTS behavior from Flask. Remove when possible.
-        # https://github.com/pallets/flask/pull/5637
-        if request is not None:
-            if (trusted_hosts := self.config.get("TRUSTED_HOSTS")) is not None:
-                request.trusted_hosts = trusted_hosts
-
-            # Check trusted_hosts here until bind_to_environ does.
-            request.host = get_host(request.environ, request.trusted_hosts)
-        return super(CTFdFlask, self).create_url_adapter(request)
 
 
 class SandboxedBaseEnvironment(SandboxedEnvironment):
@@ -189,6 +178,15 @@ def create_app(config="CTFd.config.Config"):
     with app.app_context():
         app.config.from_object(config)
 
+        @app.before_request
+        def limit_request_body():
+            from flask import abort, request
+            if request.endpoint in ("auth.login", "auth.register", "auth.confirm", "auth.reset_password"):
+                request.max_content_length = min(app.config["MAX_CONTENT_LENGTH"], app.config["AUTH_MAX_CONTENT_LENGTH"])
+            if request.content_length is not None and request.content_length > request.max_content_length:
+                abort(413)
+
+
         from CTFd.cache import cache
         from CTFd.utils import import_in_progress
 
@@ -253,9 +251,7 @@ def create_app(config="CTFd.config.Config"):
         # Register Flask-Migrate
         migrations.init_app(app, db)
 
-        babel = Babel()
-        babel.locale_selector_func = get_locale
-        babel.init_app(app)
+        Babel(app, locale_selector=get_locale)
 
         # Alembic sqlite support is lacking so we should just create_all anyway
         if url.drivername.startswith("sqlite"):
@@ -281,7 +277,10 @@ def create_app(config="CTFd.config.Config"):
 
         from CTFd.models import ma
 
-        ma.init_app(app)
+        # Marshmallow 2 schemas remain stable while the Flask integration moves
+        # to Flask-SQLAlchemy 3 (which stores the extension itself, not .db).
+        ma.ModelSchema.OPTIONS_CLASS.session = db.session
+        app.extensions["flask-marshmallow"] = ma
 
         app.db = db
         app.VERSION = __version__

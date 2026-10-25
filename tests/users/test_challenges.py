@@ -319,7 +319,7 @@ def test_challenges_with_max_attempts_one_race():
 
         def worker():
             with app.app_context(), app.test_client() as tclient:
-                tclient.set_cookie("localhost", "session", session_cookie)
+                tclient.set_cookie("session", session_cookie, domain="localhost")
                 release.wait(timeout=10)
                 r = tclient.post(
                     "/api/v1/challenges/attempt",

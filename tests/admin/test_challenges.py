@@ -1,6 +1,6 @@
 import datetime
 
-from CTFd.models import Challenges
+from CTFd.models import Challenges, Solves
 from CTFd.utils import set_config
 from tests.helpers import (
     create_ctfd,
@@ -57,7 +57,7 @@ def test_hidden_challenge_is_reachable():
 
         r = client.get("/api/v1/challenges", json="")
         data = r.get_json().get("data")
-        assert data == []
+        assert [item["id"] for item in data] == [chal_id]
 
         r = client.get("/api/v1/challenges/1", json="")
         assert r.status_code == 200
@@ -67,7 +67,9 @@ def test_hidden_challenge_is_reachable():
         data = {"submission": "flag", "challenge_id": chal_id}
 
         r = client.post("/api/v1/challenges/attempt", json=data)
-        assert r.status_code == 404
+        assert r.status_code == 200
+        assert r.get_json()["data"]["preview"] is True
+        assert Solves.query.count() == 0
 
         r = client.post("/api/v1/challenges/attempt?preview=true", json=data)
         assert r.status_code == 200

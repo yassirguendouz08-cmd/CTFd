@@ -1,4 +1,6 @@
-from flask import url_for
+from urllib.parse import urlsplit
+
+from flask import current_app, url_for
 
 from CTFd.constants.email import (
     DEFAULT_PASSWORD_CHANGE_ALERT_BODY,
@@ -25,6 +27,21 @@ from CTFd.utils.security.email import (
 PROVIDERS = {"smtp": SMTPEmailProvider, "mailgun": MailgunEmailProvider}
 
 
+def public_url_for(endpoint, **values):
+    """Use the configured public origin for links carrying account tokens."""
+    origin = current_app.config.get("PUBLIC_ORIGIN") or get_config("public_origin")
+    if not origin and get_config("cyberdune_https"):
+        origin = "https://ctf.cyberdune.online"
+    if not origin:
+        return url_for(endpoint, _external=True, **values)
+    parsed = urlsplit(origin)
+    if (parsed.scheme not in ("http", "https") or not parsed.hostname
+            or parsed.username or parsed.password or parsed.path not in ("", "/")
+            or parsed.query or parsed.fragment):
+        raise ValueError("PUBLIC_ORIGIN must be an http(s) origin without a path or credentials")
+    return origin.rstrip("/") + url_for(endpoint, _external=False, **values)
+
+
 def sendmail(addr, text, subject="Message from {ctf_name}"):
     subject = safe_format(subject, ctf_name=get_config("ctf_name"))
     provider = get_mail_provider()
@@ -39,7 +56,7 @@ def password_change_alert(email):
         get_config("password_change_alert_body") or DEFAULT_PASSWORD_CHANGE_ALERT_BODY,
         ctf_name=get_config("ctf_name"),
         ctf_description=get_config("ctf_description"),
-        url=url_for("auth.reset_password", _external=True),
+        url=public_url_for("auth.reset_password"),
     )
 
     subject = safe_format(
@@ -55,10 +72,9 @@ def forgot_password(email):
         get_config("password_reset_body") or DEFAULT_PASSWORD_RESET_BODY,
         ctf_name=get_config("ctf_name"),
         ctf_description=get_config("ctf_description"),
-        url=url_for(
+        url=public_url_for(
             "auth.reset_password",
             data=generate_password_reset_token(email),
-            _external=True,
         ),
     )
 
@@ -74,10 +90,9 @@ def verify_email_address(addr):
         get_config("verification_email_body") or DEFAULT_VERIFICATION_EMAIL_BODY,
         ctf_name=get_config("ctf_name"),
         ctf_description=get_config("ctf_description"),
-        url=url_for(
+        url=public_url_for(
             "auth.confirm",
             data=generate_email_confirm_token(addr),
-            _external=True,
             _method="GET",
         ),
     )
@@ -95,7 +110,7 @@ def successful_registration_notification(addr):
         or DEFAULT_SUCCESSFUL_REGISTRATION_EMAIL_BODY,
         ctf_name=get_config("ctf_name"),
         ctf_description=get_config("ctf_description"),
-        url=url_for("views.static_html", _external=True),
+        url=public_url_for("views.static_html"),
     )
 
     subject = safe_format(
@@ -111,7 +126,7 @@ def user_created_notification(addr, name, password):
         get_config("user_creation_email_body") or DEFAULT_USER_CREATION_EMAIL_BODY,
         ctf_name=get_config("ctf_name"),
         ctf_description=get_config("ctf_description"),
-        url=url_for("views.static_html", _external=True),
+        url=public_url_for("views.static_html"),
         name=name,
         password=password,
     )

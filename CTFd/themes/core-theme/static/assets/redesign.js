@@ -31,7 +31,7 @@
     if (accountMenu && !accountMenu.hidden) { closeAccount(); accountButton?.focus(); }
     else if (nav?.classList.contains('mobile-open')) { closeNav(); menu?.focus(); }
   });
-  matchMedia('(min-width: 1200px)').addEventListener('change', closeNav);
+  matchMedia('(min-width: 1024px)').addEventListener('change', closeNav);
   nav?.querySelectorAll('a.cd-nav-link').forEach(link => {
     const path = new URL(link.href, location.href).pathname;
     if (path === location.pathname || (path !== '/' && location.pathname.startsWith(path + '/'))) link.setAttribute('aria-current', 'page');

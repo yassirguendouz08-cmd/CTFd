@@ -3,7 +3,7 @@ services:
     build: .
     restart: always
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     environment:
       - UPLOAD_FOLDER=/var/uploads
       - DATABASE_URL=mysql+pymysql://ctfd:ctfd@db/ctfd
@@ -12,7 +12,18 @@ services:
       - LOG_FOLDER=/var/log/CTFd
       - ACCESS_LOG=-
       - ERROR_LOG=-
-      - REVERSE_PROXY=true
+      - REVERSE_PROXY=1,1,0,0,0
+      - SECRET_KEY=${SECRET_KEY:-}
+      - SECRET_KEY_FILE=/var/secrets/ctfd_secret_key
+      - PUBLIC_ORIGIN=${PUBLIC_ORIGIN:-}
+      - INSTANCE_PUBLIC_HOST=${INSTANCE_PUBLIC_HOST:-}
+      - TRUSTED_HOSTS=${TRUSTED_HOSTS:-}
+      - MAX_CONTENT_LENGTH=${MAX_CONTENT_LENGTH:-67108864}
+      - AUTH_MAX_CONTENT_LENGTH=${AUTH_MAX_CONTENT_LENGTH:-65536}
+      - SECURITY_REGISTER_IP_MINUTE=${SECURITY_REGISTER_IP_MINUTE:-30}
+      - SECURITY_REGISTER_IP_HOUR=${SECURITY_REGISTER_IP_HOUR:-300}
+      - SECURITY_LOGIN_IP_MINUTE=${SECURITY_LOGIN_IP_MINUTE:-100}
+      - SECURITY_LOGIN_IP_WINDOW=${SECURITY_LOGIN_IP_WINDOW:-600}
       - PLUGIN_SETTINGS_CM_API_URL=http://chall-manager:8080
       - PLUGIN_SETTINGS_CM_API_TIMEOUT=240
       - PLUGIN_SETTINGS_CM_MANA_TOTAL=3
@@ -21,7 +32,10 @@ services:
       - .data/CTFd/logs:/var/log/CTFd
       - .data/CTFd/uploads:/var/uploads
       - .:/opt/CTFd:ro
+      - signing_secrets:/var/secrets:ro
     depends_on:
+      signing-key-init:
+        condition: service_completed_successfully
       permissions:
         condition: service_completed_successfully
       db:
@@ -31,6 +45,28 @@ services:
     networks:
         default:
         internal:
+
+  signing-key-init:
+    image: alpine:3.23
+    restart: "no"
+    network_mode: none
+    volumes:
+      - .:/source:ro
+      - signing_secrets:/secrets
+    command:
+      - sh
+      - -ec
+      - |
+        if [ ! -s /secrets/ctfd_secret_key ]; then
+          if [ -s /source/.ctfd_secret_key ]; then
+            cp /source/.ctfd_secret_key /secrets/ctfd_secret_key.tmp
+          else
+            head -c 64 /dev/urandom > /secrets/ctfd_secret_key.tmp
+          fi
+          mv /secrets/ctfd_secret_key.tmp /secrets/ctfd_secret_key
+        fi
+        chown 1001:1001 /secrets/ctfd_secret_key
+        chmod 600 /secrets/ctfd_secret_key
 
   # TODO: CTFd 4.0 Migrate to named volumes. Users will likely need to manually migrate existing files
   permissions:
@@ -85,3 +121,6 @@ networks:
     ipam:
       config:
         - subnet: 10.203.1.0/24
+
+volumes:
+  signing_secrets:

@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from werkzeug.exceptions import SecurityError
-
 from CTFd.config import TestingConfig
 from CTFd.models import Configs, Users, db
 from CTFd.utils import get_config
@@ -85,15 +83,14 @@ def test_trusted_hosts_config():
         r = client.get("/", headers={"Host": "example.com"})
         assert r.status_code == 200
 
-        # TODO: We need to allow either a 500 or a 400 because Flask-RestX
-        # seems to be overriding Flask's error handler
-        try:
-            r = client.get("/", headers={"Host": "evil.com"})
-        except SecurityError:
-            pass
-        else:
-            if r.status_code != 400:
-                raise SecurityError("Responded to untrusted request")
+        # Rejection must remain a client error, including API and missing routes.
+        for testing in (True, False):
+            app.config["TESTING"] = testing
+            for path in ("/", "/api/v1/challenges", "/missing-route"):
+                r = client.get(path, headers={"Host": "evil.com"})
+                assert r.status_code == 400
+            r = client.get("/", headers={"Host": "example.com"})
+            assert r.status_code == 200
     destroy_ctfd(app)
 
 

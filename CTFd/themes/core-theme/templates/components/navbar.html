@@ -9,11 +9,12 @@
         <a href="{{ url_for('views.static_html', route='/') }}" class="cd-nav-link"><span data-scramble>{{ challenge_copy("Home") }}</span></a>
         {% for page in Plugins.user_menu_pages %}<a href="{{ page.route }}" class="cd-nav-link"><span data-scramble>{{ challenge_copy(page.title) }}</span></a>{% endfor %}
         <a href="{{ url_for('challenges.listing') }}" class="cd-nav-link"><span data-scramble>{{ challenge_copy("Challenges") }}</span></a>
+        {% if Configs.score_visibility != 'admins' %}<a href="{{ url_for('scoreboard.listing') }}" class="cd-nav-link"><span data-scramble>{{ challenge_copy("Scoreboard") }}</span></a>{% endif %}
+        {% if authed() and Configs.user_mode == 'teams' %}<a href="{{ url_for('teams.private') }}" class="cd-nav-link"><span data-scramble>{{ challenge_copy("My team") }}</span></a>{% endif %}
         {% if Configs.score_visibility != 'admins' or Configs.account_visibility != 'admins' %}
         <div class="cd-explore">
           <button id="exploreDropdownToggle" type="button" class="cd-nav-link" aria-expanded="false" aria-controls="exploreDropdown"><span data-scramble>{{ challenge_copy("Explore") }}</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
           <div id="exploreDropdown" class="cd-account-menu" hidden>
-            {% if Configs.score_visibility != 'admins' %}<a href="{{ url_for('scoreboard.listing') }}"><span data-scramble>{{ challenge_copy("Scoreboard") }}</span></a>{% endif %}
             {% if Configs.account_visibility != 'admins' %}
               {% if Configs.user_mode == 'teams' %}<a href="{{ url_for('teams.listing') }}"><span data-scramble>{{ challenge_copy("Teams") }}</span></a>{% endif %}
               <a href="{{ url_for('users.listing') }}"><span data-scramble>{{ challenge_copy("Users") }}</span></a>

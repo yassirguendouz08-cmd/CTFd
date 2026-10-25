@@ -1,0 +1,7 @@
+<ol class="cd-start-steps">
+  <li><span class="cd-step-number">01</span><div><a href="{{ url_for('views.settings') }}">{{ challenge_copy('Review your profile') }}</a><p>{{ challenge_copy('Check your name and account details.') }}</p></div></li>
+  {% if Configs.user_mode == 'teams' %}
+  <li{% if cd_onboarding_team_needed|default(false) %} aria-current="step"{% endif %}><span class="cd-step-number">02</span><div><a href="{{ url_for('teams.private') }}">{{ challenge_copy('Join or create a team') if cd_onboarding_team_needed|default(false) else challenge_copy('Meet your team') }}</a><p>{{ challenge_copy('Team up before taking on a challenge.') if cd_onboarding_team_needed|default(false) else Team.name }}</p></div></li>
+  {% endif %}
+  <li><span class="cd-step-number">{{ '03' if Configs.user_mode == 'teams' else '02' }}</span><div><a href="{{ url_for('challenges.listing') }}">{{ challenge_copy('Capture your first flag') }}</a><p>{{ challenge_copy('Choose a challenge, read the brief and submit its flag.') }}</p></div></li>
+</ol>

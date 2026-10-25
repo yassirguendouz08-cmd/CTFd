@@ -1672,7 +1672,7 @@ def test_api_challenges_scheduled_at_tz_aware_normalized_to_utc():
 def test_api_challenges_scheduled_at_update_for_every_challenge_type():
     """Every registered challenge type parses scheduled_at on update"""
     app = create_ctfd(enable_plugins=True)
-    with app.app_context():
+    with app.app_context(), patch("CTFd.plugins.ctfd_chall_manager.models.create_challenge"):
         from CTFd.plugins.challenges import CHALLENGE_CLASSES
 
         challenge_types = list(CHALLENGE_CLASSES)
@@ -1693,6 +1693,7 @@ def test_api_challenges_scheduled_at_update_for_every_challenge_type():
                         "minimum": 1,
                         "state": "visible",
                         "type": challenge_type,
+                        **({"scenario": "registry.example.test/scenario:v1"} if challenge_type == "dynamic_iac" else {}),
                     },
                 )
                 assert r.status_code == 200
@@ -1731,7 +1732,7 @@ def test_api_challenges_scheduled_at_update_for_every_challenge_type():
 def test_api_challenges_scheduled_at_invalid_for_every_challenge_type():
     """Every registered challenge type rejects an unparseable scheduled_at"""
     app = create_ctfd(enable_plugins=True)
-    with app.app_context():
+    with app.app_context(), patch("CTFd.plugins.ctfd_chall_manager.models.create_challenge"):
         from CTFd.plugins.challenges import CHALLENGE_CLASSES
 
         with login_as_user(app, "admin") as admin:
@@ -1748,6 +1749,7 @@ def test_api_challenges_scheduled_at_invalid_for_every_challenge_type():
                         "minimum": 1,
                         "state": "visible",
                         "type": challenge_type,
+                        **({"scenario": "registry.example.test/scenario:v1"} if challenge_type == "dynamic_iac" else {}),
                     },
                 )
                 assert r.status_code == 200

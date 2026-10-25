@@ -1,6 +1,7 @@
 """Account abuse controls backed by shared atomic Redis counters."""
 import hashlib
 import math
+import os
 import threading
 import time
 
@@ -50,27 +51,30 @@ def rules():
     email = request.form.get('email', '').strip().casefold()
     if method == 'POST':
         if endpoint == 'auth.register':
-            return [('register-ip-minute', ip, 3, 60), ('register-ip-hour', ip, 10, 3600)]
+            result = [('register-ip-minute', ip, current_app.config['SECURITY_REGISTER_IP_MINUTE'], 60), ('register-ip-hour', ip, current_app.config['SECURITY_REGISTER_IP_HOUR'], 3600)]
+            if email:
+                result.append(('register-email', email, 3, 3600))
+            return result
         if endpoint == 'auth.login':
-            result = [('login-ip-minute', ip, 10, 60), ('login-ip-window', ip, 60, 900)]
+            result = [('login-ip-minute', ip, current_app.config['SECURITY_LOGIN_IP_MINUTE'], 60), ('login-ip-window', ip, current_app.config['SECURITY_LOGIN_IP_WINDOW'], 900)]
             if identity:
                 result.append(('login-account', identity, 20, 900))
             return result
         if endpoint == 'auth.confirm':
-            return [('confirm-ip', ip, 10, 900), ('confirm-user-minute', session.get('id', ip), 1, 60), ('confirm-user-window', session.get('id', ip), 3, 900)]
+            return [('confirm-ip', ip, 100, 900), ('confirm-user-minute', session.get('id', ip), 1, 60), ('confirm-user-window', session.get('id', ip), 3, 900)]
         if endpoint == 'auth.reset_password':
-            result = [('reset-ip', ip, 5, 900)]
+            result = [('reset-ip', ip, 50, 900)]
             if email:
                 result.append(('reset-email', email, 3, 3600))
             return result
         if endpoint in ('teams.join', 'teams.new'):
-            return [('team-ip', ip, 10, 300)]
+            return [('team-ip', ip, 100, 300)]
     if request.path.rstrip('/') == INSTANCE_PATH and method in ('GET', 'POST', 'PATCH', 'DELETE'):
         if session.get('id') is None:
             return [('instance-anonymous', ip, 30, 60)]
         if method == 'GET':
             return [('instance-read-user', session['id'], 120, 60)]
-        return [('instance-change-user', session['id'], 12, 60), ('instance-change-ip', ip, 60, 60)]
+        return [('instance-change-user', session['id'], 12, 60), ('instance-change-ip', ip, 600, 60)]
     if request.path.endswith('/admin/zip/new') and method == 'POST':
         return [('zip-upload-user', session.get('id', ip), 5, 300)]
     return []
@@ -89,8 +93,12 @@ def error_response(message, status, retry_after=None):
 
 
 def load(app):
+    for name, default in {'SECURITY_REGISTER_IP_MINUTE':30, 'SECURITY_REGISTER_IP_HOUR':300, 'SECURITY_LOGIN_IP_MINUTE':100, 'SECURITY_LOGIN_IP_WINDOW':600}.items():
+        app.config.setdefault(name, int(os.getenv(name, default)))
+        if app.config[name] <= 0:
+            raise ValueError(f'{name} must be a positive number')
     app.register_blueprint(Blueprint('cyberdune-security', __name__, template_folder='templates'))
-    if get_config('cyberdune_https'):
+    if get_config('cyberdune_https') or app.config.get('PUBLIC_ORIGIN', '').startswith('https://'):
         app.config['SESSION_COOKIE_SECURE'] = True
         app.config['SESSION_COOKIE_HTTPONLY'] = True
         app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
@@ -116,7 +124,7 @@ def load(app):
         response.headers.setdefault('X-Content-Type-Options', 'nosniff')
         response.headers.setdefault('X-Frame-Options', 'SAMEORIGIN')
         response.headers.setdefault('Referrer-Policy', 'strict-origin-when-cross-origin')
-        if get_config('cyberdune_https'):
+        if get_config('cyberdune_https') or app.config.get('PUBLIC_ORIGIN', '').startswith('https://'):
             response.headers.setdefault('Strict-Transport-Security', 'max-age=31536000')
         if request.endpoint in ('auth.login', 'auth.register', 'auth.confirm', 'auth.reset_password'):
             response.headers['Cache-Control'] = 'no-store'

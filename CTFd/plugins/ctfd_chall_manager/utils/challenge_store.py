@@ -40,10 +40,13 @@ def query_challenges() -> list | ChallManagerException:
 
     try:
         with s.get(url, headers=None, stream=True, timeout=api_timeout()) as resp:
+            resp.raise_for_status()
             for line in resp.iter_lines():
                 if line:
                     res = line.decode("utf-8")
                     res = json.loads(res)
+                    if not isinstance(res, dict) or "error" in res or not isinstance(res.get("result"), dict):
+                        raise ValueError("Invalid challenge listing response")
                     result.append(res["result"])
         logger.debug("successfully queried challenges: %s", result)
     except Exception as e:
