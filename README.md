@@ -8,7 +8,7 @@ The activation helper selects it by default. See the
 
 **Follow the clues. Find your flag.**
 
-The CyberDune club's Capture The Flag platform, built on **CTFd 3.8.8**.
+The CyberDune club's Capture The Flag platform, built on **CTFd 3.8.9**.
 A custom black/red theme brings the club's identity to challenges, accounts,
 teams and standings, with English, French and Arabic copy.
 
