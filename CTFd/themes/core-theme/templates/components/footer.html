@@ -7,7 +7,6 @@
     <span class="cd-footer-credit">Developed by <span class="cd-footer-credit-name">Yassir Guendouz</span></span>
   </div>
   <div class="cd-footer-controls">
-  <button type="button" class="btn btn-secondary btn-sm" data-motion-toggle hidden aria-pressed="false" data-play-label="{{ challenge_copy('Animate background') }}" data-pause-label="{{ challenge_copy('Pause background') }}" data-reduced-label="{{ challenge_copy('Reduced motion enabled') }}">{{ challenge_copy('Animate background') }}</button>
   <div class="cd-footer-language"><label for="language-select">{{ challenge_copy("Language") }}</label>
     <select id="language-select" class="form-select" x-data="LanguageForm" @change="set({target: $event.target.selectedOptions[0]})">
       {% for code, name in [('en', 'English'), ('fr', 'Français'), ('ar', 'العربية')] %}<option value="{{ code }}" {% if get_locale() == code %}selected{% endif %}>{{ name }}</option>{% endfor %}
