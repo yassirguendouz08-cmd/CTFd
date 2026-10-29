@@ -13,7 +13,7 @@ from PIL import Image
 
 from CTFd.config import TestingConfig
 from CTFd.models import Challenges, Solves, Submissions, Users, db
-from CTFd.plugins.cyberdune_training import exercise_flag, seed_starters, user_summary
+from CTFd.plugins.cyberdune_training import exercise_flag, retire_bytecode_stepper, seed_starters, user_summary
 from CTFd.plugins.cyberdune_training.catalog import CATEGORIES
 from CTFd.plugins.cyberdune_training.models import TrainingAttempt, TrainingChallenge, TrainingSolve
 from CTFd.utils import set_config
@@ -52,11 +52,12 @@ def nonce(client):
 
 def test_starter_library_and_independent_event_access(app):
     with app.app_context():
-        assert TrainingChallenge.query.count() == 23
+        assert TrainingChallenge.query.count() == 22
+        assert TrainingChallenge.query.filter_by(active=True).count() == 22
         assert {row.category for row in TrainingChallenge.query.all()} == set(CATEGORIES)
-        assert TrainingChallenge.query.filter_by(kind="lab").count() == 9
+        assert TrainingChallenge.query.filter_by(kind="lab", active=True).count() == 8
         seed_starters()
-        assert TrainingChallenge.query.count() == 23
+        assert TrainingChallenge.query.count() == 22
         set_config("start", 9999999999)
         set_config("end", 10000000999)
     client = app.test_client()
@@ -78,6 +79,30 @@ def test_search_filters_and_empty_recovery(app):
     assert b"No exercises match" in response.data and b"Clear filters" in response.data
     assert b"No exercises match" in client.get("/training?q=%25").data
     assert client.get("/training?page=bad").status_code == 200
+
+
+def test_bytecode_stepper_is_retired_without_deleting_solve_history(app):
+    client = login_as_user(app, name="alice")
+    with app.app_context():
+        challenge = TrainingChallenge(
+            slug="bytecode-lab", name="Bytecode stepper", category="Reverse Engineering",
+            difficulty="Medium", kind="lab", description="Retired lab", hint="",
+            value=100, minutes=20, active=True, recipe="bytecode-lab",
+        )
+        db.session.add(challenge)
+        db.session.commit()
+        user = Users.query.filter_by(name="alice").one()
+        challenge.active = True
+        db.session.add(TrainingSolve(user_id=user.id, challenge_id=challenge.id, value=challenge.value))
+        db.session.commit()
+
+        retire_bytecode_stepper()
+
+        assert challenge.active is False
+        assert TrainingSolve.query.filter_by(challenge_id=challenge.id).count() == 1
+
+    assert b"Bytecode stepper" not in client.get("/academy").data
+    assert client.get(endpoint("bytecode-lab")).status_code == 404
 
 
 def test_guests_cannot_get_artifacts_labs_or_submit(app):
@@ -255,7 +280,7 @@ def test_admin_rejects_unusable_labs_and_unsafe_urls(app):
     assert admin.post("/admin/training", data=values).status_code == 400
     values["resource_url"] = ""
     assert admin.post("/admin/training", data=values).status_code == 400
-    with app.app_context(): assert TrainingChallenge.query.count() == 23
+    with app.app_context(): assert TrainingChallenge.query.count() == 22
 
 
 def test_attempt_pruning_never_removes_solve_history(app):

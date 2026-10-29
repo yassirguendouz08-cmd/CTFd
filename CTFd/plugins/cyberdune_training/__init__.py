@@ -342,6 +342,14 @@ def seed_starters():
     set_config("cyberdune_training:starter_catalog_v1", True)
 
 
+def retire_bytecode_stepper():
+    """Hide the retired exercise while preserving its record and solve history."""
+    challenge = TrainingChallenge.query.filter_by(slug="bytecode-lab", active=True).first()
+    if challenge:
+        challenge.active = False
+        db.session.commit()
+
+
 def simplify_seeded_titles():
     """Update only the original generated labels; keep admin-edited content intact."""
     old_source = "picoCTF official examples · Tim Becker / ForAllSecure · MIT · adapted by CyberDune"
@@ -385,6 +393,7 @@ def load(app):
         except IntegrityError:
             db.session.rollback()
         set_config("cyberdune_training:advanced_catalog_v1", True)
+    retire_bytecode_stepper()
     simplify_seeded_titles()
     app.register_blueprint(training)
     app.jinja_env.globals["training_copy"] = tr
