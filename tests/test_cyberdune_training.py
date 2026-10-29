@@ -272,6 +272,17 @@ def test_admin_can_manage_static_content_without_leaking_flags(app):
     assert client.get(endpoint(slug)).status_code == 404
 
 
+def test_admin_can_hide_and_restore_the_entire_academy(app):
+    admin = login_as_user(app, name="admin")
+    assert b"Hide Academy" in admin.get("/admin/training").data
+    assert admin.post("/admin/training", data={"nonce": nonce(admin), "action": "toggle_academy_visibility"}).status_code == 302
+    assert b"Show Academy" in admin.get("/admin/training").data
+    for path in ("/academy", "/training", "/training/scoreboard", "/academy/scoreboard", "/academy/challenges/base64-trail", "/academy/challenges/base64-trail/artifact"):
+        assert admin.get(path).status_code == 404
+    assert admin.post("/admin/training", data={"nonce": nonce(admin), "action": "toggle_academy_visibility"}).status_code == 302
+    assert admin.get("/academy").status_code == 200
+
+
 def test_admin_rejects_unusable_labs_and_unsafe_urls(app):
     admin = login_as_user(app, name="admin")
     values = {"nonce":nonce(admin), "name":"Unsafe lab", "category":"Web", "difficulty":"Easy", "kind":"lab", "description":"A test.", "value":"10", "minutes":"10", "flag":"flag", "resource_url":"javascript:alert(1)"}
