@@ -13,7 +13,7 @@ from flask import Blueprint, abort, current_app, flash, jsonify, redirect, rende
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError, OperationalError
 
-from CTFd.models import Users, db
+from CTFd.models import Configs, Users, db
 from CTFd.plugins import register_admin_plugin_menu_bar, register_user_page_menu_bar
 from CTFd.utils import get_config, set_config
 from CTFd.utils.decorators import admins_only
@@ -29,6 +29,14 @@ from .replacement_challenges import LEGACY_BROWSER_LABS, rows as replacement_row
 
 training = Blueprint("cyberdune_training", __name__, template_folder="templates", static_folder="assets", static_url_path="/plugins/cyberdune_training/assets")
 DIFFICULTIES = ("Easy", "Medium", "Hard")
+ACADEMY_VISIBILITY_CONFIG = "cyberdune_training:academy_visible"
+
+
+def academy_is_visible():
+    # Read the switch from the database on each request. The normal config
+    # helper is memoized per process, which can leave Gunicorn workers stale.
+    value = db.session.query(Configs.value).filter_by(key=ACADEMY_VISIBILITY_CONFIG).scalar()
+    return value is None or str(value).lower() != "false"
 
 
 def tr(text):
@@ -68,6 +76,8 @@ def training_user():
 
 @training.before_request
 def protect_training_forms():
+    if (request.path in ("/academy", "/training") or request.path.startswith(("/academy/", "/training/"))) and not academy_is_visible():
+        abort(404)
     if request.method not in ("GET", "HEAD", "OPTIONS"):
         # Core permits Authorization headers to skip CSRF. These session-based
         # training forms always require the actual session nonce, regardless.
@@ -261,7 +271,12 @@ def admin(challenge_id=None):
     error = None
     if request.method == "POST":
         try:
-            if request.form.get("action") == "toggle" and item:
+            if request.form.get("action") == "toggle_academy_visibility" and item is None:
+                visible = not academy_is_visible()
+                set_config(ACADEMY_VISIBILITY_CONFIG, visible)
+                flash("Academy is now visible to everyone." if visible else "Academy is now hidden from visitors.", "success")
+                return redirect(url_for("cyberdune_training.admin"))
+            elif request.form.get("action") == "toggle" and item:
                 item.active = not item.active
             else:
                 values = {key: request.form.get(key, "").strip() for key in ("name", "category", "difficulty", "kind", "description", "hint", "resource_url")}
@@ -296,7 +311,8 @@ def admin(challenge_id=None):
         except (ValueError, TypeError) as exc:
             db.session.rollback(); error = str(exc)
     items = TrainingChallenge.query.order_by(TrainingChallenge.id).all()
-    return render_template("training/admin.html", items=items, item=item, categories=CATEGORIES, difficulties=DIFFICULTIES, error=error), 400 if error else 200
+    return render_template("training/admin.html", items=items, item=item, categories=CATEGORIES, difficulties=DIFFICULTIES,
+                           academy_visible=academy_is_visible(), error=error), 400 if error else 200
 
 
 def seed_starters():
