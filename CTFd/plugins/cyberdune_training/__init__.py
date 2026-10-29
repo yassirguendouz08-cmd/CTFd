@@ -95,6 +95,22 @@ def private_training_responses(response):
     return response
 
 
+def install_academy_menu_filter():
+    """Hide the user-facing Academy navigation entry when the page is disabled."""
+    original = current_app.jinja_env.globals.get("get_user_page_menu_bar")
+    if not original or getattr(original, "_academy_visibility_filter", False):
+        return
+
+    def visible_user_menu():
+        menu = original()
+        if academy_is_visible():
+            return menu
+        return [entry for entry in menu if entry.title != "Academy"]
+
+    visible_user_menu._academy_visibility_filter = True
+    current_app.jinja_env.globals["get_user_page_menu_bar"] = visible_user_menu
+
+
 def challenge_or_404(slug):
     return TrainingChallenge.query.filter_by(slug=slug, active=True).first_or_404()
 
@@ -433,6 +449,7 @@ def load(app):
     app.register_blueprint(training)
     app.jinja_env.globals["training_copy"] = tr
     register_user_page_menu_bar("Academy", "/academy")
+    app.before_request_funcs.setdefault(None, []).append(install_academy_menu_filter)
     register_admin_plugin_menu_bar("Academy", "/admin/training")
 
     def limit_training_body():
