@@ -23,9 +23,12 @@
   </a>
 {% else %}<div class="tr-empty"><span aria-hidden="true">⌕</span><h2>{{ training_copy('No exercises match your filters.') }}</h2><p>{{ training_copy('Try another category or clear the filters.') }}</p><a class="btn btn-secondary" href="{{ url_for('cyberdune_training.catalog') }}">{{ training_copy('Clear filters') }}</a></div>{% endfor %}
 </section>
-<dialog class="tr-challenge-dialog" data-training-dialog aria-label="Training challenge">
-  <div class="tr-dialog-toolbar"><span>Training challenge</span><button type="button" class="tr-dialog-close" data-training-close aria-label="Close challenge">×</button></div>
-  <div class="tr-dialog-body" data-training-dialog-body aria-live="polite"></div>
+<dialog class="tr-challenge-dialog" data-training-dialog aria-labelledby="training-modal-title">
+  <div class="modal-content cyber-theme tr-training-modal" dir="{{ 'rtl' if get_locale() == 'ar' else 'ltr' }}">
+    <div class="modal-header cyber-header"><h3 class="modal-title" id="training-modal-title" data-training-dialog-title>{{ training_copy('Training challenge') }}</h3><button type="button" class="btn-close btn-close-white" data-training-close aria-label="{{ training_copy('Close') }}"></button></div>
+    <ul class="nav nav-tabs cyber-tabs"><li class="nav-item"><span class="nav-link li-link active">{{ training_copy('Challenge') }}</span></li></ul>
+    <div class="modal-body tr-dialog-body" data-training-dialog-body aria-live="polite"></div>
+  </div>
 </dialog>
 {% if pages > 1 %}<nav class="tr-pagination" aria-label="Pages">{% if page > 1 %}<a href="{{ url_for('cyberdune_training.catalog', **dict(filters, page=page-1)) }}">← {{ training_copy('Previous') }}</a>{% endif %}<span>{{ page }} / {{ pages }}</span>{% if page < pages %}<a href="{{ url_for('cyberdune_training.catalog', **dict(filters, page=page+1)) }}">{{ training_copy('Next') }} →</a>{% endif %}</nav>{% endif %}
 <p class="tr-footnote">{{ training_copy('Self-contained practice files and sandboxed browser labs. Only work on the provided exercise material.') }}</p>

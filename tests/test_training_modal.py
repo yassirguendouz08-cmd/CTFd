@@ -30,11 +30,14 @@ def test_training_catalog_opens_challenge_modal_fragment(app):
     assert b"CyLab Security Academy / picoCTF" not in catalog.data
     assert b"data-training-open" in catalog.data
     assert b'<a class="tr-card' in catalog.data
+    assert b'modal-content cyber-theme tr-training-modal' in catalog.data
+    assert b'data-training-dialog-title' in catalog.data
 
     modal = client.get(endpoint("pico-ecb-1") + "?modal=1")
     assert modal.status_code == 200
     assert b"data-training-detail-fragment" in modal.data
-    assert b"<h1>ECB Challenge</h1>" in modal.data
+    assert b'data-training-challenge-title="ECB Challenge"' in modal.data
+    assert b"tr-modal-meta" in modal.data
 
     direct = client.get(endpoint("pico-ecb-1"))
     assert direct.status_code == 200

@@ -80,6 +80,8 @@
 
   if (!dialog || !dialogBody) return;
   const openChallenge = async href => {
+    const title = dialog.querySelector('[data-training-dialog-title]');
+    if (title) title.textContent = 'Training challenge';
     dialogBody.innerHTML = '<p class="tr-dialog-status" role="status">Loading challenge…</p>';
     if (!dialog.open) dialog.showModal();
     try {
@@ -94,12 +96,8 @@
       const documentView = new DOMParser().parseFromString(await response.text(), 'text/html');
       const fragment = documentView.querySelector('[data-training-detail-fragment]');
       if (!fragment) throw new Error('Challenge content is unavailable.');
+      if (title) title.textContent = fragment.dataset.trainingChallengeTitle || 'Training challenge';
       dialogBody.replaceChildren(fragment.cloneNode(true));
-      const heading = dialogBody.querySelector('h1');
-      if (heading) {
-        heading.id = 'training-modal-title';
-        dialog.setAttribute('aria-labelledby', heading.id);
-      }
       bindDetail(dialogBody);
     } catch (error) {
       const message = document.createElement('p');

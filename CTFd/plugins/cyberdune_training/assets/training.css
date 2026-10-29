@@ -32,3 +32,19 @@
 @media(max-width:1099px){.tr-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:767px){.tr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:479px){.tr-grid{grid-template-columns:1fr}.tr-card{min-height:160px}}
+
+/* Use the same modal shell and metadata treatment as native CTF challenge details. */
+.tr-challenge-dialog{width:min(840px,calc(100vw - 32px));max-width:none;max-height:none;margin:auto;padding:0;overflow:visible;border:0;border-radius:20px;background:transparent;color:#eeeef2;box-shadow:none}
+.tr-challenge-dialog::backdrop{background:#050505c9;backdrop-filter:blur(4px)}
+.tr-training-modal{display:flex;flex-direction:column;width:100%;max-height:90vh;overflow:hidden;background:linear-gradient(180deg,#111f,#080808fa);border:1px solid #ffffff24;border-radius:20px;box-shadow:0 18px 40px #0009,0 0 24px #da000024;color:#eeeef2}
+.tr-training-modal>.modal-header{flex:0 0 auto;position:sticky;top:0;z-index:2;padding:20px 24px;background:#0f0f0ff2;border-bottom:1px solid #ffffff24}
+.tr-training-modal .modal-title{margin:0;font-size:clamp(1.2rem,3vw,1.75rem);font-weight:650;line-height:1.4;overflow-wrap:anywhere}
+.tr-training-modal .btn-close{flex:0 0 40px;width:40px;height:40px;min-height:40px;padding:12px;margin:0 0 0 12px;background-size:18px}
+.tr-training-modal>.cyber-tabs{flex:0 0 auto;padding:10px 24px;gap:8px}
+.tr-training-modal>.tr-dialog-body{flex:1 1 auto;min-height:0;max-height:calc(90vh - 140px);overflow:auto;padding:24px;overscroll-behavior:contain}
+.tr-modal-meta{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #ffffff24}
+.tr-modal-meta .cyber-meta-row{gap:12px 24px}
+.tr-modal-meta .cyber-meta-label{color:#a6a8b2}
+.tr-modal-meta .cyber-meta-value{color:#eeeef2}
+.tr-modal-meta .cyber-meta-value.text-danger{color:#ff6a78!important}
+@media(max-width:650px){.tr-challenge-dialog{width:calc(100vw - 16px)}.tr-training-modal{max-height:94vh;border-radius:14px}.tr-training-modal>.modal-header{padding:16px}.tr-training-modal>.cyber-tabs{padding:8px 16px}.tr-training-modal>.tr-dialog-body{max-height:calc(94vh - 124px);padding:16px}.tr-modal-meta{align-items:flex-start;flex-direction:column;gap:12px}.tr-modal-meta .cyber-meta-row{gap:10px 16px}}

@@ -1,4 +1,14 @@
+{% if request.args.get('modal') %}
+<div class="cyber-meta-column tr-modal-meta"><div class="cyber-meta-row">
+  <div class="text"><span class="cyber-meta-label">{{ training_copy('Category:') }}</span><span class="cyber-meta-value">{{ training_copy(challenge.category) }}</span></div>
+  <div class="text"><span class="cyber-meta-label">{{ training_copy('Difficulty:') }}</span><span class="cyber-meta-value">{{ training_copy(challenge.difficulty) }}</span></div>
+  <div class="text"><span class="cyber-meta-label">{{ training_copy('Type:') }}</span><span class="cyber-meta-value">{{ training_copy('Browser lab' if challenge.kind == 'lab' and challenge.recipe else 'External lab' if challenge.kind == 'lab' else 'Challenge') }}</span></div>
+  <div class="text"><span class="cyber-meta-label">{{ training_copy('Time:') }}</span><span class="cyber-meta-value">~{{ challenge.minutes }} min</span></div>
+  <div class="text"><span class="cyber-meta-label">{{ training_copy('Points:') }}</span><span class="cyber-meta-value text-danger">{{ challenge.value }} XP</span></div>
+</div><span class="tr-complete" {% if not solved %}hidden{% endif %}>✓ {{ training_copy('Solved') }}</span></div>
+{% else %}
 <header class="tr-hero tr-hero-detail"><div><span class="cd-eyebrow">{{ training_copy(challenge.category) }} / {{ training_copy(challenge.difficulty) }}</span><h1>{{ challenge.name }}</h1><p>{{ training_copy('Browser lab' if challenge.kind == 'lab' and challenge.recipe else 'External lab' if challenge.kind == 'lab' else 'Challenge') }} · ~{{ challenge.minutes }} min · {{ challenge.value }} XP</p></div><span class="tr-complete" {% if not solved %}hidden{% endif %}>✓ {{ training_copy('Solved') }}</span></header>
+{% endif %}
 <p class="tr-footnote">{{ challenge.source }}</p>
 {% include 'training/progress.html' %}
 <div class="tr-detail-grid"><section class="tr-panel tr-brief"><h2>{{ training_copy('Challenge') }}</h2><div class="tr-prose">{{ description | safe }}</div>
