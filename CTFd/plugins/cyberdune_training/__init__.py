@@ -315,7 +315,12 @@ def seed_starters():
 
 def remove_legacy_browser_labs():
     """Permanently remove the nine built-in browser labs and their telemetry."""
-    challenges = TrainingChallenge.query.filter(TrainingChallenge.slug.in_(LEGACY_BROWSER_LABS)).all()
+    # A locking read serializes concurrent Gunicorn worker startups. On MySQL,
+    # FOR UPDATE sees the latest committed rows after waiting for the first
+    # worker, so later workers find nothing left to remove.
+    challenges = TrainingChallenge.query.filter(
+        TrainingChallenge.slug.in_(LEGACY_BROWSER_LABS)
+    ).with_for_update().all()
     if not challenges:
         return 0
     ids = [challenge.id for challenge in challenges]
@@ -393,11 +398,9 @@ def load(app):
     # CTFd configuration reads may already hold a MariaDB repeatable-read
     # snapshot from before these tables existed. End it before querying them.
     db.session.commit()
-    # This migration intentionally erases legacy Academy browser-lab records,
-    # including solves and attempts. Production backups are taken at deploy.
-    if not get_config("cyberdune_training:browser_labs_removed_v1"):
-        remove_legacy_browser_labs()
-        set_config("cyberdune_training:browser_labs_removed_v1", True)
+    # This idempotent migration erases legacy Academy browser-lab rows and
+    # related progress; production backups are taken before the deployment.
+    remove_legacy_browser_labs()
     seed_starters()
     if not get_config("cyberdune_training:advanced_catalog_v1"):
         existing = {row[0] for row in db.session.query(TrainingChallenge.slug)}
