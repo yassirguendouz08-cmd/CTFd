@@ -277,10 +277,12 @@ def test_admin_can_hide_and_restore_the_entire_academy(app):
     assert b"Hide Academy" in admin.get("/admin/training").data
     assert admin.post("/admin/training", data={"nonce": nonce(admin), "action": "toggle_academy_visibility"}).status_code == 302
     assert b"Show Academy" in admin.get("/admin/training").data
+    assert b"/academy" not in admin.get("/").data
     for path in ("/academy", "/training", "/training/scoreboard", "/academy/scoreboard", "/academy/challenges/base64-trail", "/academy/challenges/base64-trail/artifact"):
         assert admin.get(path).status_code == 404
     assert admin.post("/admin/training", data={"nonce": nonce(admin), "action": "toggle_academy_visibility"}).status_code == 302
     assert admin.get("/academy").status_code == 200
+    assert b"/academy" in admin.get("/").data
 
 
 def test_admin_rejects_unusable_labs_and_unsafe_urls(app):
