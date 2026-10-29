@@ -36,7 +36,7 @@ def academy_is_visible():
     # Read the switch from the database on each request. The normal config
     # helper is memoized per process, which can leave Gunicorn workers stale.
     value = db.session.query(Configs.value).filter_by(key=ACADEMY_VISIBILITY_CONFIG).scalar()
-    return value is None or str(value).lower() != "false"
+    return value is None or str(value).lower() not in ("false", "0")
 
 
 def tr(text):
