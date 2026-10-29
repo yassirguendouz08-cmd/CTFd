@@ -2,5 +2,5 @@
   <div><span>{{ training_copy('Solved') }}</span><strong data-training-solved>{{ summary.solved }}<small> / {{ summary.total }}</small></strong></div>
   <div><span>{{ training_copy('Training XP') }}</span><strong data-training-xp>{{ summary.xp }}</strong></div>
   <div><span>{{ training_copy('Your rank') }}</span><strong data-training-rank>{{ '#' ~ summary.rank if summary.rank else '—' }}</strong></div>
-  <div class="tr-progress"><label for="training-progress">{{ training_copy('Progress') }} <span data-training-percent>{{ summary.percent }}%</span></label><progress id="training-progress" max="100" value="{{ summary.percent }}"></progress><small>{{ training_copy('Independent from the CTF scoreboard') }}</small></div>
+  <div class="tr-progress"><label>{{ training_copy('Progress') }} <span data-training-percent>{{ summary.percent }}%</span></label><progress max="100" value="{{ summary.percent }}" aria-label="{{ training_copy('Progress') }}"></progress><small>{{ training_copy('Independent from the CTF scoreboard') }}</small></div>
 </section>

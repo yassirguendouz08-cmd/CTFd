@@ -13,13 +13,13 @@ from pathlib import Path
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-SOURCE = "picoCTF official examples · Tim Becker / ForAllSecure · MIT · adapted by CyberDune"
+SOURCE = "Licensed learning example · author and license credits are included with the exercise files"
 PICO = [
-    dict(slug="pico-ecb-1", name="picoCTF sample: ECB 1", category="Cryptography", difficulty="Easy", value=50, minutes=20,
-         description="Adapted from Tim Becker's official MIT-licensed picoCTF sample ECB 1. A fictional service exported an AES key and a ciphertext. Use the supplied mode and padding information to recover your account's flag. This is a source-review and decryption exercise, not a brute-force challenge.",
+    dict(slug="pico-ecb-1", name="ECB Challenge", category="Cryptography", difficulty="Easy", value=50, minutes=20,
+         description="Inspect a fictional service export containing an AES key and ciphertext. Use the supplied mode and padding information to recover your account's flag. This is a source-review and decryption exercise, not a brute-force challenge.",
          hint="Read every exported field. Knowing the AES key changes the problem completely."),
-    dict(slug="pico-sql-1", name="picoCTF sample: SQL Injection 1", category="Web", difficulty="Medium", value=200, minutes=40,
-         description="Adapted from Tim Becker's official MIT-licensed picoCTF SQL Injection 1 sample. Bypass the fictional login using the vulnerable query shown in the source. Each request uses a disposable SQLite database containing one fictional user; it has no connection to platform accounts or the CTF database.",
+    dict(slug="pico-sql-1", name="SQL Login", category="Web", difficulty="Medium", value=200, minutes=40,
+         description="Find the query flaw in a fictional login and bypass it in the isolated lab. Each request uses a disposable SQLite database containing one fictional user; it has no connection to platform accounts or the CTF database.",
          hint="Look at how quotes in the input change the structure of the query. Use the provided lab only."),
 ]
 
@@ -41,7 +41,7 @@ def artifact(recipe, flag):
         files["README.txt"] = b"The original sample prints both KEY and MESSAGE. This adaptation exports them as hexadecimal and adds explicit PKCS7 padding for arbitrary token lengths. Recover your flag by decrypting the message.\n"
     else:
         files["login.php"] = b'''<?php
-// Adapted picoCTF sample. Query reproduced for study; use CyberDune's isolated lab.
+// Query reproduced for study; use CyberDune's isolated lab.
 $username = $_POST["username"];
 $password = $_POST["password"];
 $query = "SELECT * FROM users WHERE name='$username' AND password='$password'";

@@ -158,7 +158,8 @@ def scoreboard():
 @training_user()
 def detail(slug):
     challenge = challenge_or_404(slug)
-    return render_template("training/detail.html", title=challenge.name + " | Training", challenge=challenge,
+    template = "training/detail_modal.html" if request.args.get("modal") == "1" else "training/detail.html"
+    return render_template(template, title=challenge.name + " | Training", challenge=challenge,
                            description=build_markdown(challenge.description, sanitize=True), solved=challenge.id in solved_ids(get_current_user().id),
                            summary=user_summary(get_current_user()), attachments=TrainingAttachment.query.filter_by(challenge_id=challenge.id).all())
 
@@ -323,6 +324,26 @@ def seed_starters():
     set_config("cyberdune_training:starter_catalog_v1", True)
 
 
+def simplify_seeded_titles():
+    """Update only the original generated labels; keep admin-edited content intact."""
+    old_source = "picoCTF official examples · Tim Becker / ForAllSecure · MIT · adapted by CyberDune"
+    labels = {
+        "pico-ecb-1": ("picoCTF sample: ECB 1", "ECB Challenge"),
+        "pico-sql-1": ("picoCTF sample: SQL Injection 1", "SQL Login"),
+    }
+    changed = False
+    for slug, (old_name, new_name) in labels.items():
+        challenge = TrainingChallenge.query.filter_by(slug=slug).first()
+        if challenge and challenge.name == old_name:
+            challenge.name = new_name
+            changed = True
+        if challenge and challenge.source == old_source:
+            challenge.source = "Licensed learning example · author and license credits are included with the exercise files"
+            changed = True
+    if changed:
+        db.session.commit()
+
+
 def load(app):
     tables = [TrainingChallenge.__table__, TrainingSolve.__table__, TrainingAttempt.__table__, TrainingAnswer.__table__, TrainingAttachment.__table__]
     try:
@@ -346,6 +367,7 @@ def load(app):
         except IntegrityError:
             db.session.rollback()
         set_config("cyberdune_training:advanced_catalog_v1", True)
+    simplify_seeded_titles()
     app.register_blueprint(training)
     app.jinja_env.globals["training_copy"] = tr
     register_user_page_menu_bar("Training", "/training")
