@@ -14,7 +14,7 @@ from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError, OperationalError
 
 from CTFd.models import Configs, Users, db
-from CTFd.plugins import register_admin_plugin_menu_bar, register_user_page_menu_bar
+from CTFd.plugins import Menu, register_admin_plugin_menu_bar, register_user_page_menu_bar
 from CTFd.utils import get_config, set_config
 from CTFd.utils.decorators import admins_only
 from CTFd.utils.config.pages import build_markdown
@@ -95,20 +95,15 @@ def private_training_responses(response):
     return response
 
 
-def install_academy_menu_filter():
-    """Hide the user-facing Academy navigation entry when the page is disabled."""
-    original = current_app.jinja_env.globals.get("get_user_page_menu_bar")
-    if not original or getattr(original, "_academy_visibility_filter", False):
-        return
-
-    def visible_user_menu():
-        menu = original()
-        if academy_is_visible():
-            return menu
-        return [entry for entry in menu if entry.title != "Academy"]
-
-    visible_user_menu._academy_visibility_filter = True
-    current_app.jinja_env.globals["get_user_page_menu_bar"] = visible_user_menu
+def sync_academy_navigation():
+    """Keep the Academy link in or out of the user menu with its visibility."""
+    menu = current_app.plugin_menu_bar
+    present = any(entry.title == "Academy" for entry in menu)
+    if academy_is_visible():
+        if not present:
+            menu.append(Menu("Academy", "/academy", None))
+    else:
+        menu[:] = [entry for entry in menu if entry.title != "Academy"]
 
 
 def challenge_or_404(slug):
@@ -449,7 +444,7 @@ def load(app):
     app.register_blueprint(training)
     app.jinja_env.globals["training_copy"] = tr
     register_user_page_menu_bar("Academy", "/academy")
-    app.before_request_funcs.setdefault(None, []).append(install_academy_menu_filter)
+    app.before_request_funcs.setdefault(None, []).append(sync_academy_navigation)
     register_admin_plugin_menu_bar("Academy", "/admin/training")
 
     def limit_training_body():
