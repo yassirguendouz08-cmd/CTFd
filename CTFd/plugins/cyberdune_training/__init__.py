@@ -332,6 +332,9 @@ def load(app):
         if "already exists" not in str(error).lower():
             raise
         db.metadata.create_all(bind=db.engine, tables=tables, checkfirst=True)
+    # CTFd configuration reads may already hold a MariaDB repeatable-read
+    # snapshot from before these tables existed. End it before querying them.
+    db.session.commit()
     seed_starters()
     if not get_config("cyberdune_training:advanced_catalog_v1"):
         existing = {row[0] for row in db.session.query(TrainingChallenge.slug)}
@@ -370,4 +373,3 @@ def load(app):
         count = TrainingAttempt.query.filter(TrainingAttempt.created < datetime.utcnow() - timedelta(days=days)).delete()
         db.session.commit()
         click.echo(f"Pruned {count} old attempts; solves and progress were retained.")
-
