@@ -20,11 +20,12 @@ from CTFd.utils.decorators import admins_only
 from CTFd.utils.config.pages import build_markdown
 from CTFd.utils.user import get_current_user, get_locale
 
-from .catalog import CATEGORIES, artifact, lab_data, starter_rows
+from .catalog import CATEGORIES, artifact, starter_rows
 from .advanced import advanced_rows
 from .pico import rows as pico_rows
 from .challenge_text import localize_challenge as localize_training_challenge
 from .models import TrainingAnswer, TrainingAttachment, TrainingAttempt, TrainingChallenge, TrainingSolve
+from .replacement_challenges import LEGACY_BROWSER_LABS, rows as replacement_rows
 
 training = Blueprint("cyberdune_training", __name__, template_folder="templates", static_folder="assets", static_url_path="/plugins/cyberdune_training/assets")
 DIFFICULTIES = ("Easy", "Medium", "Hard")
@@ -198,36 +199,6 @@ def attachment(slug, attachment_id):
     return response
 
 
-@training.route("/training/challenges/<slug>/lab")
-@training.route("/academy/challenges/<slug>/lab")
-@training_user()
-def lab(slug):
-    challenge = challenge_or_404(slug)
-    if not challenge.recipe or challenge.kind != "lab":
-        abort(404)
-    payload = lab_data(challenge.recipe, exercise_flag(challenge, get_current_user().id))
-    response = current_app.make_response(render_template("training/lab.html", challenge=localize_training_challenge(challenge), payload=payload))
-    # Even a directly opened lab has an opaque origin and cannot fetch app APIs.
-    response.headers["Content-Security-Policy"] = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src data:; form-action 'none'; base-uri 'none'; frame-ancestors 'self'; sandbox allow-scripts"
-    response.headers["Referrer-Policy"] = "no-referrer"
-    return response
-
-
-@training.route("/training/challenges/<slug>/sql", methods=["POST"])
-@training.route("/academy/challenges/<slug>/sql", methods=["POST"])
-@training_user()
-def sql_login(slug):
-    from .pico import check_sql_login
-    challenge = challenge_or_404(slug)
-    if challenge.recipe != "pico-sql-1":
-        abort(404)
-    data = request.get_json(silent=True)
-    if not isinstance(data, dict) or any(not isinstance(data.get(key), str) or len(data[key]) > 128 for key in ("username", "password")):
-        return jsonify(success=False, message="Use two text fields of at most 128 characters."), 400
-    passed = check_sql_login(data["username"], data["password"])
-    return jsonify(success=passed, message=exercise_flag(challenge, get_current_user().id) if passed else "Fictional login failed.")
-
-
 @training.route("/training/challenges/<slug>/submit", methods=["POST"])
 @training.route("/academy/challenges/<slug>/submit", methods=["POST"])
 @training_user()
@@ -342,12 +313,43 @@ def seed_starters():
     set_config("cyberdune_training:starter_catalog_v1", True)
 
 
-def retire_bytecode_stepper():
-    """Hide the retired exercise while preserving its record and solve history."""
-    challenge = TrainingChallenge.query.filter_by(slug="bytecode-lab", active=True).first()
-    if challenge:
-        challenge.active = False
+def remove_legacy_browser_labs():
+    """Permanently remove the nine built-in browser labs and their telemetry."""
+    challenges = TrainingChallenge.query.filter(TrainingChallenge.slug.in_(LEGACY_BROWSER_LABS)).all()
+    if not challenges:
+        return 0
+    ids = [challenge.id for challenge in challenges]
+    attachments = TrainingAttachment.query.filter(TrainingAttachment.challenge_id.in_(ids)).all()
+    locations = [item.location for item in attachments]
+    TrainingSolve.query.filter(TrainingSolve.challenge_id.in_(ids)).delete(synchronize_session=False)
+    TrainingAttempt.query.filter(TrainingAttempt.challenge_id.in_(ids)).delete(synchronize_session=False)
+    TrainingAnswer.query.filter(TrainingAnswer.challenge_id.in_(ids)).delete(synchronize_session=False)
+    TrainingAttachment.query.filter(TrainingAttachment.challenge_id.in_(ids)).delete(synchronize_session=False)
+    TrainingChallenge.query.filter(TrainingChallenge.id.in_(ids)).delete(synchronize_session=False)
+    db.session.commit()
+    if locations:
+        from CTFd.utils.uploads import get_uploader
+        uploader = get_uploader()
+        for location in locations:
+            uploader.delete(location)
+    return len(ids)
+
+
+def seed_replacement_challenges():
+    if get_config("cyberdune_training:file_challenges_v1"):
+        return
+    existing = {row[0] for row in db.session.query(TrainingChallenge.slug)}
+    try:
+        for row in replacement_rows():
+            if row["slug"] not in existing:
+                db.session.add(TrainingChallenge(**row))
         db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        # A concurrent worker may have seeded the same slug. Leave the marker
+        # unset so the next startup can verify the whole catalog is present.
+        return
+    set_config("cyberdune_training:file_challenges_v1", True)
 
 
 def simplify_seeded_titles():
@@ -366,6 +368,15 @@ def simplify_seeded_titles():
         if challenge and challenge.source == old_source:
             challenge.source = "Licensed learning example · author and license credits are included with the exercise files"
             changed = True
+    sql_example = TrainingChallenge.query.filter_by(slug="pico-sql-1").first()
+    old_sql_description = ("Find the query flaw in a fictional login and bypass it in the isolated lab. Each request uses a "
+                           "disposable SQLite database containing one fictional user; it has no connection to platform accounts or the CTF database.")
+    old_sql_hint = "Look at how quotes in the input change the structure of the query. Use the provided lab only."
+    if sql_example and sql_example.description == old_sql_description:
+        sql_example.description = "Download the fictional login sample and investigate how its SQL query handles input. Recover your account's flag using the offline files; the exercise never connects to this platform or any external service."
+        if sql_example.hint == old_sql_hint:
+            sql_example.hint = "Use a quote to test where input is inserted into the query, then complete the exercise only against the supplied local sample."
+        changed = True
     if changed:
         db.session.commit()
 
@@ -382,6 +393,11 @@ def load(app):
     # CTFd configuration reads may already hold a MariaDB repeatable-read
     # snapshot from before these tables existed. End it before querying them.
     db.session.commit()
+    # This migration intentionally erases legacy Academy browser-lab records,
+    # including solves and attempts. Production backups are taken at deploy.
+    if not get_config("cyberdune_training:browser_labs_removed_v1"):
+        remove_legacy_browser_labs()
+        set_config("cyberdune_training:browser_labs_removed_v1", True)
     seed_starters()
     if not get_config("cyberdune_training:advanced_catalog_v1"):
         existing = {row[0] for row in db.session.query(TrainingChallenge.slug)}
@@ -393,7 +409,7 @@ def load(app):
         except IntegrityError:
             db.session.rollback()
         set_config("cyberdune_training:advanced_catalog_v1", True)
-    retire_bytecode_stepper()
+    seed_replacement_challenges()
     simplify_seeded_titles()
     app.register_blueprint(training)
     app.jinja_env.globals["training_copy"] = tr

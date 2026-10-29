@@ -1,6 +1,5 @@
 """Original starter exercises. Artifacts contain per-user flags, never real data."""
 import base64
-import codecs
 import io
 import json
 import struct
@@ -12,22 +11,14 @@ CATEGORIES = ("Web", "Cryptography", "Forensics", "OSINT", "Reverse Engineering"
 # slug, title, category, kind, instructions, free hint
 STARTERS = [
     ("source-review", "Behind the page", "Web", "challenge", "Download the page from a fictional training portal. The visible text is only part of the response. Find the flag without attacking this platform.", "Open the downloaded HTML in a text editor and inspect its comments."),
-    ("header-lab", "Response inspector", "Web", "lab", "Inspect the simulated HTTP response in the browser lab. Find the custom response header containing your flag. This is a local inspection exercise, not a live vulnerable server.", "Response headers can carry application-specific fields."),
     ("base64-trail", "The encoded dispatch", "Cryptography", "challenge", "An intercepted fictional dispatch uses a common text encoding. Download and decode it to recover your flag.", "The alphabet and trailing equals signs suggest Base64. Encoding is not encryption."),
-    ("rot13-lab", "Rotation workshop", "Cryptography", "lab", "A message was transformed with ROT13. Use the interactive decoder to inspect the transformation and recover your flag.", "ROT13 rotates alphabetic characters by thirteen places; applying it twice restores the text."),
     ("image-metadata", "More than pixels", "Forensics", "challenge", "The image is generated for this exercise. Inspect its metadata to find what was preserved alongside the visible pixels.", "Try exiftool or inspect the PNG text chunks."),
-    ("logs-lab", "Incident timeline", "Forensics", "lab", "Investigate a synthetic event log. Filter for the successful export event and follow the matching request identifier.", "Search for export.completed, then use its request_id to find the matching evidence."),
     ("public-trail", "The club archive", "OSINT", "challenge", "Investigate the fictional public archive in the ZIP. Cross-reference the briefing's project code with the correct profile. Everything needed is in the archive; no real people need to be contacted.", "Match the project identifier across the briefing and profiles, then decode the matching archive note."),
-    ("archive-lab", "Follow the public trail", "OSINT", "lab", "Explore a simulated public website and its robots.txt. Follow the archive trail to the training flag. All pages are fictional and stay inside the browser lab.", "Start with /robots.txt. A path marked Disallow may still be a useful clue."),
     ("xor-blueprint", "A small obfuscator", "Reverse Engineering", "challenge", "Download the Python verifier. Understand its byte transformation and reverse it to recover the required input. Run downloaded code only in your own practice workspace.", "Each byte was XORed with one fixed byte. XOR with the same key reverses the operation."),
     ("endian-note", "The memory envelope", "Pwn", "challenge", "Inspect a synthetic memory dump. Its first four bytes encode the length of the message in little-endian order. Recover exactly that many bytes after the header.", "Decode the first four bytes as a little-endian unsigned integer, then slice the following message."),
-    ("stack-lab", "Stack layout simulator", "Pwn", "lab", "Study a simulated stack frame. Change the saved return address to the documented win address. This model teaches byte order and control flow; it does not execute native code or expose the server.", "The target address is 0x080491e2. Enter its four bytes in little-endian order."),
     ("hidden-files", "Dotfile delivery", "Linux", "challenge", "Inspect the provided tar archive in a practice directory. A hidden configuration directory contains your training flag. Do not extract untrusted archives into important folders.", "Files beginning with a dot are hidden by default. Try tar -tf and ls -la."),
-    ("terminal-lab", "Find your way around", "Linux", "lab", "Use the simulated terminal to navigate a small training filesystem and read the hidden flag. Supported commands include help, pwd, ls, cd, cat and find. Commands never execute on the VPS.", "Try ls -la, then inspect the hidden .config directory."),
     ("packet-courier", "One packet, one clue", "Networking", "challenge", "Open the synthetic packet capture in Wireshark or another offline packet viewer. Recover the application payload from its UDP datagram. Addresses use documentation-only ranges.", "Inspect the UDP payload or use Follow UDP Stream."),
-    ("reassembly-lab", "Out-of-order delivery", "Networking", "lab", "Four application fragments arrived out of order. Use their sequence numbers to reassemble the Base64 message, then decode it. This is an application-fragment model, not a full TCP implementation.", "Sort the fragments by sequence number before concatenating their data."),
     ("archive-layers", "Another layer", "Misc", "challenge", "Work through a small ZIP archive. Follow the instructions in order and decode the final message to obtain your flag.", "Read README.txt first. The next file contains hexadecimal text, not raw binary."),
-    ("pattern-lab", "Signal from noise", "Misc", "lab", "Filter the synthetic records by the exact label training.key. Find the successful record and recover its value.", "Look for both label=training.key and status=valid."),
 ]
 
 
@@ -48,6 +39,9 @@ def zip_bytes(files):
 
 
 def artifact(recipe, flag):
+    from .replacement_challenges import CHALLENGES as REPLACEMENTS, artifact as replacement_artifact
+    if recipe in {row["slug"] for row in REPLACEMENTS}:
+        return replacement_artifact(recipe, flag)
     from .advanced import ADVANCED, artifact as advanced_artifact
     if recipe in {row["slug"] for row in ADVANCED}:
         return advanced_artifact(recipe, flag)
@@ -95,27 +89,3 @@ def artifact(recipe, flag):
     if recipe == "archive-layers":
         return "layers.zip", zip_bytes({"README.txt": "Decode payload.hex into text, then Base64-decode that text.\n", "payload.hex": encoded.encode().hex() + "\n"})
     raise ValueError("This exercise has no downloadable artifact")
-
-
-def lab_data(recipe, flag):
-    if recipe == "header-lab":
-        return {"headers": {"Content-Type": "text/plain", "Cache-Control": "no-store", "X-Training-Flag": flag}}
-    if recipe == "rot13-lab":
-        return {"encoded": codecs.encode(flag, "rot_13")}
-    if recipe == "logs-lab":
-        return {"records": ["09:00 request_id=R17 event=export.started", "09:01 request_id=R12 event=export.failed", "09:02 request_id=R17 event=export.completed", "09:03 request_id=R17 event=evidence.saved value=" + flag, "09:04 request_id=R12 event=evidence.saved value=not-a-flag"]}
-    if recipe == "archive-lab":
-        return {"pages": {"/": "Fictional training archive. Try /robots.txt.", "/robots.txt": "User-agent: *\nDisallow: /archive/dune-17", "/archive/dune-17": "Archived project: DESERT-17\nTraining key: " + flag}}
-    if recipe == "bytecode-lab":
-        return {"program": [["LOAD", byte ^ 42, "XOR", 42, "OUT"] for byte in flag.encode()]}
-    if recipe == "stack-lab":
-        return {"encoded": base64.b64encode(flag.encode()).decode(), "win": "e2 91 04 08"}
-    if recipe == "terminal-lab":
-        return {"files": {"/home/trainee/README.txt": "Find the hidden configuration file.\n", "/home/trainee/.config/flag.txt": flag}}
-    if recipe == "reassembly-lab":
-        text = base64.b64encode(flag.encode()).decode(); size = (len(text) + 3) // 4
-        chunks = [{"sequence": i + 1, "data": text[i * size:(i + 1) * size]} for i in range(4)]
-        return {"fragments": [chunks[i] for i in [2, 0, 3, 1]]}
-    if recipe == "pattern-lab":
-        return {"records": ["label=backup.key status=valid value=decoy", "label=training.key status=expired value=expired", "label=training.key status=valid value=" + flag]}
-    raise ValueError("Unknown browser lab")

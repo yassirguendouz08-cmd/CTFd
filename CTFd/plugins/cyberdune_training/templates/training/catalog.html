@@ -6,7 +6,7 @@
   <label class="tr-search">{{ training_copy('Search exercises') }}<input type="search" name="q" maxlength="120" value="{{ filters.q }}" placeholder="{{ training_copy('Title or topic') }}"></label>
   <label>{{ training_copy('Category') }}<select name="category"><option value="">{{ training_copy('All categories') }}</option>{% for category in categories %}<option {% if filters.category == category %}selected{% endif %} value="{{ category }}">{{ training_copy(category) }}</option>{% endfor %}</select></label>
   <label>{{ training_copy('Difficulty') }}<select name="difficulty"><option value="">{{ training_copy('All levels') }}</option>{% for difficulty in difficulties %}<option {% if filters.difficulty == difficulty %}selected{% endif %}>{{ difficulty }}</option>{% endfor %}</select></label>
-  <label>{{ training_copy('Type') }}<select name="kind"><option value="">{{ training_copy('All types') }}</option><option value="challenge" {% if filters.kind == 'challenge' %}selected{% endif %}>{{ training_copy('Challenge') }}</option><option value="lab" {% if filters.kind == 'lab' %}selected{% endif %}>Labs</option></select></label>
+  <label>{{ training_copy('Type') }}<select name="kind"><option value="">{{ training_copy('All types') }}</option><option value="challenge" {% if filters.kind == 'challenge' %}selected{% endif %}>{{ training_copy('Challenge') }}</option><option value="lab" {% if filters.kind == 'lab' %}selected{% endif %}>External labs</option></select></label>
   <label>{{ training_copy('Progress') }}<select name="progress"><option value="">{{ training_copy('All exercises') }}</option><option value="solved" {% if filters.progress == 'solved' %}selected{% endif %}>{{ training_copy('Solved') }}</option><option value="unsolved" {% if filters.progress == 'unsolved' %}selected{% endif %}>{{ training_copy('Unsolved') }}</option></select></label>
   <button class="btn btn-primary" type="submit">{{ training_copy('Apply filters') }}</button><a href="{{ url_for('cyberdune_training.catalog') }}">{{ training_copy('Clear filters') }}</a>
 </form>
@@ -16,7 +16,7 @@
   <a class="tr-card{% if item.id in complete %} tr-card-solved{% endif %}" data-training-open data-training-slug="{{ item.slug }}" data-solved-label="{{ training_copy('Solved') }}" data-open-label="{{ training_copy('Open') }}" data-solve-one="{{ training_copy('solve') }}" data-solve-many="{{ training_copy('solves') }}" href="{{ url_for('cyberdune_training.detail', slug=item.slug) }}">
     <span class="cd-card-top"><span class="cd-card-category"><span class="cd-category-symbol" aria-hidden="true">●</span>{{ training_copy(item.category) }}</span><span class="cd-card-state">{% if item.id in complete %}✓ {{ training_copy('Solved') }}{% else %}{{ training_copy('Open') }}{% endif %}</span></span>
     <span class="cd-card-name">{{ item.name }}</span>
-    <span class="cd-card-tags"><span>{{ training_copy(item.difficulty) }}</span><span>{{ training_copy('Browser lab' if item.kind == 'lab' and item.recipe else 'External lab' if item.kind == 'lab' else 'Challenge') }}</span></span>
+    <span class="cd-card-tags"><span>{{ training_copy(item.difficulty) }}</span><span>{{ training_copy('External lab' if item.kind == 'lab' else 'Challenge') }}</span></span>
     {% set solves = solve_counts.get(item.id, 0) %}<span class="cd-card-bottom"><span class="cd-card-solves" data-academy-solves data-count="{{ solves }}"><i class="fas fa-flag" aria-hidden="true"></i><strong data-solve-count>{{ solves }}</strong><span>{{ training_copy('solve' if solves == 1 else 'solves') }}</span></span><span class="tr-card-points"><i class="fas fa-star" aria-hidden="true"></i><strong>{{ item.value }}</strong><small>{{ training_copy('Points') }}</small></span></span>
   </a>
 {% else %}<div class="tr-empty"><span aria-hidden="true">⌕</span><h2>{{ training_copy('No exercises match your filters.') }}</h2><p>{{ training_copy('Try another category or clear the filters.') }}</p><a class="btn btn-secondary" href="{{ url_for('cyberdune_training.catalog') }}">{{ training_copy('Clear filters') }}</a></div>{% endfor %}
@@ -29,5 +29,5 @@
   </div>
 </dialog>
 {% if pages > 1 %}<nav class="tr-pagination" aria-label="Pages">{% if page > 1 %}<a href="{{ url_for('cyberdune_training.catalog', **dict(filters, page=page-1)) }}">← {{ training_copy('Previous') }}</a>{% endif %}<span>{{ page }} / {{ pages }}</span>{% if page < pages %}<a href="{{ url_for('cyberdune_training.catalog', **dict(filters, page=page+1)) }}">{{ training_copy('Next') }} →</a>{% endif %}</nav>{% endif %}
-<p class="tr-footnote">{{ training_copy('Self-contained practice files and sandboxed browser labs. Only work on the provided exercise material.') }}</p>
+<p class="tr-footnote">{{ training_copy('Downloadable practice files are generated for your account. Only work on the provided exercise material.') }}</p>
 {% endblock %}

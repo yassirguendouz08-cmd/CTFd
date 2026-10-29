@@ -13,9 +13,9 @@ from PIL import Image
 
 from CTFd.config import TestingConfig
 from CTFd.models import Challenges, Solves, Submissions, Users, db
-from CTFd.plugins.cyberdune_training import exercise_flag, retire_bytecode_stepper, seed_starters, user_summary
+from CTFd.plugins.cyberdune_training import exercise_flag, remove_legacy_browser_labs, seed_starters, user_summary
 from CTFd.plugins.cyberdune_training.catalog import CATEGORIES
-from CTFd.plugins.cyberdune_training.models import TrainingAttempt, TrainingChallenge, TrainingSolve
+from CTFd.plugins.cyberdune_training.models import TrainingAnswer, TrainingAttempt, TrainingChallenge, TrainingSolve
 from CTFd.utils import set_config
 from tests.helpers import create_ctfd, destroy_ctfd, gen_team, gen_user, login_as_user
 
@@ -52,12 +52,12 @@ def nonce(client):
 
 def test_starter_library_and_independent_event_access(app):
     with app.app_context():
-        assert TrainingChallenge.query.count() == 22
-        assert TrainingChallenge.query.filter_by(active=True).count() == 22
+        assert TrainingChallenge.query.count() == 25
+        assert TrainingChallenge.query.filter_by(active=True).count() == 25
         assert {row.category for row in TrainingChallenge.query.all()} == set(CATEGORIES)
-        assert TrainingChallenge.query.filter_by(kind="lab", active=True).count() == 8
+        assert TrainingChallenge.query.filter_by(kind="lab", active=True).count() == 0
         seed_starters()
-        assert TrainingChallenge.query.count() == 22
+        assert TrainingChallenge.query.count() == 25
         set_config("start", 9999999999)
         set_config("end", 10000000999)
     client = app.test_client()
@@ -73,41 +73,42 @@ def test_starter_library_and_independent_event_access(app):
 
 def test_search_filters_and_empty_recovery(app):
     client = app.test_client()
-    response = client.get("/training?category=Linux&kind=lab")
-    assert b"Find your way around" in response.data and b"Dotfile delivery" not in response.data
+    response = client.get("/training?category=Linux&kind=challenge")
+    assert b"Hidden Backup" in response.data and b"Find your way around" not in response.data
     response = client.get("/training?q=not-an-existing-exercise")
     assert b"No exercises match" in response.data and b"Clear filters" in response.data
     assert b"No exercises match" in client.get("/training?q=%25").data
     assert client.get("/training?page=bad").status_code == 200
 
 
-def test_bytecode_stepper_is_retired_without_deleting_solve_history(app):
-    client = login_as_user(app, name="alice")
+def test_legacy_browser_labs_are_permanently_removed_with_history(app):
     with app.app_context():
-        challenge = TrainingChallenge(
-            slug="bytecode-lab", name="Bytecode stepper", category="Reverse Engineering",
-            difficulty="Medium", kind="lab", description="Retired lab", hint="",
-            value=100, minutes=20, active=True, recipe="bytecode-lab",
-        )
-        db.session.add(challenge)
-        db.session.commit()
         user = Users.query.filter_by(name="alice").one()
-        challenge.active = True
-        db.session.add(TrainingSolve(user_id=user.id, challenge_id=challenge.id, value=challenge.value))
+        legacy = []
+        for slug in ("header-lab", "rot13-lab", "logs-lab", "archive-lab", "bytecode-lab", "stack-lab", "terminal-lab", "reassembly-lab", "pattern-lab"):
+            challenge = TrainingChallenge(slug=slug, name=slug, category="Misc", difficulty="Medium", kind="lab",
+                description="Old lab", hint="", value=100, minutes=20, active=True, recipe=slug)
+            db.session.add(challenge); db.session.flush(); legacy.append(challenge)
+            db.session.add(TrainingSolve(user_id=user.id, challenge_id=challenge.id, value=challenge.value))
+            db.session.add(TrainingAttempt(user_id=user.id, challenge_id=challenge.id, correct=False))
+            db.session.add(TrainingAnswer(challenge_id=challenge.id, flag_hash="test-hash"))
         db.session.commit()
+        legacy_ids = [item.id for item in legacy]
+        legacy_slugs = [item.slug for item in legacy]
 
-        retire_bytecode_stepper()
+        deleted = remove_legacy_browser_labs()
 
-        assert challenge.active is False
-        assert TrainingSolve.query.filter_by(challenge_id=challenge.id).count() == 1
-
-    assert b"Bytecode stepper" not in client.get("/academy").data
-    assert client.get(endpoint("bytecode-lab")).status_code == 404
+        assert deleted == 9
+        assert TrainingChallenge.query.filter(TrainingChallenge.slug.in_(legacy_slugs)).count() == 0
+        assert TrainingSolve.query.filter(TrainingSolve.challenge_id.in_(legacy_ids)).count() == 0
+        assert TrainingAttempt.query.filter(TrainingAttempt.challenge_id.in_(legacy_ids)).count() == 0
+        assert TrainingAnswer.query.filter(TrainingAnswer.challenge_id.in_(legacy_ids)).count() == 0
+        assert TrainingChallenge.query.filter_by(kind="lab").count() == 0
 
 
 def test_guests_cannot_get_artifacts_labs_or_submit(app):
     client = app.test_client()
-    for path in [endpoint(), endpoint() + "/artifact", endpoint("header-lab") + "/lab"]:
+    for path in [endpoint(), endpoint() + "/artifact", endpoint("response-header") + "/artifact"]:
         response = client.get(path)
         assert response.status_code == 302 and "/login" in response.location
     assert client.post(endpoint() + "/submit", data=json.dumps({"flag": "x"}), content_type="application/json").status_code == 403
@@ -183,9 +184,8 @@ def test_unpublished_exercise_is_not_accessible_and_history_is_retained(app):
     client.post(endpoint() + "/submit", json={"flag": solution(app, "base64-trail")})
     with app.app_context():
         TrainingChallenge.query.filter_by(slug="base64-trail").one().active = False
-        TrainingChallenge.query.filter_by(slug="header-lab").one().active = False
         db.session.commit()
-    for path in [endpoint(), endpoint() + "/artifact", endpoint("header-lab") + "/lab"]:
+    for path in [endpoint(), endpoint() + "/artifact"]:
         assert client.get(path).status_code == 404
     assert client.post(endpoint() + "/submit", json={"flag": "x"}).status_code == 404
     assert b"No Academy flags captured yet" in client.get("/training/scoreboard").data
@@ -218,7 +218,7 @@ def test_required_email_verification_also_covers_training(app):
     client = login_as_user(app, name="alice")
     with app.app_context(): set_config("verify_emails", True)
     assert "/confirm" in client.get(endpoint() + "/artifact").location
-    assert "/confirm" in client.get(endpoint("header-lab") + "/lab").location
+    assert "/confirm" in client.get(endpoint("response-header") + "/artifact").location
     assert client.post(endpoint() + "/submit", json={"flag": "x"}).status_code == 403
 
 
@@ -245,16 +245,14 @@ def test_every_starter_download_is_solvable_and_private(app):
         assert client.post(endpoint(slug) + "/submit", json={"flag": recovered}).json["status"] == "correct"
 
 
-def test_all_browser_labs_use_an_opaque_sandbox(app):
+def test_legacy_browser_lab_routes_and_records_are_gone(app):
     client = login_as_user(app, name="alice")
-    with app.app_context(): slugs = [row.slug for row in TrainingChallenge.query.filter_by(kind="lab")]
-    for slug in slugs:
-        response = client.get(endpoint(slug) + "/lab")
-        assert response.status_code == 200
-        csp = response.headers["Content-Security-Policy"]
-        assert "sandbox allow-scripts" in csp and "allow-same-origin" not in csp and "connect-src 'none'" in csp
-        assert "no-store" in response.headers["Cache-Control"]
-        assert b'sandbox="allow-scripts"' in client.get(endpoint(slug)).data
+    old_slugs = ["header-lab", "rot13-lab", "logs-lab", "archive-lab", "bytecode-lab", "stack-lab", "terminal-lab", "reassembly-lab", "pattern-lab"]
+    for slug in old_slugs:
+        assert client.get(endpoint(slug)).status_code == 404
+        assert client.get(endpoint(slug) + "/lab").status_code == 404
+    with app.app_context():
+        assert TrainingChallenge.query.filter_by(kind="lab").count() == 0
 
 
 def test_admin_can_manage_static_content_without_leaking_flags(app):
@@ -280,7 +278,7 @@ def test_admin_rejects_unusable_labs_and_unsafe_urls(app):
     assert admin.post("/admin/training", data=values).status_code == 400
     values["resource_url"] = ""
     assert admin.post("/admin/training", data=values).status_code == 400
-    with app.app_context(): assert TrainingChallenge.query.count() == 22
+    with app.app_context(): assert TrainingChallenge.query.count() == 25
 
 
 def test_attempt_pruning_never_removes_solve_history(app):

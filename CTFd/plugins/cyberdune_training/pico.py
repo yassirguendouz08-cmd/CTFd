@@ -6,7 +6,6 @@ Local difficulties are CyberDune's educational estimates, not Academy ratings.
 import hashlib
 import io
 import json
-import sqlite3
 import zipfile
 from pathlib import Path
 
@@ -19,8 +18,8 @@ PICO = [
          description="Inspect a fictional service export containing an AES key and ciphertext. Use the supplied mode and padding information to recover your account's flag. This is a source-review and decryption exercise, not a brute-force challenge.",
          hint="Read every exported field. Knowing the AES key changes the problem completely."),
     dict(slug="pico-sql-1", name="SQL Login", category="Web", difficulty="Medium", value=200, minutes=40,
-         description="Find the query flaw in a fictional login and bypass it in the isolated lab. Each request uses a disposable SQLite database containing one fictional user; it has no connection to platform accounts or the CTF database.",
-         hint="Look at how quotes in the input change the structure of the query. Use the provided lab only."),
+         description="Download the fictional login sample and investigate how its SQL query handles input. Recover your account's flag using the offline files; the exercise never connects to this platform or any external service.",
+         hint="Use a quote to test where input is inserted into the query, then complete the exercise only against the supplied local sample."),
 ]
 
 
@@ -40,47 +39,35 @@ def artifact(recipe, flag):
         files["service-export.json"] = json.dumps(dict(key=key.hex(), ciphertext=(encryptor.update(padded) + encryptor.finalize()).hex(), mode="AES-128-ECB", padding="PKCS7")).encode()
         files["README.txt"] = b"The original sample prints both KEY and MESSAGE. This adaptation exports them as hexadecimal and adds explicit PKCS7 padding for arbitrary token lengths. Recover your flag by decrypting the message.\n"
     else:
-        files["login.php"] = b'''<?php
-// Query reproduced for study; use CyberDune's isolated lab.
-$username = $_POST["username"];
-$password = $_POST["password"];
-$query = "SELECT * FROM users WHERE name='$username' AND password='$password'";
-// Original sample returns the flag if the query matches a user.
-?>
+        files["login.py"] = b'''import sqlite3
+
+def login(username, password):
+    connection = sqlite3.connect(":memory:")
+    connection.row_factory = sqlite3.Row
+    connection.executescript(open("accounts.sql", encoding="utf-8").read())
+    # Deliberately vulnerable query, isolated to this local teaching sample.
+    query = f"SELECT name, flag FROM users WHERE name='{username}' AND password='{password}'"
+    try:
+        row = connection.execute(query).fetchone()
+    except sqlite3.Error:
+        row = None
+    connection.close()
+    return row["flag"] if row else None
+
+if __name__ == "__main__":
+    import getpass
+    username = input("Username: ")
+    password = getpass.getpass("Password: ")
+    result = login(username, password)
+    print(result if result else "Login failed")
 '''
-        files["README.txt"] = b"Use the isolated login form on the challenge page. The lab reproduces the sample's vulnerable SQL concatenation on a fresh in-memory database with fictional credentials. No real account login is involved.\n"
+        escaped = flag.replace("'", "''")
+        files["accounts.sql"] = ("CREATE TABLE users (name TEXT, password TEXT, flag TEXT);\n"
+            "INSERT INTO users VALUES ('guest', 'guest-password', 'not-the-flag');\n"
+            "INSERT INTO users VALUES ('archive_admin', 'a-long-random-password', '" + escaped + "');\n").encode()
+        files["README.txt"] = b"Run `python3 login.py` in this folder and investigate the source. The app uses only a fresh in-memory SQLite database loaded from accounts.sql. Try the SQL injection against this fictional sample only; it makes no network requests.\n"
     out = io.BytesIO()
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         for name, data in files.items():
             z.writestr(name, data)
     return recipe + ".zip", out.getvalue()
-
-
-def check_sql_login(username, password):
-    """Evaluate one bounded SELECT on a disposable, private in-memory database."""
-    connection = sqlite3.connect(":memory:")
-    try:
-        connection.enable_load_extension(False)
-        connection.execute("CREATE TABLE users (name TEXT, password TEXT)")
-        connection.execute("INSERT INTO users VALUES (?, ?)", ("fictional-admin", hashlib.sha256(b"not-a-platform-password").hexdigest()))
-        connection.execute("PRAGMA query_only=ON")
-        connection.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, 4096)
-        connection.setlimit(sqlite3.SQLITE_LIMIT_SQL_LENGTH, 1024)
-        connection.set_progress_handler(lambda: 1, 5000)
-
-        def authorize(action, arg1, arg2, database, trigger):
-            if action == sqlite3.SQLITE_SELECT:
-                return sqlite3.SQLITE_OK
-            if action == sqlite3.SQLITE_READ and arg1 == "users":
-                return sqlite3.SQLITE_OK
-            return sqlite3.SQLITE_DENY
-
-        connection.set_authorizer(authorize)
-        # Deliberately vulnerable query ONLY inside this standalone teaching DB.
-        query = f"SELECT * FROM users WHERE name='{username}' AND password='{password}'"
-        try:
-            return connection.execute(query).fetchone() is not None
-        except sqlite3.Error:
-            return False
-    finally:
-        connection.close()

@@ -65,29 +65,6 @@
       });
     });
 
-    root.querySelectorAll('[data-training-reset]').forEach(button => {
-      if (button.dataset.bound) return;
-      button.dataset.bound = '1';
-      button.addEventListener('click', () => {
-        const frame = root.querySelector('#training-lab-frame');
-        if (frame) frame.src = frame.src;
-      });
-    });
-
-    root.querySelectorAll('[data-training-sql]').forEach(form => {
-      if (form.dataset.bound) return;
-      form.dataset.bound = '1';
-      form.addEventListener('submit', async event => {
-        event.preventDefault();
-        const output = form.querySelector('[data-sql-result]'), values = new FormData(form);
-        const button = form.querySelector('button'); button.disabled = true;
-        try {
-          const response = await fetch(form.action, {method: 'POST', credentials: 'same-origin', headers: {'Content-Type':'application/json', 'CSRF-Token':values.get('nonce')}, body:JSON.stringify({username:values.get('username'), password:values.get('password')})});
-          const result = await response.json(); output.textContent = result.message || 'Request failed.';
-        } catch (_) { output.textContent = 'Could not reach the lab. Please try again.'; }
-        finally { button.disabled = false; }
-      });
-    });
   };
 
   bindDetail(document);
