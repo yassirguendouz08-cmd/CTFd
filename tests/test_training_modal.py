@@ -26,7 +26,9 @@ def test_simple_example_title_migration_preserves_solves(app):
 def test_training_catalog_opens_challenge_modal_fragment(app):
     client = login_as_user(app, name="alice")
     catalog = client.get("/training")
-    assert b"More practice" in catalog.data
+    assert b"More practice" not in catalog.data
+    assert b"learn.cylabacademy.org/library" not in catalog.data
+    assert b"primer.cylabacademy.org" not in catalog.data
     assert b"CyLab Security Academy / picoCTF" not in catalog.data
     assert b"data-training-open" in catalog.data
     assert b'<a class="tr-card' in catalog.data
