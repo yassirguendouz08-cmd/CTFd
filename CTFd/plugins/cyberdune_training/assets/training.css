@@ -95,3 +95,17 @@
 .cd-site .tr-grid .tr-card:focus-visible{background:#4a1920}
 .cd-site .tr-grid .tr-card.tr-card-solved{background:linear-gradient(145deg,#123c2ff5,#10271ffa);border-color:#63ad87}
 .cd-site .tr-grid .tr-card.tr-card-solved:hover,.cd-site .tr-grid .tr-card.tr-card-solved:focus-visible{background:#19523e;border-color:#83d3a7}
+
+/* Academy card markup shares the CTF card vocabulary, but must own its layout:
+   some site/theme bundles don't load the CTF board's card rules on plugin pages. */
+.cd-training .tr-card .cd-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;width:100%;min-height:24px}
+.cd-training .tr-card .cd-card-category{display:inline-flex;align-items:center;gap:7px;min-width:0}
+.cd-training .tr-card .cd-card-state{flex:0 0 auto;white-space:nowrap}
+.cd-training .tr-card .cd-card-name{display:block;line-height:1.35;overflow-wrap:anywhere}
+.cd-training .tr-card .cd-card-tags{display:flex;align-items:center;flex-wrap:wrap;gap:6px;width:100%;margin:0;min-height:24px}
+.cd-training .tr-card .cd-card-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 16px;width:100%;margin-top:auto;padding-top:14px}
+.cd-training .tr-card .cd-card-solves{display:inline-flex;align-items:center;gap:5px;margin:0;white-space:nowrap;font:600 11px/1.4 var(--cd-mono,ui-monospace,monospace);color:#fff}
+.cd-training .tr-card .cd-card-solves strong{font:inherit;color:inherit}
+.cd-training .tr-card .cd-card-solves i,.cd-training .tr-card .tr-card-points i{flex:0 0 auto;color:#f1a9b0;font-size:11px}
+.cd-training .tr-card .tr-card-points{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;color:#fff;font:600 11px/1.4 var(--cd-mono,ui-monospace,monospace)}
+.cd-training .tr-card .tr-card-points strong,.cd-training .tr-card .tr-card-points small{font:inherit;color:inherit}

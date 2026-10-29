@@ -145,11 +145,9 @@ def catalog():
         TrainingChallenge.active.is_(True),
     ).group_by(TrainingSolve.challenge_id).all())
     items = [localize_training_challenge(item) for item in items]
-    for item in items:
-        item.solves = solve_counts.get(item.id, 0)
     return render_template("training/catalog.html", title="Academy | CyberDune", items=items, categories=categories,
                            difficulties=DIFFICULTIES, complete=complete, filters=filters, summary=user_summary(user),
-                           page=page, pages=max(1, math.ceil(count / 24)), count=count, user=user)
+                           page=page, pages=max(1, math.ceil(count / 24)), count=count, user=user, solve_counts=solve_counts)
 
 
 @training.route("/training/scoreboard")

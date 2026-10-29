@@ -47,10 +47,10 @@
                   if (solves) {
                     const count = Number(solves.dataset.count || 0) + 1;
                     solves.dataset.count = count;
-                    solves.replaceChildren(document.createElement('i'));
-                    const icon = solves.firstChild;
-                    icon.className = 'fas fa-flag'; icon.setAttribute('aria-hidden', 'true');
-                    solves.append(document.createTextNode(` ${count} ${count === 1 ? card.dataset.solveOne : card.dataset.solveMany}`));
+                    const countNode = solves.querySelector('[data-solve-count]');
+                    const labelNode = countNode?.nextElementSibling;
+                    if (countNode) countNode.textContent = String(count);
+                    if (labelNode) labelNode.textContent = count === 1 ? card.dataset.solveOne : card.dataset.solveMany;
                   }
                 }
               }
