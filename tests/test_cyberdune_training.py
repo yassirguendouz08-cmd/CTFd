@@ -61,9 +61,13 @@ def test_starter_library_and_independent_event_access(app):
         set_config("end", 10000000999)
     client = app.test_client()
     assert client.get("/training").status_code == 200
-    assert b"Training scoreboard" in client.get("/training").data
-    assert b"/training" in client.get("/").data
-    assert b"No training solves yet" in client.get("/training/scoreboard").data
+    assert b"Academy leaderboard" in client.get("/training").data
+    assert b"/academy" in client.get("/").data
+    assert b"No Academy flags captured yet" in client.get("/training/scoreboard").data
+    assert client.get("/academy").status_code == 200
+    assert client.get("/academy/scoreboard").status_code == 200
+    assert b"XP" not in client.get("/academy").data
+    assert b"XP" not in client.get("/academy/scoreboard").data
 
 
 def test_search_filters_and_empty_recovery(app):
@@ -94,6 +98,7 @@ def test_training_solve_never_changes_ctf_or_team_score(app):
     response = client.post(endpoint() + "/submit", json={"flag": flag})
     assert response.status_code == 200 and response.json["status"] == "correct"
     assert response.json["summary"]["solved"] == 1
+    assert "xp" not in response.json["summary"]
     assert response.json["summary"]["rank"] == 1
     with app.app_context():
         team = Users.query.filter_by(name="alice").one().team
@@ -145,7 +150,7 @@ def test_hidden_banned_and_admin_accounts_are_not_publicly_ranked(app):
             if name == "alice": user.hidden = True
             if name == "bob": user.banned = True
         db.session.commit()
-    assert b"No training solves yet" in app.test_client().get("/training/scoreboard").data
+    assert b"No Academy flags captured yet" in app.test_client().get("/training/scoreboard").data
 
 
 def test_unpublished_exercise_is_not_accessible_and_history_is_retained(app):
@@ -158,7 +163,7 @@ def test_unpublished_exercise_is_not_accessible_and_history_is_retained(app):
     for path in [endpoint(), endpoint() + "/artifact", endpoint("header-lab") + "/lab"]:
         assert client.get(path).status_code == 404
     assert client.post(endpoint() + "/submit", json={"flag": "x"}).status_code == 404
-    assert b"No training solves yet" in client.get("/training/scoreboard").data
+    assert b"No Academy flags captured yet" in client.get("/training/scoreboard").data
     with app.app_context(): assert TrainingSolve.query.count() == 1
 
 

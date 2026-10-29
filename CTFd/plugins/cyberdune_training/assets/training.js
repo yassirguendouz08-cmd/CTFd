@@ -9,7 +9,6 @@
       total.textContent = ` / ${summary.total}`;
       node.append(total);
     });
-    document.querySelectorAll('[data-training-xp]').forEach(node => { node.textContent = summary.xp; });
     document.querySelectorAll('[data-training-rank]').forEach(node => { node.textContent = summary.rank ? `#${summary.rank}` : '—'; });
     document.querySelectorAll('[data-training-percent]').forEach(node => { node.textContent = `${summary.percent}%`; });
     document.querySelectorAll('.tr-progress progress').forEach(node => { node.value = summary.percent; });
@@ -81,7 +80,7 @@
   if (!dialog || !dialogBody) return;
   const openChallenge = async href => {
     const title = dialog.querySelector('[data-training-dialog-title]');
-    if (title) title.textContent = 'Training challenge';
+    if (title) title.textContent = 'Academy challenge';
     dialogBody.innerHTML = '<p class="tr-dialog-status" role="status">Loading challenge…</p>';
     if (!dialog.open) dialog.showModal();
     try {
@@ -96,7 +95,7 @@
       const documentView = new DOMParser().parseFromString(await response.text(), 'text/html');
       const fragment = documentView.querySelector('[data-training-detail-fragment]');
       if (!fragment) throw new Error('Challenge content is unavailable.');
-      if (title) title.textContent = fragment.dataset.trainingChallengeTitle || 'Training challenge';
+      if (title) title.textContent = fragment.dataset.trainingChallengeTitle || 'Academy challenge';
       dialogBody.replaceChildren(fragment.cloneNode(true));
       bindDetail(dialogBody);
     } catch (error) {

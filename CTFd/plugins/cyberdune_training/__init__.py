@@ -23,6 +23,7 @@ from CTFd.utils.user import get_current_user, get_locale
 from .catalog import CATEGORIES, artifact, lab_data, starter_rows
 from .advanced import advanced_rows
 from .pico import rows as pico_rows
+from .challenge_text import localize_challenge as localize_training_challenge
 from .models import TrainingAnswer, TrainingAttachment, TrainingAttempt, TrainingChallenge, TrainingSolve
 
 training = Blueprint("cyberdune_training", __name__, template_folder="templates", static_folder="assets", static_url_path="/plugins/cyberdune_training/assets")
@@ -57,7 +58,7 @@ def training_user():
                 return redirect(url_for("auth.login", next=request.full_path))
             if get_config("verify_emails") and not user.verified and user.type != "admin":
                 if request.is_json:
-                    return jsonify(success=False, message=tr("Verify your email before training.")), 403
+                    return jsonify(success=False, message=tr("Verify your email before using the Academy.")), 403
                 return redirect(url_for("auth.confirm"))
             return view(*args, **kwargs)
         return wrapped
@@ -96,29 +97,30 @@ def solved_ids(user_id):
 def ranked_users():
     totals = db.session.query(
         Users.id.label("user_id"), Users.name.label("name"),
-        func.count(TrainingSolve.id).label("solved"), func.sum(TrainingSolve.value).label("xp"),
+        func.count(TrainingSolve.id).label("solved"),
     ).join(TrainingSolve, TrainingSolve.user_id == Users.id).join(
         TrainingChallenge, TrainingChallenge.id == TrainingSolve.challenge_id,
     ).filter(TrainingChallenge.active.is_(True), Users.banned.is_(False), Users.hidden.is_(False), Users.type == "user").group_by(Users.id, Users.name).subquery()
-    # Equal solved counts receive equal places; XP never breaks a count tie.
+    # Academy ranks users only by the number of flags they captured.
     ranked = db.session.query(totals, func.rank().over(order_by=totals.c.solved.desc()).label("place")).subquery()
     return ranked
 
 
 def user_summary(user):
     total = TrainingChallenge.query.filter_by(active=True).count()
-    result = {"solved": 0, "total": total, "xp": 0, "rank": None, "percent": 0}
+    result = {"solved": 0, "total": total, "rank": None, "percent": 0}
     if user:
-        count, xp = db.session.query(func.count(TrainingSolve.id), func.sum(TrainingSolve.value)).join(
+        count = db.session.query(func.count(TrainingSolve.id)).join(
             TrainingChallenge, TrainingChallenge.id == TrainingSolve.challenge_id,
-        ).filter(TrainingSolve.user_id == user.id, TrainingChallenge.active.is_(True)).one()
+        ).filter(TrainingSolve.user_id == user.id, TrainingChallenge.active.is_(True)).scalar() or 0
         ranking = ranked_users()
         row = db.session.query(ranking).filter(ranking.c.user_id == user.id).first()
-        result.update(solved=count, xp=xp or 0, rank=row.place if row else None, percent=round(count * 100 / total) if total else 0)
+        result.update(solved=count, rank=row.place if row else None, percent=round(count * 100 / total) if total else 0)
     return result
 
 
 @training.route("/training")
+@training.route("/academy")
 def catalog():
     user = get_current_user()
     complete = solved_ids(user.id if user else None)
@@ -137,12 +139,14 @@ def catalog():
     count = query.count()
     items = query.order_by(TrainingChallenge.id).offset((page - 1) * 24).limit(24).all()
     categories = [row[0] for row in db.session.query(TrainingChallenge.category).filter_by(active=True).distinct().order_by(TrainingChallenge.category)]
-    return render_template("training/catalog.html", title="Training | CyberDune", items=items, categories=categories,
+    items = [localize_training_challenge(item) for item in items]
+    return render_template("training/catalog.html", title="Academy | CyberDune", items=items, categories=categories,
                            difficulties=DIFFICULTIES, complete=complete, filters=filters, summary=user_summary(user),
                            page=page, pages=max(1, math.ceil(count / 24)), count=count, user=user)
 
 
 @training.route("/training/scoreboard")
+@training.route("/academy/scoreboard")
 def scoreboard():
     page = max(1, min(request.args.get("page", 1, type=int), 100000))
     ranking = ranked_users()
@@ -150,21 +154,24 @@ def scoreboard():
     columns = ranking.c
     total = query.count()
     rows = query.order_by(columns.solved.desc(), columns.name, columns.user_id).offset((page - 1) * 50).limit(50).all()
-    return render_template("training/scoreboard.html", title="Training scoreboard | CyberDune", rows=rows, page=page,
+    return render_template("training/scoreboard.html", title="Academy leaderboard | CyberDune", rows=rows, page=page,
                            pages=max(1, math.ceil(total / 50)), summary=user_summary(get_current_user()), user=get_current_user())
 
 
 @training.route("/training/challenges/<slug>")
+@training.route("/academy/challenges/<slug>")
 @training_user()
 def detail(slug):
     challenge = challenge_or_404(slug)
+    challenge_view = localize_training_challenge(challenge)
     template = "training/detail_modal.html" if request.args.get("modal") == "1" else "training/detail.html"
-    return render_template(template, title=challenge.name + " | Training", challenge=challenge,
-                           description=build_markdown(challenge.description, sanitize=True), solved=challenge.id in solved_ids(get_current_user().id),
+    return render_template(template, title=challenge_view.name + " | Academy", challenge=challenge_view,
+                           description=build_markdown(challenge_view.description, sanitize=True), solved=challenge.id in solved_ids(get_current_user().id),
                            summary=user_summary(get_current_user()), attachments=TrainingAttachment.query.filter_by(challenge_id=challenge.id).all())
 
 
 @training.route("/training/challenges/<slug>/artifact")
+@training.route("/academy/challenges/<slug>/artifact")
 @training_user()
 def download(slug):
     challenge = challenge_or_404(slug)
@@ -175,6 +182,7 @@ def download(slug):
 
 
 @training.route("/training/challenges/<slug>/files/<int:attachment_id>")
+@training.route("/academy/challenges/<slug>/files/<int:attachment_id>")
 @training_user()
 def attachment(slug, attachment_id):
     from CTFd.utils.uploads import get_uploader
@@ -186,13 +194,14 @@ def attachment(slug, attachment_id):
 
 
 @training.route("/training/challenges/<slug>/lab")
+@training.route("/academy/challenges/<slug>/lab")
 @training_user()
 def lab(slug):
     challenge = challenge_or_404(slug)
     if not challenge.recipe or challenge.kind != "lab":
         abort(404)
     payload = lab_data(challenge.recipe, exercise_flag(challenge, get_current_user().id))
-    response = current_app.make_response(render_template("training/lab.html", challenge=challenge, payload=payload))
+    response = current_app.make_response(render_template("training/lab.html", challenge=localize_training_challenge(challenge), payload=payload))
     # Even a directly opened lab has an opaque origin and cannot fetch app APIs.
     response.headers["Content-Security-Policy"] = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src data:; form-action 'none'; base-uri 'none'; frame-ancestors 'self'; sandbox allow-scripts"
     response.headers["Referrer-Policy"] = "no-referrer"
@@ -200,6 +209,7 @@ def lab(slug):
 
 
 @training.route("/training/challenges/<slug>/sql", methods=["POST"])
+@training.route("/academy/challenges/<slug>/sql", methods=["POST"])
 @training_user()
 def sql_login(slug):
     from .pico import check_sql_login
@@ -214,6 +224,7 @@ def sql_login(slug):
 
 
 @training.route("/training/challenges/<slug>/submit", methods=["POST"])
+@training.route("/academy/challenges/<slug>/submit", methods=["POST"])
 @training_user()
 def submit(slug):
     challenge = challenge_or_404(slug)
@@ -244,7 +255,7 @@ def submit(slug):
         if TrainingSolve.query.filter_by(user_id=user.id, challenge_id=challenge.id).first():
             return submission_result(challenge, "already_solved", tr("You already solved this exercise."))
         raise
-    return submission_result(challenge, "correct" if correct else "incorrect", tr("Correct flag. Training progress saved!") if correct else tr("That flag is not correct. Try again."))
+    return submission_result(challenge, "correct" if correct else "incorrect", tr("Correct flag. Academy progress saved!") if correct else tr("That flag is not correct. Try again."))
 
 
 def submission_result(challenge, status, message):
@@ -287,9 +298,12 @@ def admin(challenge_id=None):
                     raise ValueError("The type of a built-in exercise cannot be changed.")
                 if values["kind"] == "lab" and not (item and item.recipe) and not values["resource_url"]:
                     raise ValueError("Custom labs need a resource URL to a separately hosted lab.")
-                value = int(request.form.get("value", 50)); minutes = int(request.form.get("minutes", 15))
-                if not 0 <= value <= 10000 or not 1 <= minutes <= 600:
-                    raise ValueError("XP must be 0–10000 and duration 1–600 minutes.")
+                # `value` remains stored for compatibility with existing rows;
+                # Academy standings count captured flags and do not use points.
+                value = item.value if item else 0
+                minutes = int(request.form.get("minutes", 15))
+                if not 1 <= minutes <= 600:
+                    raise ValueError("Duration must be 1–600 minutes.")
                 flag = request.form.get("flag", "").strip()
                 if len(flag) > 256 or (not (item and (item.recipe or item.flag_hash)) and not flag):
                     raise ValueError("A new exercise needs a flag of at most 256 characters.")
@@ -370,8 +384,8 @@ def load(app):
     simplify_seeded_titles()
     app.register_blueprint(training)
     app.jinja_env.globals["training_copy"] = tr
-    register_user_page_menu_bar("Training", "/training")
-    register_admin_plugin_menu_bar("Training", "/admin/training")
+    register_user_page_menu_bar("Academy", "/academy")
+    register_admin_plugin_menu_bar("Academy", "/admin/training")
 
     def limit_training_body():
         if (request.endpoint or "").startswith("cyberdune_training.") and request.method == "POST":

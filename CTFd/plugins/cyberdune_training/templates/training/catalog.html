@@ -1,6 +1,6 @@
 {% extends "training/layout.html" %}
 {% block training_content %}
-<header class="tr-hero"><div><span class="cd-eyebrow">CYBERDUNE / TRAINING GROUND</span><h1>{{ training_copy('Practice, one flag at a time.') }}</h1><p>{{ training_copy('Build your skills across every category. Your training progress belongs to you, even in team mode.') }}</p></div><div class="tr-hero-mark" aria-hidden="true">&gt;_</div></header>
+<header class="cd-page-head tr-hero"><div><span class="cd-eyebrow">CYBERDUNE / ACADEMY</span><h1>{{ training_copy('Practice, one flag at a time.') }}</h1><p>{{ training_copy('Build your skills across every category. Your Academy progress belongs to you, even in team mode.') }}</p></div></header>
 {% if user %}{% include 'training/progress.html' %}{% else %}<p class="tr-guest">{{ training_copy('Log in to save your progress.') }} <a href="{{ url_for('auth.login', next=url_for('cyberdune_training.catalog')) }}">{{ training_copy('Log in') }} →</a></p>{% endif %}
 <form class="tr-filters" method="get" action="{{ url_for('cyberdune_training.catalog') }}">
   <label class="tr-search">{{ training_copy('Search exercises') }}<input type="search" name="q" maxlength="120" value="{{ filters.q }}" placeholder="{{ training_copy('Title or topic') }}"></label>
@@ -10,7 +10,7 @@
   <label>{{ training_copy('Progress') }}<select name="progress"><option value="">{{ training_copy('All exercises') }}</option><option value="solved" {% if filters.progress == 'solved' %}selected{% endif %}>{{ training_copy('Solved') }}</option><option value="unsolved" {% if filters.progress == 'unsolved' %}selected{% endif %}>{{ training_copy('Unsolved') }}</option></select></label>
   <button class="btn btn-primary" type="submit">{{ training_copy('Apply filters') }}</button><a href="{{ url_for('cyberdune_training.catalog') }}">{{ training_copy('Clear filters') }}</a>
 </form>
-<div class="tr-library-heading"><h2>{{ training_copy('Practice library') }} <span>{{ count }}</span></h2><span class="tr-count-note">{{ training_copy('Independent from the CTF scoreboard') }}</span></div>
+<div class="cd-section-heading tr-library-heading"><div><p class="cd-eyebrow">ACADEMY</p><h2>{{ training_copy('Academy library') }} <span>{{ count }}</span></h2></div><span class="tr-count-note">{{ training_copy('Independent from the CTF scoreboard') }}</span></div>
 <section class="tr-grid" aria-label="{{ training_copy('All exercises') }}">
 {% for item in items %}
   <a class="tr-card{% if item.id in complete %} tr-card-solved{% endif %}" data-training-open data-training-slug="{{ item.slug }}" href="{{ url_for('cyberdune_training.detail', slug=item.slug) }}">
@@ -18,13 +18,13 @@
     <span class="tr-card-type">{{ training_copy('Browser lab' if item.kind == 'lab' and item.recipe else 'External lab' if item.kind == 'lab' else 'Challenge') }}</span>
     <span class="tr-card-title">{{ item.name }}</span>
     <span class="tr-card-description">{{ item.description[:135] }}{% if item.description|length > 135 %}…{% endif %}</span>
-    <span class="tr-card-facts"><span><i class="fas fa-clock" aria-hidden="true"></i> ~{{ item.minutes }} min</span><span><i class="fas fa-star" aria-hidden="true"></i> {{ item.value }} XP</span></span>
+    <span class="tr-card-facts"><span><i class="fas fa-clock" aria-hidden="true"></i> ~{{ item.minutes }} min</span></span>
   </a>
 {% else %}<div class="tr-empty"><span aria-hidden="true">⌕</span><h2>{{ training_copy('No exercises match your filters.') }}</h2><p>{{ training_copy('Try another category or clear the filters.') }}</p><a class="btn btn-secondary" href="{{ url_for('cyberdune_training.catalog') }}">{{ training_copy('Clear filters') }}</a></div>{% endfor %}
 </section>
 <dialog class="tr-challenge-dialog" data-training-dialog aria-labelledby="training-modal-title">
   <div class="modal-content cyber-theme tr-training-modal" dir="{{ 'rtl' if get_locale() == 'ar' else 'ltr' }}">
-    <div class="modal-header cyber-header"><h3 class="modal-title" id="training-modal-title" data-training-dialog-title>{{ training_copy('Training challenge') }}</h3><button type="button" class="btn-close btn-close-white" data-training-close aria-label="{{ training_copy('Close') }}"></button></div>
+    <div class="modal-header cyber-header"><h3 class="modal-title" id="training-modal-title" data-training-dialog-title>{{ training_copy('Academy challenge') }}</h3><button type="button" class="btn-close btn-close-white" data-training-close aria-label="{{ training_copy('Close') }}"></button></div>
     <ul class="nav nav-tabs cyber-tabs"><li class="nav-item"><span class="nav-link li-link active">{{ training_copy('Challenge') }}</span></li></ul>
     <div class="modal-body tr-dialog-body" data-training-dialog-body aria-live="polite"></div>
   </div>
