@@ -48,3 +48,10 @@
 .tr-modal-meta .cyber-meta-value{color:#eeeef2}
 .tr-modal-meta .cyber-meta-value.text-danger{color:#ff6a78!important}
 @media(max-width:650px){.tr-challenge-dialog{width:calc(100vw - 16px)}.tr-training-modal{max-height:94vh;border-radius:14px}.tr-training-modal>.modal-header{padding:16px}.tr-training-modal>.cyber-tabs{padding:8px 16px}.tr-training-modal>.tr-dialog-body{max-height:calc(94vh - 124px);padding:16px}.tr-modal-meta{align-items:flex-start;flex-direction:column;gap:12px}.tr-modal-meta .cyber-meta-row{gap:10px 16px}}
+
+/* Match the exact normal and hover colors used by CTF challenge cards. */
+.cd-site .tr-grid .tr-card{background:linear-gradient(145deg,#42171def,#241216fa);border-color:#a347505c}
+.cd-site .tr-grid .tr-card:hover{background:#5a1b24;border-color:#ed6372}
+.cd-site .tr-grid .tr-card:focus-visible{background:#4a1920}
+.cd-site .tr-grid .tr-card.tr-card-solved{background:linear-gradient(145deg,#123c2ff5,#10271ffa);border-color:#63ad87}
+.cd-site .tr-grid .tr-card.tr-card-solved:hover,.cd-site .tr-grid .tr-card.tr-card-solved:focus-visible{background:#19523e;border-color:#83d3a7}

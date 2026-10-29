@@ -10,7 +10,7 @@
 <header class="tr-hero tr-hero-detail"><div><span class="cd-eyebrow">{{ training_copy(challenge.category) }} / {{ training_copy(challenge.difficulty) }}</span><h1>{{ challenge.name }}</h1><p>{{ training_copy('Browser lab' if challenge.kind == 'lab' and challenge.recipe else 'External lab' if challenge.kind == 'lab' else 'Challenge') }} · ~{{ challenge.minutes }} min · {{ challenge.value }} XP</p></div><span class="tr-complete" {% if not solved %}hidden{% endif %}>✓ {{ training_copy('Solved') }}</span></header>
 {% endif %}
 <p class="tr-footnote">{{ challenge.source }}</p>
-{% include 'training/progress.html' %}
+{% if not request.args.get('modal') %}{% include 'training/progress.html' %}{% endif %}
 <div class="tr-detail-grid"><section class="tr-panel tr-brief"><h2>{{ training_copy('Challenge') }}</h2><div class="tr-prose">{{ description | safe }}</div>
 {% if challenge.hint %}<details class="tr-hint"><summary>{{ training_copy('Free hint') }}</summary><p>{{ challenge.hint }}</p></details>{% endif %}
 {% if challenge.recipe and challenge.kind == 'challenge' %}<a class="btn btn-secondary" href="{{ url_for('cyberdune_training.download', slug=challenge.slug) }}">↓ {{ training_copy('Download exercise files') }}</a>{% endif %}
