@@ -1,0 +1,29 @@
+{% extends "training/layout.html" %}
+{% block training_content %}
+<header class="tr-hero"><div><span class="cd-eyebrow">CYBERDUNE / TRAINING GROUND</span><h1>{{ training_copy('Practice, one flag at a time.') }}</h1><p>{{ training_copy('Build your skills across every category. Your training progress belongs to you, even in team mode.') }}</p></div><div class="tr-hero-mark" aria-hidden="true">&gt;_</div></header>
+{% if user %}{% include 'training/progress.html' %}{% else %}<p class="tr-guest">{{ training_copy('Log in to save your progress.') }} <a href="{{ url_for('auth.login', next=url_for('cyberdune_training.catalog')) }}">{{ training_copy('Log in') }} →</a></p>{% endif %}
+<aside class="tr-panel mb-4"><strong>CyLab Security Academy / picoCTF</strong><p>Explore the official challenge library across Easy, Medium and Hard. Official Academy solves stay on their platform; only exercises solved here count on your CyberDune training scoreboard.</p><a href="https://learn.cylabacademy.org/library" target="_blank" rel="noopener noreferrer">Open official challenge library ↗</a> · <a href="https://primer.cylabacademy.org/" target="_blank" rel="noopener noreferrer">CTF Primer ↗</a></aside>
+<form class="tr-filters" method="get" action="{{ url_for('cyberdune_training.catalog') }}">
+  <label class="tr-search">{{ training_copy('Search exercises') }}<input type="search" name="q" maxlength="120" value="{{ filters.q }}" placeholder="{{ training_copy('Title or topic') }}"></label>
+  <label>{{ training_copy('Category') }}<select name="category"><option value="">{{ training_copy('All categories') }}</option>{% for category in categories %}<option {% if filters.category == category %}selected{% endif %} value="{{ category }}">{{ training_copy(category) }}</option>{% endfor %}</select></label>
+  <label>{{ training_copy('Difficulty') }}<select name="difficulty"><option value="">{{ training_copy('All levels') }}</option>{% for difficulty in difficulties %}<option {% if filters.difficulty == difficulty %}selected{% endif %}>{{ difficulty }}</option>{% endfor %}</select></label>
+  <label>{{ training_copy('Type') }}<select name="kind"><option value="">{{ training_copy('All types') }}</option><option value="challenge" {% if filters.kind == 'challenge' %}selected{% endif %}>{{ training_copy('Challenge') }}</option><option value="lab" {% if filters.kind == 'lab' %}selected{% endif %}>Labs</option></select></label>
+  <label>{{ training_copy('Progress') }}<select name="progress"><option value="">{{ training_copy('All exercises') }}</option><option value="solved" {% if filters.progress == 'solved' %}selected{% endif %}>{{ training_copy('Solved') }}</option><option value="unsolved" {% if filters.progress == 'unsolved' %}selected{% endif %}>{{ training_copy('Unsolved') }}</option></select></label>
+  <button class="btn btn-primary" type="submit">{{ training_copy('Apply filters') }}</button><a href="{{ url_for('cyberdune_training.catalog') }}">{{ training_copy('Clear filters') }}</a>
+</form>
+<div class="tr-library-heading"><h2>{{ training_copy('Practice library') }} <span>{{ count }}</span></h2><span class="tr-count-note">{{ training_copy('Independent from the CTF scoreboard') }}</span></div>
+<section class="tr-grid" aria-label="{{ training_copy('All exercises') }}">
+{% for item in items %}
+  <article class="tr-card{% if item.id in complete %} tr-card-solved{% endif %}">
+    <div class="tr-card-meta"><span class="tr-category">{{ training_copy(item.category) }}</span><span class="tr-type">{{ training_copy('Browser lab' if item.kind == 'lab' and item.recipe else 'External lab' if item.kind == 'lab' else 'Challenge') }}</span></div>
+    <div class="tr-card-symbol" aria-hidden="true">{{ {'Web':'</>', 'Cryptography':'{#}', 'Forensics':'0x', 'OSINT':'◎', 'Reverse Engineering':'↶', 'Pwn':'[sp]', 'Linux':'$_', 'Networking':'⇄', 'Misc':'◇'}.get(item.category, '>_') }}</div>
+    <h3><a href="{{ url_for('cyberdune_training.detail', slug=item.slug) }}">{{ item.name }}</a></h3>
+    <p>{{ item.description[:135] }}{% if item.description|length > 135 %}…{% endif %}</p>
+    <div class="tr-card-facts"><span>{{ training_copy(item.difficulty) }}</span><span>~{{ item.minutes }} min</span><span>{{ item.value }} XP</span></div>
+    <a class="tr-card-start" href="{{ url_for('cyberdune_training.detail', slug=item.slug) }}">{{ training_copy('Review exercise' if item.id in complete else 'Start exercise') }} <span>{{ '✓' if item.id in complete else '↗' }}</span></a>
+  </article>
+{% else %}<div class="tr-empty"><span aria-hidden="true">⌕</span><h2>{{ training_copy('No exercises match your filters.') }}</h2><p>{{ training_copy('Try another category or clear the filters.') }}</p><a class="btn btn-secondary" href="{{ url_for('cyberdune_training.catalog') }}">{{ training_copy('Clear filters') }}</a></div>{% endfor %}
+</section>
+{% if pages > 1 %}<nav class="tr-pagination" aria-label="Pages">{% if page > 1 %}<a href="{{ url_for('cyberdune_training.catalog', **dict(filters, page=page-1)) }}">← {{ training_copy('Previous') }}</a>{% endif %}<span>{{ page }} / {{ pages }}</span>{% if page < pages %}<a href="{{ url_for('cyberdune_training.catalog', **dict(filters, page=page+1)) }}">{{ training_copy('Next') }} →</a>{% endif %}</nav>{% endif %}
+<p class="tr-footnote">{{ training_copy('Self-contained practice files and sandboxed browser labs. Only work on the provided exercise material.') }}</p>
+{% endblock %}

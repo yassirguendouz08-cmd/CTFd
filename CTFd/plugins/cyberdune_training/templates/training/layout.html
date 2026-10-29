@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block stylesheets %}{{ super() }}<link rel="stylesheet" href="{{ url_for('cyberdune_training.static', filename='training.css') }}?v=20261029-1">{% endblock %}
+{% block content %}
+<div class="container cd-training" dir="{{ 'rtl' if get_locale() == 'ar' else 'ltr' }}">
+  <nav class="tr-tabs" aria-label="{{ training_copy('Training') }}">
+    <a href="{{ url_for('cyberdune_training.catalog') }}" {% if request.endpoint != 'cyberdune_training.scoreboard' %}aria-current="page"{% endif %}>{{ training_copy('Practice library') }}</a>
+    <a href="{{ url_for('cyberdune_training.scoreboard') }}" {% if request.endpoint == 'cyberdune_training.scoreboard' %}aria-current="page"{% endif %}>{{ training_copy('Training scoreboard') }}</a>
+    {% if is_admin() %}<a class="tr-admin" href="{{ url_for('cyberdune_training.admin') }}">{{ training_copy('Manage training') }} ↗</a>{% endif %}
+  </nav>
+  {% block training_content %}{% endblock %}
+</div>
+{% endblock %}
+{% block scripts %}{{ super() }}<script src="{{ url_for('cyberdune_training.static', filename='training.js') }}?v=20261029-1" defer></script>{% endblock %}

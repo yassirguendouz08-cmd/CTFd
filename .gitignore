@@ -92,6 +92,7 @@ CTFd/plugins/*
 !CTFd/plugins/flags/
 !CTFd/plugins/cyberdune_presentation/
 !CTFd/plugins/cyberdune_seo/
+!CTFd/plugins/cyberdune_training/
 !CTFd/plugins/ctfd_chall_manager/
 !CTFd/plugins/*.py
 
