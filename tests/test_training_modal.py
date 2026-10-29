@@ -48,6 +48,26 @@ def test_training_catalog_opens_challenge_modal_fragment(app):
     assert b"data-training-detail-fragment" in direct.data
 
 
+def test_academy_cards_show_points_and_live_solve_totals(app):
+    client = login_as_user(app, name="alice")
+    catalog = client.get("/academy")
+    assert b"tr-card-points" in catalog.data
+    assert b"data-count=\"0\"" in catalog.data
+    assert b"0 solves" in catalog.data
+
+    with app.app_context():
+        challenge = TrainingChallenge.query.filter_by(slug="pico-ecb-1").one()
+        user = Users.query.filter_by(name="alice").one()
+        db.session.add(TrainingSolve(user_id=user.id, challenge_id=challenge.id, value=challenge.value))
+        db.session.commit()
+        points = challenge.value
+
+    catalog = client.get("/academy")
+    assert f">{points}</strong>".encode() in catalog.data
+    assert b"data-count=\"1\"" in catalog.data
+    assert b"1 solve" in catalog.data
+
+
 def test_challenge_page_does_not_render_get_started_guide():
     from pathlib import Path
 

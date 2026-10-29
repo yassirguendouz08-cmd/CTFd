@@ -38,7 +38,22 @@
             root.querySelectorAll('.tr-complete,.tr-solved-message').forEach(node => { node.hidden = false; });
             updateProgress(data.summary);
             document.querySelectorAll('.tr-card[data-training-slug]').forEach(card => {
-              if (card.dataset.trainingSlug === form.dataset.trainingSlug) card.classList.add('tr-card-solved');
+              if (card.dataset.trainingSlug === form.dataset.trainingSlug) {
+                card.classList.add('tr-card-solved');
+                const state = card.querySelector('.cd-card-state');
+                if (state) state.textContent = `✓ ${card.dataset.solvedLabel}`;
+                if (data.status === 'correct') {
+                  const solves = card.querySelector('[data-academy-solves]');
+                  if (solves) {
+                    const count = Number(solves.dataset.count || 0) + 1;
+                    solves.dataset.count = count;
+                    solves.replaceChildren(document.createElement('i'));
+                    const icon = solves.firstChild;
+                    icon.className = 'fas fa-flag'; icon.setAttribute('aria-hidden', 'true');
+                    solves.append(document.createTextNode(` ${count} ${count === 1 ? card.dataset.solveOne : card.dataset.solveMany}`));
+                  }
+                }
+              }
             });
           }
         } catch (error) {

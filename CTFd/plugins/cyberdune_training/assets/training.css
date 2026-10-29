@@ -55,6 +55,20 @@
 .tr-card-facts i{font-size:10px;color:#f1a9b0}
 .tr-card-solved{background:linear-gradient(145deg,#163d32,#10271f);border-color:#63ad87}
 .tr-card-solved:hover,.tr-card-solved:focus-visible{background:#19523e;border-color:#83d3a7}
+.tr-card .cd-card-top{min-height:24px}
+.tr-card .cd-card-category{color:#ffe0e3}
+.tr-card .cd-category-symbol{width:6px;height:6px;border-radius:50%;background:#ff8c98;color:transparent;font-size:0}
+.tr-card .cd-card-state{color:#d7bec2}
+.tr-card-solved .cd-card-state{color:#9be0bb}
+.tr-card .cd-card-name{font-size:19px;font-weight:650;color:#fff}
+.tr-card .cd-card-tags{margin:0;min-height:24px}
+.tr-card .cd-card-tags>span{color:#f8d3d8;background:#ffffff08;border-color:#ffffff25}
+.tr-card .cd-card-bottom{padding-top:14px;border-color:#ffffff3d}
+.tr-card .cd-card-solves{margin:0;color:#fff}
+.tr-card .tr-card-points{display:inline-flex;align-items:center;gap:5px;color:#fff;font:600 11px/1.4 var(--cd-mono,ui-monospace,monospace)}
+.tr-card .tr-card-points i{color:#f1a9b0;font-size:11px}
+.tr-card .tr-card-points strong{font:inherit}
+.tr-card .tr-card-points small{font:inherit;color:#fff}
 @media(max-width:1099px){.tr-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:767px){.tr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:479px){.tr-grid{grid-template-columns:1fr}.tr-card{min-height:160px}}

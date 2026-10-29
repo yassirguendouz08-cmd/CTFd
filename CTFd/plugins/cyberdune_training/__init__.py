@@ -139,7 +139,14 @@ def catalog():
     count = query.count()
     items = query.order_by(TrainingChallenge.id).offset((page - 1) * 24).limit(24).all()
     categories = [row[0] for row in db.session.query(TrainingChallenge.category).filter_by(active=True).distinct().order_by(TrainingChallenge.category)]
+    solve_counts = dict(db.session.query(
+        TrainingSolve.challenge_id, func.count(TrainingSolve.id),
+    ).join(TrainingChallenge, TrainingChallenge.id == TrainingSolve.challenge_id).filter(
+        TrainingChallenge.active.is_(True),
+    ).group_by(TrainingSolve.challenge_id).all())
     items = [localize_training_challenge(item) for item in items]
+    for item in items:
+        item.solves = solve_counts.get(item.id, 0)
     return render_template("training/catalog.html", title="Academy | CyberDune", items=items, categories=categories,
                            difficulties=DIFFICULTIES, complete=complete, filters=filters, summary=user_summary(user),
                            page=page, pages=max(1, math.ceil(count / 24)), count=count, user=user)
@@ -298,12 +305,11 @@ def admin(challenge_id=None):
                     raise ValueError("The type of a built-in exercise cannot be changed.")
                 if values["kind"] == "lab" and not (item and item.recipe) and not values["resource_url"]:
                     raise ValueError("Custom labs need a resource URL to a separately hosted lab.")
-                # `value` remains stored for compatibility with existing rows;
-                # Academy standings count captured flags and do not use points.
-                value = item.value if item else 0
+                # Points appear on cards; leaderboard ranking remains based on flags captured.
+                value = int(request.form.get("value", item.value if item else 50))
                 minutes = int(request.form.get("minutes", 15))
-                if not 1 <= minutes <= 600:
-                    raise ValueError("Duration must be 1–600 minutes.")
+                if not 0 <= value <= 10000 or not 1 <= minutes <= 600:
+                    raise ValueError("Points must be 0–10000 and duration 1–600 minutes.")
                 flag = request.form.get("flag", "").strip()
                 if len(flag) > 256 or (not (item and (item.recipe or item.flag_hash)) and not flag):
                     raise ValueError("A new exercise needs a flag of at most 256 characters.")
