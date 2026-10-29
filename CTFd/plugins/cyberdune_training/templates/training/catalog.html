@@ -14,14 +14,13 @@
 <div class="tr-library-heading"><h2>{{ training_copy('Practice library') }} <span>{{ count }}</span></h2><span class="tr-count-note">{{ training_copy('Independent from the CTF scoreboard') }}</span></div>
 <section class="tr-grid" aria-label="{{ training_copy('All exercises') }}">
 {% for item in items %}
-  <article class="tr-card{% if item.id in complete %} tr-card-solved{% endif %}" data-training-slug="{{ item.slug }}">
-    <div class="tr-card-meta"><span class="tr-category">{{ training_copy(item.category) }}</span><span class="tr-type">{{ training_copy('Browser lab' if item.kind == 'lab' and item.recipe else 'External lab' if item.kind == 'lab' else 'Challenge') }}</span></div>
-    <div class="tr-card-symbol" aria-hidden="true">{{ {'Web':'</>', 'Cryptography':'{#}', 'Forensics':'0x', 'OSINT':'◎', 'Reverse Engineering':'↶', 'Pwn':'[sp]', 'Linux':'$_', 'Networking':'⇄', 'Misc':'◇'}.get(item.category, '>_') }}</div>
-    <h3><a data-training-open href="{{ url_for('cyberdune_training.detail', slug=item.slug) }}">{{ item.name }}</a></h3>
-    <p>{{ item.description[:135] }}{% if item.description|length > 135 %}…{% endif %}</p>
-    <div class="tr-card-facts"><span>{{ training_copy(item.difficulty) }}</span><span>~{{ item.minutes }} min</span><span>{{ item.value }} XP</span></div>
-    <a class="tr-card-start" data-training-open href="{{ url_for('cyberdune_training.detail', slug=item.slug) }}">{{ training_copy('Review exercise' if item.id in complete else 'Start exercise') }} <span>{{ '✓' if item.id in complete else '↗' }}</span></a>
-  </article>
+  <a class="tr-card{% if item.id in complete %} tr-card-solved{% endif %}" data-training-open data-training-slug="{{ item.slug }}" href="{{ url_for('cyberdune_training.detail', slug=item.slug) }}">
+    <span class="tr-card-meta"><span class="tr-category">{{ training_copy(item.category) }}</span><span class="tr-difficulty">{{ training_copy(item.difficulty) }}</span>{% if item.id in complete %}<span class="tr-solved-label"><i class="fas fa-check-circle" aria-hidden="true"></i> {{ training_copy('Solved') }}</span>{% endif %}</span>
+    <span class="tr-card-type">{{ training_copy('Browser lab' if item.kind == 'lab' and item.recipe else 'External lab' if item.kind == 'lab' else 'Challenge') }}</span>
+    <span class="tr-card-title">{{ item.name }}</span>
+    <span class="tr-card-description">{{ item.description[:135] }}{% if item.description|length > 135 %}…{% endif %}</span>
+    <span class="tr-card-facts"><span><i class="fas fa-clock" aria-hidden="true"></i> ~{{ item.minutes }} min</span><span><i class="fas fa-star" aria-hidden="true"></i> {{ item.value }} XP</span></span>
+  </a>
 {% else %}<div class="tr-empty"><span aria-hidden="true">⌕</span><h2>{{ training_copy('No exercises match your filters.') }}</h2><p>{{ training_copy('Try another category or clear the filters.') }}</p><a class="btn btn-secondary" href="{{ url_for('cyberdune_training.catalog') }}">{{ training_copy('Clear filters') }}</a></div>{% endfor %}
 </section>
 <dialog class="tr-challenge-dialog" data-training-dialog aria-label="Training challenge">

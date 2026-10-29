@@ -11,3 +11,24 @@
 .tr-dialog-body .tr-hero{padding-top:16px}
 .tr-dialog-status{padding:36px 4px;color:#aeb2bd}
 @media(max-width:650px){.tr-challenge-dialog{width:calc(100vw - 12px);max-height:94vh;border-radius:12px}.tr-dialog-toolbar{min-height:52px;padding:8px 14px}.tr-dialog-body{max-height:calc(94vh - 52px);padding:0 14px 20px}.tr-dialog-body .tr-detail-grid{gap:14px}.tr-dialog-body .tr-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.tr-dialog-body .tr-progress{grid-column:1/-1}}
+
+/* Keep Training challenge cards visually aligned with the main CTF board. */
+.tr-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.tr-card{align-items:stretch;text-align:start;justify-content:flex-start;padding:18px;min-height:176px;gap:10px;background:linear-gradient(145deg,#42171def,#241216fa);border:1px solid #a347505c;clip-path:none;border-radius:12px;color:#fff;text-decoration:none;transition:background-color .2s,border-color .2s,transform .2s}
+.tr-card:hover{background:#5a1b24;border-color:#ed6372;transform:translateY(-2px);color:#fff}
+.tr-card:focus-visible{background:#4a1920;outline:2px solid #ff9292;outline-offset:3px;color:#fff}
+.tr-card-meta{justify-content:flex-start;flex-wrap:wrap;gap:6px;min-height:20px}
+.tr-category{margin-inline-end:auto;color:#ffdbdb;background:#76232c;border:1px solid #a347505c;border-radius:6px;font-size:10px;letter-spacing:0;text-transform:none;padding:4px 12px}
+.tr-difficulty,.tr-solved-label{border:1px solid #ffffff33;border-radius:5px;color:#f8d3d8;font-size:10px;padding:2px 6px;white-space:nowrap}
+.tr-solved-label{color:#e2fff0;background:#225f47;border-color:#7fc5a8}
+.tr-card-type{display:block;color:#ffe3e3;font-size:10px;line-height:1.5}
+.tr-card-title{display:block;font-size:16px;line-height:1.45;font-weight:600;letter-spacing:-.015em;overflow-wrap:anywhere}
+.tr-card-description{display:block;font-size:12px;line-height:1.65;color:#c7b7ba;margin:0;flex:1}
+.tr-card-facts{display:flex;justify-content:space-between;gap:8px;margin-top:auto;padding:10px 0 0;border-top:1px solid #ffffff3d;color:#fff;font:600 11px/1.4 var(--cd-mono,ui-monospace,monospace)}
+.tr-card-facts span{display:inline-flex;align-items:center;gap:5px}
+.tr-card-facts i{font-size:10px;color:#f1a9b0}
+.tr-card-solved{background:linear-gradient(145deg,#163d32,#10271f);border-color:#63ad87}
+.tr-card-solved:hover,.tr-card-solved:focus-visible{background:#19523e;border-color:#83d3a7}
+@media(max-width:1099px){.tr-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:767px){.tr-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:479px){.tr-grid{grid-template-columns:1fr}.tr-card{min-height:160px}}
