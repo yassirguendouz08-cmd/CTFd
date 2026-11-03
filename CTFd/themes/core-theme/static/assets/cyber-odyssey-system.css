@@ -1453,3 +1453,205 @@ body.cd-app.cd-home .cd-hero .cd-actions .btn {
   body.cd-app.cd-home .cd-hero .cd-actions { align-items: stretch; }
   body.cd-app.cd-home .cd-hero .cd-actions .btn { width: 100%; }
 }
+
+/* Fit the homepage hero, contact strip and footer into one viewport. */
+@media (min-height: 640px) {
+  body.cd-app.cd-home {
+    height: 100vh;
+    height: 100svh;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  body.cd-app.cd-home main {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+  body.cd-app.cd-home .cd-hero-shell {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+  }
+  body.cd-app.cd-home .cd-hero {
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+    align-items: center;
+    padding: clamp(72px, 8vh, 92px) 0 12px;
+  }
+  body.cd-app.cd-home .cd-hero-copy { max-width: 900px; }
+  body.cd-app.cd-home .cd-hero .cd-eyebrow {
+    margin-bottom: 10px;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+  body.cd-app.cd-home .cd-hero .cd-brand-title {
+    font-size: clamp(58px, 6.1vw, 116px);
+    line-height: .9;
+    letter-spacing: 0;
+  }
+  body.cd-app.cd-home .cd-platform-tagline {
+    margin: 8px 0 5px;
+    font-size: clamp(16px, 1.25vw, 20px);
+    line-height: 1.3;
+  }
+  body.cd-app.cd-home .cd-hero .cd-hero-description {
+    max-width: 560px;
+    margin-bottom: 14px;
+    font-size: clamp(14px, 1vw, 16px);
+    line-height: 1.45;
+  }
+  body.cd-app.cd-home .cd-hero .cd-actions { gap: 9px; }
+  body.cd-app.cd-home .cd-hero .cd-actions .btn {
+    min-height: 44px;
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+  body.cd-app.cd-home .cd-footer {
+    flex: 0 0 auto;
+    margin-top: 0;
+    padding: 0 0 6px;
+  }
+  body.cd-app.cd-home .cd-comms {
+    display: grid;
+    grid-template-columns: minmax(250px, .78fr) minmax(0, 1.22fr);
+    align-items: center;
+    gap: clamp(16px, 2vw, 32px);
+    margin: 0;
+    padding: 10px 0 12px;
+    border-bottom: 1px solid rgb(255 255 255 / 12%);
+  }
+  body.cd-app.cd-home .cd-comms-heading .cd-eyebrow {
+    margin: 0 0 4px;
+    font-size: 9px;
+  }
+  body.cd-app.cd-home .cd-comms-heading h2 {
+    margin: 0 0 4px;
+    font-size: clamp(20px, 1.55vw, 27px);
+    line-height: 1.15;
+  }
+  body.cd-app.cd-home .cd-comms-heading > p:last-child {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  body.cd-app.cd-home .cd-comms-links {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  body.cd-app.cd-home .cd-comms-links > a {
+    min-height: 54px;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  body.cd-app.cd-home .cd-comms-links > a > i {
+    width: 17px;
+    font-size: 15px;
+  }
+  body.cd-app.cd-home .cd-comms-links small {
+    margin-bottom: 2px;
+    font-size: 9px;
+  }
+  body.cd-app.cd-home .cd-comms-links strong { font-size: clamp(10px, .72vw, 13px); }
+  body.cd-app.cd-home .cd-footer-inner {
+    min-height: 50px;
+    gap: 12px;
+    padding-inline: clamp(20px, 3vw, 48px);
+  }
+  body.cd-app.cd-home .cd-footer-brand { gap: 9px; }
+  body.cd-app.cd-home .cd-footer-brand .cd-official-logo { width: 34px; }
+  body.cd-app.cd-home .cd-footer-brand small {
+    max-width: none;
+    margin: 0;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+  body.cd-app.cd-home .cd-footer-links { gap: 16px; }
+  body.cd-app.cd-home .cd-footer-links a { font-size: 10px; }
+}
+
+@media (min-height: 640px) and (max-width: 900px) {
+  body.cd-app.cd-home .cd-comms {
+    grid-template-columns: 1fr;
+    gap: 7px;
+    padding-block: 8px 10px;
+  }
+  body.cd-app.cd-home .cd-comms-heading {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 12px;
+  }
+  body.cd-app.cd-home .cd-comms-heading .cd-eyebrow { grid-column: 1 / -1; }
+  body.cd-app.cd-home .cd-comms-heading h2 { margin: 0; }
+  body.cd-app.cd-home .cd-comms-links { gap: 7px; }
+  body.cd-app.cd-home .cd-comms-links > a { min-height: 46px; padding: 7px 9px; }
+}
+
+@media (min-height: 640px) and (max-width: 767px) {
+  body.cd-app.cd-home .cd-header { height: 68px; }
+  body.cd-app.cd-home .cd-hero {
+    padding: 68px 0 8px;
+    text-align: center;
+  }
+  body.cd-app.cd-home .cd-hero-copy { max-width: 440px; margin-inline: auto; }
+  body.cd-app.cd-home .cd-hero .cd-eyebrow { margin-bottom: 7px; font-size: 9px; }
+  body.cd-app.cd-home .cd-hero .cd-brand-title {
+    font-size: clamp(36px, 10vw, 48px);
+    line-height: .92;
+  }
+  body.cd-app.cd-home .cd-platform-tagline { margin: 7px 0; font-size: 16px; }
+  body.cd-app.cd-home .cd-hero .cd-hero-description {
+    max-width: 420px;
+    margin: 0 auto 10px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  body.cd-app.cd-home .cd-hero .cd-actions {
+    display: grid;
+    gap: 6px;
+  }
+  body.cd-app.cd-home .cd-hero .cd-actions .btn {
+    width: 100%;
+    min-height: 38px;
+    padding: 8px 14px;
+  }
+  body.cd-app.cd-home .cd-comms {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding-block: 7px 8px;
+  }
+  body.cd-app.cd-home .cd-comms-heading { display: block; text-align: center; }
+  body.cd-app.cd-home .cd-comms-heading .cd-eyebrow { margin-bottom: 2px; }
+  body.cd-app.cd-home .cd-comms-heading h2 { margin-bottom: 2px; font-size: 18px; }
+  body.cd-app.cd-home .cd-comms-heading > p:last-child { font-size: 11px; line-height: 1.3; }
+  body.cd-app.cd-home .cd-comms-links { grid-template-columns: 1fr; gap: 4px; }
+  body.cd-app.cd-home .cd-comms-links > a { min-height: 32px; padding: 5px 8px; }
+  body.cd-app.cd-home .cd-comms-links > a > i { width: 16px; font-size: 13px; }
+  body.cd-app.cd-home .cd-comms-links small { font-size: 8px; }
+  body.cd-app.cd-home .cd-comms-links strong { font-size: 10px; }
+  body.cd-app.cd-home .cd-footer { padding-bottom: 5px; }
+  body.cd-app.cd-home .cd-footer-inner {
+    min-height: 42px;
+    flex-direction: row;
+    gap: 8px;
+    padding-inline: 16px;
+  }
+  body.cd-app.cd-home .cd-footer-brand { gap: 7px; }
+  body.cd-app.cd-home .cd-footer-brand .cd-official-logo { width: 28px; }
+  body.cd-app.cd-home .cd-footer-brand small { max-width: 112px; font-size: 9px; }
+  body.cd-app.cd-home .cd-footer-links { gap: 9px; }
+  body.cd-app.cd-home .cd-footer-links a { font-size: 9px; }
+}
+
+@media (min-height: 640px) and (max-height: 740px) {
+  body.cd-app.cd-home .cd-hero { padding-block: 68px 8px; }
+  body.cd-app.cd-home .cd-hero .cd-brand-title { font-size: clamp(54px, 5.7vw, 100px); }
+  body.cd-app.cd-home .cd-comms { padding-block: 6px 8px; }
+  body.cd-app.cd-home .cd-footer-inner { min-height: 44px; }
+}
