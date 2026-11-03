@@ -1755,6 +1755,61 @@ body.cd-app .cd-auth-card { width: 100%; max-width: 720px; justify-self: end; }
   body.cd-app .cd-footer-links { justify-content: center; }
   body.cd-app .cd-footer-credit { white-space: normal; }
 }
+
+/* Reuse the homepage contact and footer composition across player pages. */
+body.cd-app:not(.cd-home) .cd-footer { padding: 0 0 6px; }
+body.cd-app:not(.cd-home) .cd-comms {
+  display: grid;
+  grid-template-columns: minmax(250px, .78fr) minmax(0, 1.22fr);
+  align-items: center;
+  gap: clamp(16px, 2vw, 32px);
+  margin: 0 auto;
+  padding-block: 10px 12px;
+  border-bottom: 1px solid rgb(255 255 255 / 12%);
+}
+body.cd-app:not(.cd-home) .cd-comms-heading .cd-eyebrow { margin: 0 0 4px; font-size: 9px; }
+body.cd-app:not(.cd-home) .cd-comms-heading h2 {
+  margin: 0 0 4px;
+  font-size: clamp(20px, 1.55vw, 27px);
+  line-height: 1.15;
+}
+body.cd-app:not(.cd-home) .cd-comms-heading > p:last-child { margin: 0; font-size: 12px; line-height: 1.4; }
+body.cd-app:not(.cd-home) .cd-comms-links { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+body.cd-app:not(.cd-home) .cd-comms-links > a { min-height: 54px; gap: 8px; padding: 8px 10px; }
+body.cd-app:not(.cd-home) .cd-comms-links > a > i { width: 17px; font-size: 15px; }
+body.cd-app:not(.cd-home) .cd-comms-links small { margin-bottom: 2px; font-size: 9px; }
+body.cd-app:not(.cd-home) .cd-comms-links strong { font-size: clamp(10px, .72vw, 13px); }
+body.cd-app:not(.cd-home) .cd-footer-inner { min-height: 50px; gap: 12px; }
+
+@media (max-width: 900px) {
+  body.cd-app:not(.cd-home) .cd-comms {
+    grid-template-columns: 1fr;
+    gap: 7px;
+    padding-block: 8px 10px;
+  }
+  body.cd-app:not(.cd-home) .cd-comms-heading {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 12px;
+  }
+  body.cd-app:not(.cd-home) .cd-comms-heading .cd-eyebrow { grid-column: 1 / -1; }
+  body.cd-app:not(.cd-home) .cd-comms-links { gap: 7px; }
+  body.cd-app:not(.cd-home) .cd-comms-links > a { min-height: 46px; padding: 7px 9px; }
+}
+
+@media (max-width: 767px) {
+  body.cd-app:not(.cd-home) .cd-comms { gap: 5px; padding-block: 7px 8px; }
+  body.cd-app:not(.cd-home) .cd-comms-heading { display: block; text-align: center; }
+  body.cd-app:not(.cd-home) .cd-comms-heading .cd-eyebrow { margin-bottom: 2px; }
+  body.cd-app:not(.cd-home) .cd-comms-heading h2 { margin-bottom: 2px; font-size: 18px; }
+  body.cd-app:not(.cd-home) .cd-comms-heading > p:last-child { font-size: 11px; line-height: 1.3; }
+  body.cd-app:not(.cd-home) .cd-comms-links { grid-template-columns: 1fr; gap: 4px; }
+  body.cd-app:not(.cd-home) .cd-comms-links > a { min-height: 36px; padding: 5px 8px; }
+  body.cd-app:not(.cd-home) .cd-comms-links > a > i { width: 16px; font-size: 13px; }
+  body.cd-app:not(.cd-home) .cd-comms-links small { font-size: 8px; }
+  body.cd-app:not(.cd-home) .cd-comms-links strong { font-size: 10px; }
+}
 @media (min-height: 640px) and (max-width: 767px) {
   body.cd-app.cd-home {
     height: auto;
