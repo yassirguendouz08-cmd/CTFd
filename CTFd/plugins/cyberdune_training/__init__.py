@@ -136,8 +136,13 @@ def user_summary(user):
             TrainingChallenge, TrainingChallenge.id == TrainingSolve.challenge_id,
         ).filter(TrainingSolve.user_id == user.id, TrainingChallenge.active.is_(True)).scalar() or 0
         ranking = ranked_users()
-        row = db.session.query(ranking).filter(ranking.c.user_id == user.id).first()
-        result.update(solved=count, rank=row.place if row else None, percent=round(count * 100 / total) if total else 0)
+        rank = None
+        if count:
+            players_ahead = db.session.query(func.count()).select_from(ranking).filter(
+                ranking.c.solved > count,
+            ).scalar() or 0
+            rank = players_ahead + 1
+        result.update(solved=count, rank=rank, percent=round(count * 100 / total) if total else 0)
     return result
 
 
