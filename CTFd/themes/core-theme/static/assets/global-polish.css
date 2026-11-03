@@ -1,0 +1,290 @@
+/* Shared CyberDune finish for the public site, Academy, and challenge dialogs. */
+:root {
+  --cd-font: "Geist Sans", system-ui, sans-serif;
+  --cd-heading: "Geist Sans", system-ui, sans-serif;
+  --cd-mono: "Geist Mono", ui-monospace, monospace;
+  --cd-accent: #e64a5b;
+  --cd-focus: #ff8490;
+  --cd-red: #e64a5b;
+  --cd-border: #2b303a;
+  --cd-surface: #10141b;
+  --cd-surface-raised: #171d26;
+  --cd-text: #f1f3f7;
+  --cd-muted: #a7afbd;
+  --bs-primary: #e64a5b;
+  --bs-primary-rgb: 230, 74, 91;
+  --bs-border-color: #2b303a;
+}
+
+body.cd-site {
+  --cd-font: "Geist Sans", system-ui, sans-serif;
+  --cd-heading: "Geist Sans", system-ui, sans-serif;
+  --cd-mono: "Geist Mono", ui-monospace, monospace;
+  color: var(--cd-text);
+  font-family: "Geist Sans", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  letter-spacing: -0.006em;
+}
+
+.cd-site :where(button, input, select, textarea, .btn, .form-control, .form-select) {
+  font-family: "Geist Sans", system-ui, sans-serif;
+}
+
+.cd-site :where(code, pre, kbd, samp, #challenge-input, .tr-card-facts, .tr-card-points) {
+  font-family: "Geist Mono", ui-monospace, monospace;
+}
+
+.cd-site :where(h1, h2, h3, h4) {
+  color: #f7f8fb;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.cd-site :where(p, li, .tr-prose) {
+  text-wrap: pretty;
+}
+
+.cd-site .container,
+.cd-nav-wrap,
+.cd-site .cd-original-home-grid {
+  max-width: 1260px;
+}
+
+.cd-site .container {
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+
+.cd-header {
+  background: rgb(9 12 17 / 94%);
+  border-color: rgb(255 255 255 / 9%);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 18%);
+  backdrop-filter: blur(14px);
+}
+
+.cd-nav-link,
+.cd-site .navbar .nav-link {
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.cd-nav-link[aria-current="page"]::after {
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(90deg, #ed6674, #c93749);
+}
+
+.cd-site .cd-page-head,
+.cd-site .title_container {
+  padding-block: clamp(38px, 6vw, 68px) 28px;
+}
+
+.cd-site .cd-eyebrow,
+.cd-site .cd-auth-caption {
+  color: #c4aeb2;
+  letter-spacing: 0.13em;
+}
+
+.cd-site .cd-page-head h1,
+.cd-site .title_container h1 {
+  font-size: clamp(32px, 4.4vw, 54px);
+  font-weight: 720;
+  text-transform: none;
+}
+
+.cd-site .cd-page-head p {
+  max-width: 68ch;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.cd-site :where(.cd-briefing, .cd-original-intro, .cd-original-console,
+  .cd-guide-grid article, .cd-home-category, .award-card, .notif-card,
+  .empty-state, .notif-empty, .cd-board-summary, .tr-panel, .tr-filters,
+  .tr-stats, .tr-guest) {
+  border-color: rgb(190 199 214 / 13%);
+  background-color: #10141b;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 14%);
+}
+
+.cd-site :where(.cd-home-category, .challenge-button, .tr-card, .cd-guide-grid article) {
+  transition: transform 180ms ease, border-color 180ms ease,
+    background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.cd-site :where(.cd-home-category, .challenge-button, .tr-card):hover {
+  transform: translateY(-3px);
+  border-color: rgb(230 74 91 / 62%);
+  box-shadow: 0 16px 32px rgb(0 0 0 / 24%);
+}
+
+.cd-site :where(.cd-home-category, .challenge-button, .tr-card):focus-visible {
+  outline: 2px solid var(--cd-focus);
+  outline-offset: 3px;
+}
+
+.cd-site .challenge-button,
+.cd-site .tr-card {
+  background: linear-gradient(145deg, #151a22, #101319);
+  border-color: #303641;
+  border-radius: 12px;
+}
+
+.cd-site .challenge-button:hover,
+.cd-site .tr-card:hover {
+  background: linear-gradient(145deg, #1b202a, #12161d);
+}
+
+.cd-site .tr-card-solved,
+.cd-site .challenge-solved {
+  border-color: #376c55;
+  background: linear-gradient(145deg, #14251f, #101a17);
+}
+
+.cd-site :where(.btn-primary, .btn-success, .cyber-btn-submit) {
+  background: linear-gradient(135deg, #ed5a69, #cf394c);
+  border-color: #df4b5d;
+  box-shadow: 0 5px 16px rgb(220 66 83 / 18%);
+}
+
+.cd-site :where(.btn-primary, .btn-success, .cyber-btn-submit):hover {
+  background: linear-gradient(135deg, #f36b78, #dc4657);
+  border-color: #f07883;
+  transform: translateY(-1px);
+}
+
+.cd-site :where(.btn, .form-control, .form-select, .page-link, .cd-account-menu) {
+  border-radius: 9px;
+}
+
+.cd-site :where(.form-control, .form-select, .holo-input, .cyber-input,
+  .cyber-textarea, .tr-filters input, .tr-filters select, .tr-submit input:not([type="hidden"])) {
+  color: var(--cd-text);
+  background-color: #0c1016;
+  border-color: #333b48;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.cd-site :where(.form-control, .form-select, .holo-input, .cyber-input,
+  .cyber-textarea, .tr-filters input, .tr-filters select):focus {
+  border-color: #eb6572;
+  box-shadow: 0 0 0 3px rgb(230 74 91 / 17%);
+  outline: 0;
+}
+
+.cd-site .table-responsive {
+  border-color: rgb(190 199 214 / 15%);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgb(0 0 0 / 12%);
+}
+
+.cd-site .table thead th {
+  background: #171c24;
+  color: #c1c8d3;
+  letter-spacing: 0.09em;
+}
+
+.cd-site .table tbody tr {
+  transition: background-color 140ms ease;
+}
+
+.cd-site .table tbody tr:hover > * {
+  --bs-table-bg-state: rgb(255 255 255 / 3%);
+}
+
+.cd-site :where(.modal-content, .tr-training-modal) {
+  border-color: rgb(190 199 214 / 17%);
+  border-radius: 16px;
+  box-shadow: 0 28px 90px rgb(0 0 0 / 55%);
+}
+
+.cd-site :where(.modal-header, .modal-footer, .tr-training-modal > .modal-header) {
+  border-color: rgb(190 199 214 / 13%);
+}
+
+.cd-site :where(pre, .cyber-desc pre, .tr-prose pre) {
+  border-color: #303846;
+  border-radius: 10px;
+  background: #090d12;
+  line-height: 1.65;
+}
+
+.cd-site :where(code, .tr-prose code) {
+  color: #ff9aa4;
+}
+
+.cd-site .cd-footer {
+  border-color: rgb(190 199 214 / 12%);
+  background: #090c11;
+}
+
+.cd-site :where(a, button, .btn, summary) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.cd-app {
+  --cd-font: "Geist Sans", system-ui, sans-serif;
+  --cd-heading: "Geist Sans", system-ui, sans-serif;
+  --cd-mono: "Geist Mono", ui-monospace, monospace;
+  --cd-red: #e64a5b;
+  --cd-border: #2b303a;
+  --cd-surface: #10141b;
+  --cd-raised: #171d26;
+  --cd-text: #f1f3f7;
+  --cd-muted: #a7afbd;
+  font-family: "Geist Sans", system-ui, sans-serif;
+  letter-spacing: -0.006em;
+}
+
+.cd-app :where(button, input, select, textarea, .btn, code, pre) {
+  font-family: "Geist Sans", system-ui, sans-serif;
+}
+
+.cd-app :where(code, pre, #challenge-input) {
+  font-family: "Geist Mono", ui-monospace, monospace;
+}
+
+.cd-app :where(h1, h2, h3, h4, h5, h6) {
+  font-family: "Geist Sans", system-ui, sans-serif;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.cd-app .cd-nav {
+  border-color: rgb(255 255 255 / 9%);
+  background: rgb(9 12 17 / 94%);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 18%);
+  backdrop-filter: blur(14px);
+}
+
+.cd-app :where(.cd-operations-card, .cd-stat-card, .cd-panel, .cd-challenge-card) {
+  border-color: rgb(190 199 214 / 14%);
+}
+
+.cd-app .btn-primary {
+  background: linear-gradient(135deg, #ed5a69, #cf394c);
+  border-color: #df4b5d;
+}
+
+@media (max-width: 767px) {
+  .cd-site .container { padding-inline: 20px; }
+  .cd-site .cd-page-head,
+  .cd-site .title_container { padding-block: 34px 22px; }
+  .cd-site .table th,
+  .cd-site .table td { padding: 13px 12px; }
+  .cd-site .cd-footer { text-align: start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cd-site *,
+  .cd-site *::before,
+  .cd-site *::after,
+  .cd-app *,
+  .cd-app *::before,
+  .cd-app *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
