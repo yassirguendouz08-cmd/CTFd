@@ -1349,6 +1349,9 @@ body.cd-app .cd-card-category > .cd-category-symbol {
   body.cd-app .cd-challenge-grid,
   body.cd-app .cd-training .tr-grid { column-gap: 0; row-gap: 16px; }
 }
+/* Use full-width homepage containers with only their responsive edge gutters. */
+body.cd-app.cd-home .container { max-width: none; }
+
 /* Homepage first screen: keep the platform hero within one viewport. */
 body.cd-app.cd-home .cd-hero-shell {
   width: 100%;
