@@ -279,6 +279,8 @@ def safe_resource_url(value):
 @admins_only
 def admin(challenge_id=None):
     item = TrainingChallenge.query.get_or_404(challenge_id) if challenge_id else None
+    was_active = bool(item and item.active)
+    is_new_item = item is None
     error = None
     if request.method == "POST":
         try:
@@ -318,6 +320,13 @@ def admin(challenge_id=None):
                     item.flag_hash = digest("training:static:" + flag)
                     TrainingAnswer.query.filter_by(challenge_id=item.id).delete()
             db.session.commit()
+            if item.active and (is_new_item or not was_active):
+                from CTFd.utils.notifications import publish_broadcast_notification
+
+                publish_broadcast_notification(
+                    title="New Academy exercise: {}".format(item.name),
+                    content="A new {} exercise is ready to practice in the Academy.".format(item.category),
+                )
             return redirect(url_for("cyberdune_training.admin", challenge_id=item.id))
         except (ValueError, TypeError) as exc:
             db.session.rollback(); error = str(exc)

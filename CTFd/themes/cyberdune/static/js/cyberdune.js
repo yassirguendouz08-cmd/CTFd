@@ -16,12 +16,24 @@
     if (/rev/.test(value)) return 'fas fa-code';
     if (/forensic/.test(value)) return 'fas fa-fingerprint';
     if (/osint/.test(value)) return 'fas fa-search';
+    if (/linux|shell|command/.test(value)) return 'fas fa-terminal';
+    if (/network|packet/.test(value)) return 'fas fa-network-wired';
+    if (/steg/.test(value)) return 'fas fa-eye-slash';
+    if (/program|script/.test(value)) return 'fas fa-code';
+    if (/blockchain|smart contract/.test(value)) return 'fas fa-cubes';
+    if (/mobile|android|ios/.test(value)) return 'fas fa-mobile-alt';
+    if (/cloud/.test(value)) return 'fas fa-cloud';
+    if (/hardware|iot/.test(value)) return 'fas fa-memory';
+    if (/misc|general/.test(value)) return 'fas fa-puzzle-piece';
     return 'fas fa-flag';
   };
   window.Cyberdune = { matches, categoryIcon };
 
   document.addEventListener('DOMContentLoaded', () => {
     const root = window.init || {};
+    document.querySelectorAll('[data-category-icon]').forEach(icon => {
+      icon.className = `cd-category-symbol ${categoryIcon(icon.dataset.categoryIcon)}`;
+    });
     const home = document.querySelector('[data-home-workspace]');
     if (home) {
       const get = async route => {

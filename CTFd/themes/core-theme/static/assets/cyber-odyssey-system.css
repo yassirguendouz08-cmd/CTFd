@@ -1320,3 +1320,32 @@ body.cd-app.cd-home .cd-hero-copy { max-width: 920px; margin: 0; }
   body.cd-app .cd-training .tr-panel { padding: 20px; }
   body.cd-app .cd-training .tr-board { min-width: 420px; }
 }
+/* Roomier challenge grids and one icon system across CTF and Academy. */
+body.cd-app .cd-challenge-grid,
+body.cd-app .cd-training .tr-grid { column-gap: 24px; row-gap: 24px; }
+body.cd-app .cd-card-category > .cd-category-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15em !important;
+  min-width: 1.15em;
+  height: 1.15em !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #ff7888 !important;
+  font-family: "Font Awesome 6 Free";
+  font-size: 14px !important;
+  font-weight: 900;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+@media (max-width: 767px) {
+  body.cd-app .cd-challenge-grid,
+  body.cd-app .cd-training .tr-grid { column-gap: 18px; row-gap: 20px; }
+}
+@media (max-width: 519px) {
+  body.cd-app .cd-challenge-grid,
+  body.cd-app .cd-training .tr-grid { column-gap: 0; row-gap: 16px; }
+}

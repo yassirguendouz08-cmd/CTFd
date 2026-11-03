@@ -17,7 +17,7 @@
       {% else %}
       <a class="btn btn-primary" href="{{ url_for('challenges.listing') }}">{{ cd_copy("Explore challenges") }} <span aria-hidden="true">↗</span></a>
       {% endif %}
-      {% if not authed() and registration_visible() %}<a class="btn btn-outline-secondary" href="{{ url_for('auth.register') }}">{{ cd_copy("Join CyberDune") }}</a>{% else %}<a class="btn btn-outline-secondary" href="{{ url_for('views.static_html', route='/') }}#platform-guide">{{ cd_copy("Your first flag starts here") }}</a>{% endif %}
+      {% if not authed() and registration_visible() %}<a class="btn btn-outline-secondary" href="{{ url_for('auth.register') }}">{{ cd_copy("Join CyberDune") }}</a>{% else %}<a class="btn btn-outline-secondary" href="{{ url_for('challenges.listing') }}">{{ cd_copy("Your first flag starts here") }}</a>{% endif %}
     </div>
   </div>
 </section>
@@ -32,13 +32,4 @@
   {% if cd_presentation.mode == 'event' %}
   <section class="cd-home-standings" aria-labelledby="cd-preview-title"><div><p class="cd-eyebrow">{{ cd_copy("Scoreboard") }}</p><h2 id="cd-preview-title">{{ cd_copy("Let your solves speak.") }}</h2><a href="{{ url_for('scoreboard.listing') }}">{{ cd_copy("View standings") }} ↗</a></div><div><ol data-home-leaders class="cd-home-leaders"></ol><p data-leaders-empty class="cd-home-placeholder">{{ cd_copy("Open the scoreboard for published standings.") }}</p></div></section>
   {% endif %}
-</section>
-<section id="platform-guide" class="container cd-guide">
-  <div class="cd-section-heading"><div><p class="cd-eyebrow">{{ cd_copy("FROM FIRST CLUE TO FIRST FLAG") }}</p><h2>{{ cd_copy("Your first solve is closer than you think.") }}</h2></div><p>{{ cd_copy("Bring your curiosity. We’ll bring the puzzles.") }}</p></div>
-  <div class="cd-guide-grid">
-    <article><span class="cd-step">01</span><h3>{{ cd_copy("Choose your handle.") }}</h3><p>{{ cd_copy("Join CyberDune") }}. {% if Configs.user_mode == 'teams' %}{{ cd_copy("Join a crew or build one with your friends. Different minds spot different clues.") }}{% else %}{{ cd_copy("Set up your profile. Your solves will tell the rest of the story.") }}{% endif %}</p></article>
-    <article><span class="cd-step">02</span><h3>{{ cd_copy("Follow a lead.") }}</h3><p>{{ cd_copy("Pick a challenge that makes you curious. Inspect its files, connect the clues, and use hints if you hit a wall.") }}</p></article>
-    <article><span class="cd-step">03</span><h3>{{ cd_copy("Make the solve count.") }}</h3><p>{{ cd_copy("Found it? Submit your flag inside the challenge. A correct flag earns points and adds your solve to the scoreboard.") }}</p></article>
-  </div>
-  <div class="cd-scope"><span aria-hidden="true">⊞</span><div><strong>{{ cd_copy("Break the puzzle. Respect the scope.") }}</strong><p>{{ cd_copy("Only test targets explicitly provided for a challenge. The platform, other participants, and the club website are outside the scope. Follow the published challenge rules.") }}</p></div></div>
 </section>

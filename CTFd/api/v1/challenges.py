@@ -311,6 +311,17 @@ class ChallengeList(Resource):
 
         response = challenge_class.read(challenge)
 
+        if challenge.state == "visible":
+            from CTFd.utils.notifications import publish_broadcast_notification
+
+            category = challenge.category or "CTF"
+            publish_broadcast_notification(
+                title="New CTF challenge: {}".format(challenge.name),
+                content="A new {} challenge worth {} points is available. Open the challenge board to play.".format(
+                    category, challenge.value
+                ),
+            )
+
         clear_challenges()
 
         return {"success": True, "data": response}
@@ -637,6 +648,7 @@ class Challenge(Resource):
             return {"success": False, "errors": response.errors}, 400
 
         challenge = Challenges.query.filter_by(id=challenge_id).first_or_404()
+        was_visible = challenge.state == "visible"
         challenge_class = get_chal_class(challenge.type)
 
         try:
@@ -645,6 +657,17 @@ class Challenge(Resource):
             return {"success": False, "errors": {"": [str(e)]}}, e.status_code
 
         response = challenge_class.read(challenge)
+
+        if not was_visible and challenge.state == "visible":
+            from CTFd.utils.notifications import publish_broadcast_notification
+
+            category = challenge.category or "CTF"
+            publish_broadcast_notification(
+                title="New CTF challenge: {}".format(challenge.name),
+                content="A new {} challenge worth {} points is available. Open the challenge board to play.".format(
+                    category, challenge.value
+                ),
+            )
 
         clear_standings()
         clear_challenges()
