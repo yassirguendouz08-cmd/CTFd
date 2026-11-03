@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/cyberdune.css') }}?v=14">
   <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/operations.css') }}?v=14">
   <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/club.css') }}?v=1">
-  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='cyberdune', path='css/refined-ui.css') }}?v=20261103-1">
+  <link rel="stylesheet" href="{{ url_for('views.themes_beta', theme='core-theme', path='assets/cyber-odyssey-system.css') }}?v=20261103-9">
   <script>
     window.cyberduneCopy = {{ messages.get(get_locale() | string, messages.en) | tojson }};
     window.init = {
@@ -44,7 +44,14 @@
     window.teamScoreGraphChartOptions = structuredClone(window.userScoreGraphChartOptions);
   </script>
 </head>
-<body class="cd-app" data-endpoint="{{ request.endpoint }}">
+<body class="cd-app{% if request.path.rstrip('/') == request.script_root.rstrip('/') %} cd-home{% endif %}" data-endpoint="{{ request.endpoint }}">
+  {% if request.path.rstrip('/') == request.script_root.rstrip('/') %}
+  <div class="cd-original-backdrop" aria-hidden="true">
+    <video muted loop playsinline autoplay preload="metadata" poster="{{ url_for('views.themes_beta', theme='core-theme', path='img/original-background-poster.webp') }}">
+      <source src="{{ url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-background.webm') }}" type="video/webm">
+    </video>
+  </div>
+  {% endif %}
   <a class="cd-skip" href="#main-content">Skip to content</a>
   {% include 'components/navbar.html' %}
   <main id="main-content" tabindex="-1">{% block content %}{% endblock %}</main>
@@ -57,7 +64,7 @@
     </div>
   </footer>
   {% include 'components/notifications.html' %}
-  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/cyberdune.js') }}?v=14"></script>
+  <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/cyberdune.js') }}?v=15"></script>
   <script src="{{ url_for('views.themes_beta', theme='cyberdune', path='js/operations.js') }}?v=14"></script>
   {% block scripts %}{{ Assets.js("assets/js/page.js", theme="core") }}{% endblock %}
   {{ Plugins.scripts }}

@@ -84,8 +84,8 @@
       const label = scheduled ? copy('Starts soon') : ended ? copy('Event ended') : start ? copy('Event live') : end ? copy('Event open') : copy('Schedule not set');
       statusNodes.forEach(node => { node.textContent = label; node.dataset.state = scheduled ? 'scheduled' : ended ? 'ended' : start || end ? 'live' : 'unset'; });
       document.querySelectorAll('[data-event-primary]').forEach(link => {
-        link.href = scheduled ? '#cd-platform-panel-title' : ended ? link.dataset.scoreboardUrl : link.dataset.challengesUrl;
-        link.querySelector('[data-event-primary-label]').textContent = scheduled ? copy('View event details') : ended ? copy('View standings') : copy('Take the challenge');
+        link.href = ended ? link.dataset.scoreboardUrl : link.dataset.challengesUrl;
+        link.querySelector('[data-event-primary-label]').textContent = scheduled ? copy('Explore challenges') : ended ? copy('View standings') : copy('Take the challenge');
       });
       const target = scheduled ? start : !ended ? end : null;
       document.querySelectorAll('[data-countdown]').forEach(node => {
@@ -100,7 +100,7 @@
         node.querySelector('[data-countdown-value]').textContent = `${days ? days + 'd ' : ''}${hh}:${mm}:${ss}`;
       });
     };
-    if (event.mode === 'event' && start && end && end > start && statusNodes.length) { tick(); setInterval(() => { if (!document.hidden) tick(); }, 1000); }
+    if (event.mode === 'event' && start && end && end > start && (statusNodes.length || document.querySelector('[data-event-primary]'))) { tick(); setInterval(() => { if (!document.hidden) tick(); }, 1000); }
 
     // Link highlighting respects reverse-proxy prefixes and admin-created pages.
     const highlightNavigation = () => {
