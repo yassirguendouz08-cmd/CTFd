@@ -1,0 +1,202 @@
+/* CyberDune UI system: consistent surfaces, hierarchy and responsive behavior. */
+:root {
+  --cd-font-ui: Geist, Inter, ui-sans-serif, system-ui, sans-serif;
+  --cd-font-tech: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+  --cd-surface-soft: #0d1017;
+  --cd-border-soft: #ffffff16;
+  --cd-focus: #ff7786;
+}
+
+html { scroll-padding-top: 104px; }
+body.cd-site {
+  font-family: var(--cd-font-ui);
+  font-size: 16px;
+  line-height: 1.65;
+  background:
+    radial-gradient(ellipse at 50% -18%, #22252b 0, transparent 50%),
+    #050608;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.cd-site :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--cd-font-ui);
+  line-height: 1.2;
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+.cd-site h1 { font-weight: 680; }
+.cd-site :where(p, li) { text-wrap: pretty; }
+.cd-site :where(code, pre, kbd, samp, .cd-mono, .challenge-input) { font-family: var(--cd-font-tech); }
+.cd-site main { width: 100%; min-width: 0; }
+.cd-site .container { width: 100%; max-width: 1600px; padding-inline: clamp(20px, 3.2vw, 54px); }
+
+/* Compact navigation with a quiet active state and room for longer labels. */
+.cd-site .cd-nav { min-height: 76px; padding-block: 10px; }
+.cd-site .cd-nav .container { gap: clamp(16px, 2vw, 30px); }
+.cd-site .cd-nav .navbar-nav.me-auto { flex-wrap: wrap; }
+.cd-site .cd-nav .nav-link { min-height: 42px; transition: color .16s ease, background-color .16s ease; }
+.cd-site .cd-nav .nav-link.active { color: #fff !important; background: #ef444418; }
+.cd-site .cd-nav .cd-register { padding-inline: 15px !important; }
+
+/* Page headings and content rhythm. */
+.cd-site .cd-page-head { padding-top: 36px; padding-bottom: 26px; }
+.cd-site .cd-page-head h1,
+.cd-site .jumbotron h1 { font-size: clamp(30px, 3.4vw, 46px); margin-bottom: 10px; }
+.cd-site .cd-page-head p:not(.cd-eyebrow) { font-size: 15px; line-height: 1.65; }
+.cd-site .cd-eyebrow { font-family: var(--cd-font-tech); font-size: 10px; letter-spacing: .12em; }
+.cd-site .cd-editorial {
+  max-width: 980px !important;
+  padding-top: clamp(30px, 5vw, 58px);
+  padding-bottom: 56px;
+  font-size: 16px;
+  line-height: 1.8;
+}
+.cd-site .cd-editorial h1 { margin: 0 0 22px; font-size: clamp(32px, 4vw, 48px); }
+.cd-site .cd-editorial h2 { margin: 38px 0 14px; font-size: clamp(22px, 2.4vw, 29px); }
+.cd-site .cd-editorial h3 { margin: 28px 0 10px; font-size: 20px; }
+.cd-site .cd-editorial p, .cd-site .cd-editorial li { color: #c7cbd3; }
+.cd-site .cd-editorial li + li { margin-top: 8px; }
+.cd-site .cd-editorial :where(ul, ol) { padding-inline-start: 1.4em; margin-block: 14px 24px; }
+.cd-site .cd-editorial hr { border-color: var(--cd-border-soft); margin-block: 30px; }
+.cd-site .cd-editorial blockquote { border-inline-start: 3px solid var(--cd-red); padding: 12px 18px; background: #ffffff05; color: #d9dce2; }
+.cd-site .cd-editorial :where(img, video, iframe) { max-width: 100%; }
+
+/* Landing hero: keep the existing desert artwork and content, refine scale. */
+.cd-site .cd-hero-shell { overflow: clip; }
+.cd-site .cd-hero { min-height: 360px; }
+.cd-site .cd-hero .cd-brand-title { max-width: 760px; font-size: clamp(42px, 5vw, 76px); line-height: 1.04; letter-spacing: -.05em; }
+.cd-site .cd-hero .cd-platform-tagline { margin-block: 17px 10px; font-size: clamp(19px, 2vw, 25px); }
+.cd-site .cd-hero .cd-hero-description { max-width: 610px; font-size: 17px; line-height: 1.7; }
+.cd-site .cd-hero .cd-actions .btn { min-height: 48px; padding: 12px 19px; }
+.cd-site .cd-platform-panel .cd-briefing { border-radius: 8px; }
+.cd-site .cd-platform-panel .cd-briefing-head,
+.cd-site .cd-platform-panel .cd-briefing-foot { padding-inline: 22px; }
+.cd-site .cd-home-workspace { padding-top: 14px; }
+.cd-site .cd-home-categories { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cd-site .cd-challenge-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cd-site .cd-board-summary > div + div { border-left: 0; border-inline-start: 1px solid var(--cd-border); }
+
+/* Cards, controls and tables share the same restrained interaction states. */
+.cd-site :where(.card, .cd-auth-card, .cd-podium-card, .cd-home-category, .cd-challenge-card, .cd-table-scroll) {
+  box-shadow: none;
+}
+.cd-site :where(.cd-auth-card, .cd-podium-card, .cd-guide-grid article, .cd-home-category) { border-radius: 8px; }
+.cd-site .cd-challenge-card { min-height: 188px; }
+.cd-site .cd-challenge-card:hover { transform: translateY(-1px); }
+.cd-site :where(.btn, .form-control, .form-select) { border-radius: 6px; }
+.cd-site :where(.form-control, .form-select) { font-family: var(--cd-font-ui); }
+.cd-site :where(.btn-primary, .challenge-submit, .cd-register) { box-shadow: none; }
+.cd-site :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--cd-focus) !important;
+  outline-offset: 3px;
+}
+.cd-site .cd-table-scroll { overflow-x: auto; }
+.cd-site .table { min-width: 540px; }
+.cd-site .table th, .cd-site .table td { padding-block: 15px; }
+.cd-site .table thead th { letter-spacing: .055em; }
+.cd-site .cd-podium-card { min-width: 0; }
+.cd-site .cd-podium-card a { overflow-wrap: anywhere; }
+
+/* Challenge details keep the existing submission, hint and instance workflows. */
+.cd-site .modal-dialog { width: min(860px, calc(100vw - 32px)); }
+.cd-site .modal-content { border-radius: 9px; }
+.cd-site .modal-body { padding: clamp(20px, 4vw, 34px) !important; }
+.cd-site .challenge-name { font-size: clamp(24px, 3vw, 32px); }
+.cd-site .challenge-desc { line-height: 1.8; }
+.cd-site .challenge-desc :where(img, video, iframe) { max-width: 100%; }
+.cd-site .challenge-files { display: flex; flex-wrap: wrap; gap: 10px; }
+.cd-site .challenge-files > * { max-width: 100%; }
+.cd-site .cd-instance-panel { margin-top: 24px; padding: 20px; border: 1px solid var(--cd-border); border-radius: 8px; background: var(--cd-surface); }
+
+/* Academy uses its own content but the same type, spacing and surface rules. */
+.cd-site .cd-training { max-width: 1600px; padding: 34px clamp(20px, 3.2vw, 54px) 56px; }
+.cd-site .cd-training .tr-hero { padding-top: 24px; }
+.cd-site .cd-training .tr-hero h1 { font-family: var(--cd-font-ui); font-size: clamp(34px, 3.4vw, 46px); font-weight: 680; letter-spacing: -.04em; }
+.cd-site .cd-training .tr-hero p { font-family: var(--cd-font-ui); font-size: 15px; }
+.cd-site .cd-training .tr-hero-mark { display: none; }
+.cd-site .cd-training .tr-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.cd-site .cd-training .tr-card { min-height: 200px; border-radius: 8px; box-shadow: none; }
+.cd-site .cd-training .tr-card:hover { transform: translateY(-1px); }
+.cd-site .cd-training .tr-panel,
+.cd-site .cd-training .tr-stats,
+.cd-site .cd-training .tr-filters { border-radius: 8px; box-shadow: none; }
+.cd-site .cd-training .tr-filters { gap: 12px; }
+.cd-site .cd-training .tr-board-wrap { border: 1px solid var(--cd-border); border-radius: 8px; }
+.cd-site .cd-training :where(input, select, button, a):focus-visible { outline: 2px solid var(--cd-focus); outline-offset: 3px; }
+
+/* Footer and long-form pages stay aligned with the main content width. */
+.cd-site .cd-footer-inner { max-width: 1600px; }
+.cd-site .cd-footer { margin-top: auto; }
+
+@media (max-width: 1199.98px) {
+  .cd-site .cd-nav .navbar-collapse { padding-block: 14px 8px; }
+  .cd-site .cd-nav .navbar-nav.me-auto { border: 0; background: transparent; }
+  .cd-site .cd-hero { grid-template-columns: 1fr; gap: 28px; text-align: center; }
+  .cd-site .cd-hero .cd-hero-copy { max-width: 820px; margin-inline: auto; }
+  .cd-site .cd-hero .cd-eyebrow, .cd-site .cd-hero .cd-hero-description { margin-inline: auto; }
+  .cd-site .cd-hero .cd-actions { justify-content: center; }
+  .cd-site .cd-platform-panel { max-width: 820px; margin-inline: auto; }
+  .cd-site .cd-home-categories,
+  .cd-site .cd-challenge-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cd-site .cd-training .tr-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 767.98px) {
+  .cd-site .container { padding-inline: 20px; }
+  .cd-site .cd-page-head { padding-top: 28px; padding-bottom: 20px; }
+  .cd-site .cd-head-row { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .cd-site .cd-hero { padding-block: 32px; }
+  .cd-site .cd-hero .cd-brand-title { font-size: clamp(38px, 10vw, 60px); }
+  .cd-site .cd-hero .cd-hero-description { font-size: 16px; }
+  .cd-site .cd-board-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cd-site .cd-board-summary > div { padding: 18px; }
+  .cd-site .cd-board-summary > div:nth-child(3) { border-inline-start: 0; }
+  .cd-site .cd-board-toolbar { grid-template-columns: 1fr 1fr; }
+  .cd-site .cd-board-toolbar .cd-search { grid-column: 1 / -1; }
+  .cd-site .cd-challenge-grid,
+  .cd-site .cd-home-categories { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cd-site .cd-training { padding: 26px 20px 40px; }
+  .cd-site .cd-training .tr-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cd-site .cd-editorial { padding-top: 30px; font-size: 15px; }
+  .cd-site .cd-auth { grid-template-columns: 1fr; gap: 22px; padding-top: 32px; }
+  .cd-site .cd-auth-aside { padding-top: 0; }
+  .cd-site .cd-auth-card { padding: 24px; }
+}
+@media (max-width: 520px) {
+  .cd-site .cd-home-categories,
+  .cd-site .cd-challenge-grid,
+  .cd-site .cd-board-toolbar,
+  .cd-site .cd-podium { grid-template-columns: 1fr; }
+  .cd-site .cd-board-toolbar .cd-search { grid-column: auto; }
+  .cd-site .cd-board-summary { grid-template-columns: 1fr 1fr; }
+  .cd-site .cd-training .tr-grid { grid-template-columns: 1fr; }
+  .cd-site .cd-actions { align-items: stretch; }
+  .cd-site .cd-actions .btn { width: 100%; }
+  .cd-site .cd-platform-panel .cd-briefing dl > div { align-items: flex-start; }
+  .cd-site .cd-footer-links { display: flex; flex-wrap: wrap; gap: 10px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cd-site *, .cd-site *::before, .cd-site *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+
+/* Match the active core-theme navigation and landing page markup. */
+.cd-site .cd-nav-wrap { max-width: 1600px; padding-inline: clamp(20px, 3.2vw, 54px); gap: clamp(16px, 2vw, 30px); }
+.cd-site .cd-navigation { gap: clamp(10px, 1.5vw, 22px); }
+.cd-site .cd-nav-pages { gap: 2px; }
+.cd-site .cd-nav-link { min-height: 42px; transition: color .16s ease, background-color .16s ease; }
+.cd-site .cd-nav-link[aria-current="page"] { color: #fff; }
+.cd-site .cd-nav-link[aria-current="page"]::after { height: 2px; }
+.cd-site .cd-original-home-grid { width: 100%; max-width: 1600px; padding-inline: clamp(20px, 3.2vw, 54px); gap: clamp(28px, 5vw, 72px); }
+.cd-site .cd-original-intro h1 { font-family: var(--cd-font-ui); font-size: clamp(42px, 5vw, 76px); line-height: 1.04; letter-spacing: -.05em; }
+.cd-site .cd-original-intro p { max-width: 62ch; font-size: 17px; line-height: 1.7; }
+.cd-site .challenge-button { min-height: 188px; border-radius: 8px; box-shadow: none; }
+.cd-site .challenge-button:hover { transform: translateY(-1px); }
+.cd-site .cd-page-head { padding-top: 36px; padding-bottom: 26px; }
+.cd-site .cd-footer-inner { max-width: 1600px; }
+@media (max-width: 767.98px) {
+  .cd-site .cd-nav-wrap { padding-inline: 20px; }
+  .cd-site .cd-original-home-grid { padding-inline: 20px; gap: 24px; }
+  .cd-site .cd-original-intro { text-align: center; }
+  .cd-site .cd-original-intro p { margin-inline: auto; }
+  .cd-site .cd-hero-actions { justify-content: center; }
+}
