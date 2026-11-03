@@ -1350,7 +1350,7 @@ body.cd-app .cd-card-category > .cd-category-symbol {
   body.cd-app .cd-training .tr-grid { column-gap: 0; row-gap: 16px; }
 }
 /* Use full-width homepage containers with only their responsive edge gutters. */
-body.cd-app.cd-home .container { max-width: none; }
+body.cd-app.cd-home .container { max-width: none; padding-inline: clamp(16px, 2vw, 32px); }
 
 /* Homepage first screen: keep the platform hero within one viewport. */
 body.cd-app.cd-home .cd-hero-shell {
@@ -1564,7 +1564,7 @@ body.cd-app.cd-home .cd-hero .cd-actions .btn {
   body.cd-app.cd-home .cd-footer-inner {
     min-height: 50px;
     gap: 12px;
-    padding-inline: clamp(20px, 3vw, 48px);
+    padding-inline: clamp(16px, 2vw, 32px);
   }
   body.cd-app.cd-home .cd-footer-brand { gap: 9px; }
   body.cd-app.cd-home .cd-footer-brand .cd-official-logo { width: 34px; }
