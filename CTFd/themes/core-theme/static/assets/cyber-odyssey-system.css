@@ -1697,9 +1697,22 @@ body.cd-app .cd-training {
   padding-block: 34px 80px;
   padding-inline: var(--cd-page-gutter);
 }
-body.cd-app .cd-nav .container { position: relative; gap: clamp(18px, 2.4vw, 36px); }
+body.cd-app .cd-nav .container {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  gap: clamp(18px, 2.4vw, 36px);
+  padding-inline: var(--cd-page-gutter);
+}
 @media (min-width: 1200px) {
-  body.cd-app .cd-nav .navbar-collapse { position: static; flex: 1 1 auto; justify-content: flex-end; min-width: 0; }
+  body.cd-app .cd-nav .navbar-brand { flex: 0 0 auto; margin-inline: 0; }
+  body.cd-app .cd-nav .navbar-collapse {
+    position: static;
+    display: flex !important;
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    min-width: 0;
+  }
   body.cd-app .cd-nav .navbar-nav.me-auto {
     position: absolute;
     left: 50%;
@@ -1708,7 +1721,11 @@ body.cd-app .cd-nav .container { position: relative; gap: clamp(18px, 2.4vw, 36p
     transform: translateX(-50%);
     flex-direction: row;
   }
-  body.cd-app .cd-nav .navbar-nav.cd-nav-account { margin-inline-start: auto; flex: 0 0 auto; flex-direction: row; }
+  body.cd-app .cd-nav .navbar-nav.cd-nav-account {
+    margin-inline-start: auto;
+    flex: 0 0 auto;
+    flex-direction: row;
+  }
 }
 
 /* Keep the same compact footer at the bottom of short pages and after long pages. */
