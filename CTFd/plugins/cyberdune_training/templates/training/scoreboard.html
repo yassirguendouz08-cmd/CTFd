@@ -1,6 +1,6 @@
 {% extends "training/layout.html" %}
 {% block training_content %}
-<header class="cd-page-head tr-hero"><div><span class="cd-eyebrow">CYBERDUNE / ACADEMY LEADERBOARD</span><h1>{{ training_copy('Academy leaderboard') }}</h1><p>{{ training_copy('Ranked by flags captured. Players with the same count share a rank.') }}</p></div></header>
+<header class="cd-page-head cd-page-hero tr-hero"><div><span class="cd-eyebrow">CYBERDUNE / ACADEMY LEADERBOARD</span><h1>{{ training_copy('Academy leaderboard') }}</h1><p>{{ training_copy('Ranked by flags captured. Players with the same count share a rank.') }}</p></div></header>
 {% if user %}{% include 'training/progress.html' %}{% endif %}
 <div class="cd-table-scroll tr-board-wrap"><table class="table tr-board"><thead><tr><th>{{ training_copy('Rank') }}</th><th>{{ training_copy('Player') }}</th><th>{{ training_copy('Flags captured') }}</th></tr></thead><tbody>
 {% for row in rows %}<tr {% if user and row.user_id == user.id %}class="tr-board-self"{% endif %}><td><span class="tr-place{% if row.place <= 3 %} tr-place-top{% endif %}">#{{ row.place }}</span></td><td>{{ row.name }}{% if user and row.user_id == user.id %} <small>{{ training_copy('You') }}</small>{% endif %}</td><td><strong>{{ row.solved }}</strong></td></tr>
