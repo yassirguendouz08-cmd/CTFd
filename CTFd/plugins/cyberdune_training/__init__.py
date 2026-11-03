@@ -122,7 +122,7 @@ def ranked_users():
         func.count(TrainingSolve.id).label("solved"),
     ).join(TrainingSolve, TrainingSolve.user_id == Users.id).join(
         TrainingChallenge, TrainingChallenge.id == TrainingSolve.challenge_id,
-    ).filter(TrainingChallenge.active.is_(True), Users.banned.is_(False), Users.hidden.is_(False), Users.type == "user").group_by(Users.id, Users.name).subquery()
+    ).filter(TrainingChallenge.active.is_(True), Users.banned.is_(False), Users.hidden.is_(False), Users.type.in_(("user", "admin"))).group_by(Users.id, Users.name).subquery()
     # Academy ranks users only by the number of flags they captured.
     ranked = db.session.query(totals, func.rank().over(order_by=totals.c.solved.desc()).label("place")).subquery()
     return ranked
