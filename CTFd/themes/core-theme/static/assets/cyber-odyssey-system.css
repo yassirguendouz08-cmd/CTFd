@@ -1482,7 +1482,7 @@ body.cd-app.cd-home .cd-hero .cd-actions .btn {
     flex: 1 1 auto;
     min-height: 0;
     align-items: center;
-    padding: clamp(72px, 8vh, 92px) 0 12px;
+    padding-block: clamp(72px, 8vh, 92px) 12px;
   }
   body.cd-app.cd-home .cd-hero-copy { max-width: 900px; }
   body.cd-app.cd-home .cd-hero .cd-eyebrow {
@@ -1523,7 +1523,7 @@ body.cd-app.cd-home .cd-hero .cd-actions .btn {
     align-items: center;
     gap: clamp(16px, 2vw, 32px);
     margin: 0;
-    padding: 10px 0 12px;
+    padding-block: 10px 12px;
     border-bottom: 1px solid rgb(255 255 255 / 12%);
   }
   body.cd-app.cd-home .cd-comms-heading .cd-eyebrow {
@@ -1596,7 +1596,7 @@ body.cd-app.cd-home .cd-hero .cd-actions .btn {
 @media (min-height: 640px) and (max-width: 767px) {
   body.cd-app.cd-home .cd-header { height: 68px; }
   body.cd-app.cd-home .cd-hero {
-    padding: 68px 0 8px;
+    padding-block: 68px 8px;
     text-align: center;
   }
   body.cd-app.cd-home .cd-hero-copy { max-width: 440px; margin-inline: auto; }
