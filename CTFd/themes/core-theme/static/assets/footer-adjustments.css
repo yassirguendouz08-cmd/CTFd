@@ -1,0 +1,17 @@
+body.cd-site .cd-footer .cd-footer-flags img {
+  display: block;
+  width: auto;
+  height: clamp(48px, 3.2vw, 52px);
+  max-width: 104px;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  object-fit: contain;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+}
+
+body.cd-site .cd-footer .cd-footer-credit {
+  font-size: clamp(16px, 1.15vw, 18px);
+}
