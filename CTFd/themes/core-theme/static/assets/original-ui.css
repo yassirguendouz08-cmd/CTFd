@@ -93,9 +93,9 @@ body.cd-site::before, .cd-hero::before, .cd-auth-brand::before { content: none; 
 .cd-site .cd-footer-inner { max-width: none; padding-inline: 5%; }
 .cd-footer-signature { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .cd-footer-flags { display: flex; align-items: center; justify-content: center; gap: 16px; }
-.cd-footer-flags img { display: block; width: 40px; height: 28px; object-fit: contain; }
-.cd-footer-credit { color: #969696; font: 400 11px/1.6 var(--cd-mono); letter-spacing: .02em; }
-.cd-footer-credit-name { color: #ff3b3b; }
+.cd-footer-flags img { display: block; width: auto; height: clamp(36px, 2.5vw, 42px); max-width: 84px; border: 0; border-radius: 0; outline: 0; object-fit: contain; box-shadow: none; background: transparent; }
+.cd-footer-credit { color: #c5c5c5; font: 700 clamp(14px, 1vw, 16px)/1.45 var(--cd-font); letter-spacing: 0; }
+.cd-footer-credit-name { color: #ff4b5e; font-weight: 800; }
 .cd-footer p { font: 400 12px/1.7 var(--cd-font); }
 .cd-footer-inner { flex-wrap: wrap; }
 /* Original introduction panels; retain actual event configuration and routes. */
