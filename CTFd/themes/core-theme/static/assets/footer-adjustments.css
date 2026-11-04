@@ -2,8 +2,8 @@ body.cd-site .cd-footer .cd-footer-flags img,
 body.cd-app .cd-footer .cd-footer-flags img {
   display: block;
   width: auto;
-  height: clamp(48px, 3.2vw, 52px);
-  max-width: 104px;
+  height: clamp(44px, 2.8vw, 48px);
+  max-width: 96px;
   border: 0;
   border-radius: 0;
   outline: 0;
@@ -15,5 +15,5 @@ body.cd-app .cd-footer .cd-footer-flags img {
 
 body.cd-site .cd-footer .cd-footer-credit,
 body.cd-app .cd-footer .cd-footer-credit {
-  font-size: clamp(16px, 1.15vw, 18px);
+  font-size: clamp(15px, 1.05vw, 17px);
 }
