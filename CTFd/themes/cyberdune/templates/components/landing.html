@@ -1,5 +1,10 @@
 {% from "components/copy.html" import cd_copy with context %}
 <div class="cd-hero-shell">
+  <div class="cd-original-backdrop" aria-hidden="true">
+    <video muted loop playsinline autoplay preload="metadata" poster="{{ url_for('views.themes_beta', theme='core-theme', path='img/original-background-poster.webp') }}">
+      <source src="{{ url_for('views.themes_beta', theme='core-theme', path='img/cyberdune-background.webm') }}" type="video/webm">
+    </video>
+  </div>
 <section class="container cd-hero">
   <div class="cd-hero-copy">
     <p class="cd-eyebrow"><span class="cd-dot"></span> {{ cd_copy("BORN IN THE SAHARA. CONNECTED BY CURIOSITY.") }}</p>

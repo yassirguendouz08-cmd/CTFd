@@ -166,8 +166,32 @@ body.cd-app.cd-home {
 }
 body.cd-app.cd-home main { display: block; min-height: 0; flex: 1 0 auto; overflow: visible; }
 body.cd-app.cd-home .cd-hero-shell {
+  position: relative;
+  isolation: isolate;
   min-height: 0;
   height: auto;
+  background: transparent;
+}
+body.cd-app.cd-home .cd-hero-shell::before,
+body.cd-app.cd-home .cd-hero-shell::after {
+  display: none;
+}
+body.cd-app.cd-home .cd-hero-shell .cd-original-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+body.cd-app.cd-home .cd-hero-shell .cd-original-backdrop::after {
+  background:
+    linear-gradient(90deg, rgb(3 3 3 / 68%), rgb(3 3 3 / 31%) 55%, rgb(3 3 3 / 58%)),
+    linear-gradient(180deg, rgb(3 3 3 / 12%) 18%, transparent 46%, rgb(8 8 8 / 84%) 100%);
+}
+body.cd-app.cd-home .cd-hero-shell .cd-hero {
+  position: relative;
+  z-index: 1;
 }
 body.cd-app.cd-home .cd-hero {
   box-sizing: border-box;
