@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CyberDune UI refresh preview</title>
+  <link rel="stylesheet" href="CTFd/themes/core-theme/static/assets/redesign.css">
+  <link rel="stylesheet" href="CTFd/themes/core-theme/static/assets/original-ui.css">
+  <link rel="stylesheet" href="CTFd/themes/core-theme/static/assets/global-polish.css">
+  <style>
+    body { min-height: 100vh; }
+    .preview-nav { position: sticky; top: 0; z-index: 5; }
+    .preview-nav .cd-nav-wrap { display:flex; align-items:center; justify-content:space-between; }
+    .preview-brand { display:flex; align-items:center; gap:12px; font-weight:700; color:#f4f5f8; }
+    .preview-brand img { width:36px; height:36px; object-fit:contain; }
+    .preview-links { display:flex; align-items:center; gap:26px; }
+    .preview-content { max-width:1200px; margin:auto; padding:36px 32px 70px; }
+    .preview-kicker { color:#f27883; font:12px "Geist Mono",monospace; letter-spacing:.13em; text-transform:uppercase; }
+    .preview-heading { margin:10px 0 12px; font-size:42px; }
+    .preview-lead { max-width:650px; color:#a7afbd; }
+    .preview-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:30px 0; }
+    .preview-stat { padding:17px 20px; border:1px solid #2b303a; border-radius:12px; background:#10141b; }
+    .preview-stat strong { display:block; font-size:24px; }
+    .preview-stat span { color:#a7afbd; font-size:13px; }
+    .preview-controls { display:flex; gap:12px; margin:30px 0 22px; }
+    .preview-controls input { flex:1; }
+    .preview-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .tr-card { min-height:190px; padding:20px; border:1px solid #303641; border-radius:12px; background:linear-gradient(145deg,#151a22,#101319); }
+    .tr-card-top,.tr-card-facts { display:flex; justify-content:space-between; align-items:center; }
+    .tr-card h3 { margin:20px 0 8px; font-size:20px; }
+    .tr-card p { color:#a7afbd; font-size:14px; }
+    .tr-card-facts { border-top:1px solid #303641; padding-top:13px; font-size:12px; }
+    .tag { color:#ffc1c7; border:1px solid #71343c; background:#33171c; border-radius:20px; padding:4px 9px; font-size:11px; }
+    .preview-detail { display:grid; grid-template-columns:1.3fr .7fr; gap:18px; margin-top:32px; }
+    .tr-panel,.preview-side { padding:22px; border:1px solid #2b303a; border-radius:14px; background:#10141b; }
+    .preview-side h3 { margin-top:0; }
+    .preview-side button { width:100%; padding:12px; }
+    .preview-footer { margin-top:45px; padding:22px 0; border-top:1px solid #2b303a; color:#8892a1; text-align:center; font-size:12px; }
+    @media(max-width:800px){.preview-grid{grid-template-columns:repeat(2,1fr)}.preview-detail{grid-template-columns:1fr}.preview-links{gap:12px}}
+    @media(max-width:560px){.preview-grid,.preview-stats{grid-template-columns:1fr}.preview-content{padding:24px 18px}.preview-heading{font-size:34px}.preview-links a:nth-child(2){display:none}.preview-nav .cd-nav-wrap{padding-inline:18px}}
+  </style>
+</head>
+<body class="cd-site">
+  <header class="cd-header preview-nav">
+    <nav class="cd-nav-wrap">
+      <div class="preview-brand"><img src="CTFd/themes/core-theme/static/img/cyberdune-white.png" alt=""><span>CYBERDUNE</span></div>
+      <div class="preview-links"><a class="cd-nav-link" href="#academy">Academy</a><a class="cd-nav-link" href="#challenges">Challenges</a><a class="cd-nav-link" href="#scoreboard">Scoreboard</a><button class="btn btn-primary">Sign in</button></div>
+    </nav>
+  </header>
+  <main class="preview-content">
+    <div class="preview-kicker">CyberDune Academy · Practice track</div>
+    <h1 class="preview-heading">Build your security skills</h1>
+    <p class="preview-lead">Choose a challenge, investigate carefully, and submit the flag when you find it. Your Academy progress is tracked separately.</p>
+    <section class="preview-stats"><div class="preview-stat"><strong>18 / 60</strong><span>Challenges solved</span></div><div class="preview-stat"><strong>4,250</strong><span>Points earned</span></div><div class="preview-stat"><strong>#12</strong><span>Academy rank</span></div></section>
+    <div class="preview-controls"><input class="form-control" placeholder="Search challenges"><button class="btn btn-outline-secondary">All categories</button><button class="btn btn-outline-secondary">All levels</button></div>
+    <section id="academy" class="preview-grid">
+      <article class="tr-card"><div class="tr-card-top"><span class="tag">FORENSICS</span><span>Easy</span></div><h3>Last Known Good</h3><p>Reconstruct a short incident timeline from a collection of system artifacts.</p><div class="tr-card-facts"><span>⚑ 8 solves</span><span>★ 100 points</span></div></article>
+      <article class="tr-card"><div class="tr-card-top"><span class="tag">WEB</span><span>Medium</span></div><h3>Quiet Redirect</h3><p>Trace an unexpected redirect and identify the server-side condition behind it.</p><div class="tr-card-facts"><span>⚑ 3 solves</span><span>★ 250 points</span></div></article>
+      <article class="tr-card"><div class="tr-card-top"><span class="tag">CRYPTO</span><span>Hard</span></div><h3>Three Small Clues</h3><p>Combine several partial observations to recover the hidden message.</p><div class="tr-card-facts"><span>⚑ 1 solve</span><span>★ 400 points</span></div></article>
+    </section>
+    <section id="challenges" class="preview-detail">
+      <article class="tr-panel"><div class="preview-kicker">Challenge details</div><h2>Quiet Redirect</h2><p>We found a small web service that behaves differently depending on how the request is formed. Inspect the response carefully and follow the evidence to the flag.</p><h3>Files</h3><p>Nothing to download — investigate the live challenge service.</p></article>
+      <aside class="preview-side"><h3>Submit flag</h3><p>Flags use the standard CyberDune format.</p><input class="form-control" placeholder="flag{...}"><button class="btn btn-primary" style="margin-top:12px">Submit</button></aside>
+    </section>
+    <div class="preview-footer" id="scoreboard">CyberDune CTF · Learn by investigating</div>
+  </main>
+</body>
+</html>

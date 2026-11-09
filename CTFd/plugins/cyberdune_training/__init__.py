@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import io
 import math
+import re
 import uuid
 from datetime import datetime, timedelta
 from functools import wraps
@@ -20,16 +21,27 @@ from CTFd.utils.decorators import admins_only
 from CTFd.utils.config.pages import build_markdown
 from CTFd.utils.user import get_current_user, get_locale
 
-from .catalog import CATEGORIES, artifact, starter_rows
+from .catalog import CATEGORIES, STARTERS, artifact, starter_rows
 from .advanced import advanced_rows
-from .pico import rows as pico_rows
 from .challenge_text import localize_challenge as localize_training_challenge
+from .authored_challenges import rows as authored_rows
 from .models import TrainingAnswer, TrainingAttachment, TrainingAttempt, TrainingChallenge, TrainingSolve
 from .replacement_challenges import LEGACY_BROWSER_LABS, rows as replacement_rows
 
 training = Blueprint("cyberdune_training", __name__, template_folder="templates", static_folder="assets", static_url_path="/plugins/cyberdune_training/assets")
 DIFFICULTIES = ("Easy", "Medium", "Hard")
 ACADEMY_VISIBILITY_CONFIG = "cyberdune_training:academy_visible"
+EASY_FLAG_OBFUSCATION_CONFIG = "cyberdune_training:easy_flag_obfuscation_v1"
+_FLAG_TOKEN = re.compile(rb"(?:CYBERDUNE|CTF|FLAG|PICOCTF)\{[^}\r\n]{3,160}\}", re.IGNORECASE)
+_ROT13_TABLE = bytes.maketrans(
+    b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    b"NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm",
+)
+
+
+def obfuscate_visible_flags(data):
+    """Apply ROT13 to flag-shaped strings without changing binary offsets."""
+    return _FLAG_TOKEN.sub(lambda match: match.group(0).translate(_ROT13_TABLE), data)
 
 
 def academy_is_visible():
@@ -349,6 +361,75 @@ def seed_starters():
     set_config("cyberdune_training:starter_catalog_v1", True)
 
 
+def upgrade_intermediate_starters():
+    """Replace direct Base64 answers with evidence selection and byte analysis."""
+    marker = "cyberdune_training:intermediate_starters_v2"
+    if get_config(marker):
+        return 0
+    old_copy = {
+        "base64-trail": ("An intercepted fictional dispatch uses a common text encoding. Download and decode it to recover your flag.", "The alphabet and trailing equals signs suggest Base64. Encoding is not encryption."),
+        "image-metadata": ("Inspect the generated image metadata and decode the text value preserved alongside the visible pixels.", "Try exiftool or inspect the PNG text chunks; the selected value uses a common text encoding."),
+        "public-trail": ("Investigate the fictional public archive in the ZIP. Cross-reference the briefing's project code with the correct profile. Everything needed is in the archive; no real people need to be contacted.", "Match the project identifier across the briefing and profiles, then decode the matching archive note."),
+        "hidden-files": ("Inspect the provided tar archive in a practice directory. Reconcile its snapshot manifest, locate the current hidden receipt, and decode its contents. Do not extract untrusted archives into important folders.", "List the archive paths, compare the snapshot labels, and inspect the receipt's text encoding."),
+        "packet-courier": ("Open the synthetic packet capture in Wireshark or another offline packet viewer. Identify the UDP datagram and decode its application payload. Addresses use documentation-only ranges.", "Inspect the UDP payload or use Follow UDP Stream; the payload is text-encoded."),
+        "archive-layers": ("Work through a small ZIP archive. Follow the instructions in order and decode the final message to obtain your flag.", "Read README.txt first. The next file contains hexadecimal text, not raw binary."),
+    }
+    latest = {row["slug"]: row for row in starter_rows()}
+    changed = 0
+    for slug, (description, hint) in old_copy.items():
+        challenge = TrainingChallenge.query.filter_by(slug=slug).first()
+        if not challenge:
+            continue
+        updated = latest[slug]
+        if (challenge.description, challenge.hint) == (description, hint) and challenge.difficulty == "Easy" and challenge.minutes == 10:
+            challenge.description = updated["description"]
+            challenge.hint = updated["hint"]
+            challenge.difficulty = updated["difficulty"]
+            challenge.minutes = updated["minutes"]
+            challenge.value = updated["value"]
+            changed += 1
+        elif (challenge.description, challenge.difficulty, challenge.minutes, challenge.value) == (
+            updated["description"], updated["difficulty"], updated["minutes"], 50,
+        ):
+            challenge.value = updated["value"]
+            changed += 1
+    db.session.commit()
+    set_config(marker, True)
+    return changed
+
+
+def upgrade_yassir_gift():
+    """Replace the old visible Base64 gift with a per-user authenticated crypto exercise."""
+    marker = "cyberdune_training:yassir_gift_crypto_v1"
+    if get_config(marker):
+        return False
+    challenge = TrainingChallenge.query.filter_by(slug="bootcamp-2025-3").first()
+    changed = bool(
+        challenge
+        and challenge.name == "cadeau hada mn 3and marlithor_cyber"
+        and challenge.category == "Cryptography"
+        and challenge.difficulty == "Easy"
+        and challenge.recipe is None
+    )
+    if changed:
+        challenge.name = "Yassir's Gift"
+        challenge.description = (
+            "Use the recovery ticket to identify the approved audit record for the correct operator. "
+            "Decode the Base64 envelope, derive the AES key with the supplied PBKDF2 parameters, then "
+            "authenticate and decrypt the flag. All records are synthetic."
+        )
+        challenge.hint = ""
+        challenge.difficulty = "Medium"
+        challenge.value = 200
+        challenge.minutes = 40
+        challenge.recipe = "yassir-gift"
+        challenge.flag_hash = None
+        TrainingAnswer.query.filter_by(challenge_id=challenge.id).delete(synchronize_session=False)
+    db.session.commit()
+    set_config(marker, True)
+    return changed
+
+
 def remove_legacy_browser_labs():
     """Permanently remove the nine built-in browser labs and their telemetry."""
     # A locking read serializes concurrent Gunicorn worker startups. On MySQL,
@@ -377,7 +458,7 @@ def remove_legacy_browser_labs():
 
 
 def seed_replacement_challenges():
-    if get_config("cyberdune_training:file_challenges_v1"):
+    if get_config("cyberdune_training:file_challenges_v2"):
         return
     existing = {row[0] for row in db.session.query(TrainingChallenge.slug)}
     try:
@@ -390,36 +471,161 @@ def seed_replacement_challenges():
         # A concurrent worker may have seeded the same slug. Leave the marker
         # unset so the next startup can verify the whole catalog is present.
         return
-    set_config("cyberdune_training:file_challenges_v1", True)
+    set_config("cyberdune_training:file_challenges_v2", True)
 
 
-def simplify_seeded_titles():
-    """Update only the original generated labels; keep admin-edited content intact."""
-    old_source = "picoCTF official examples · Tim Becker / ForAllSecure · MIT · adapted by CyberDune"
-    labels = {
-        "pico-ecb-1": ("picoCTF sample: ECB 1", "ECB Challenge"),
-        "pico-sql-1": ("picoCTF sample: SQL Injection 1", "SQL Login"),
-    }
-    changed = False
-    for slug, (old_name, new_name) in labels.items():
-        challenge = TrainingChallenge.query.filter_by(slug=slug).first()
-        if challenge and challenge.name == old_name:
-            challenge.name = new_name
-            changed = True
-        if challenge and challenge.source == old_source:
-            challenge.source = "Licensed learning example · author and license credits are included with the exercise files"
-            changed = True
-    sql_example = TrainingChallenge.query.filter_by(slug="pico-sql-1").first()
-    old_sql_description = ("Find the query flaw in a fictional login and bypass it in the isolated lab. Each request uses a "
-                           "disposable SQLite database containing one fictional user; it has no connection to platform accounts or the CTF database.")
-    old_sql_hint = "Look at how quotes in the input change the structure of the query. Use the provided lab only."
-    if sql_example and sql_example.description == old_sql_description:
-        sql_example.description = "Download the fictional login sample and investigate how its SQL query handles input. Recover your account's flag using the offline files; the exercise never connects to this platform or any external service."
-        if sql_example.hint == old_sql_hint:
-            sql_example.hint = "Use a quote to test where input is inserted into the query, then complete the exercise only against the supplied local sample."
-        changed = True
-    if changed:
+def remove_pico_challenges():
+    """Permanently remove the retired third-party Academy examples and progress."""
+    slugs = ("pico-ecb-1", "pico-sql-1")
+    challenges = TrainingChallenge.query.filter(TrainingChallenge.slug.in_(slugs)).with_for_update().all()
+    if not challenges:
+        return 0
+    ids = [item.id for item in challenges]
+    locations = [item.location for item in TrainingAttachment.query.filter(TrainingAttachment.challenge_id.in_(ids)).all()]
+    TrainingSolve.query.filter(TrainingSolve.challenge_id.in_(ids)).delete(synchronize_session=False)
+    TrainingAttempt.query.filter(TrainingAttempt.challenge_id.in_(ids)).delete(synchronize_session=False)
+    TrainingAnswer.query.filter(TrainingAnswer.challenge_id.in_(ids)).delete(synchronize_session=False)
+    TrainingAttachment.query.filter(TrainingAttachment.challenge_id.in_(ids)).delete(synchronize_session=False)
+    TrainingChallenge.query.filter(TrainingChallenge.id.in_(ids)).delete(synchronize_session=False)
+    db.session.commit()
+    if locations:
+        from CTFd.utils.uploads import get_uploader
+        uploader = get_uploader()
+        for location in locations:
+            uploader.delete(location)
+    return len(ids)
+
+
+def seed_authored_challenges():
+    if get_config("cyberdune_training:authored_catalog_v3"):
+        return
+    existing = {row[0] for row in db.session.query(TrainingChallenge.slug)}
+    try:
+        for row in authored_rows():
+            if row["slug"] not in existing:
+                db.session.add(TrainingChallenge(**row))
         db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+    set_config("cyberdune_training:authored_catalog_v3", True)
+
+
+def upgrade_easy_flag_exposure():
+    """Add a small decode step to two imported Easy challenges with plaintext flags."""
+    if get_config(EASY_FLAG_OBFUSCATION_CONFIG):
+        return 0
+    descriptions = {
+        "bootcamp-2025-8": (
+            "Analyze the supplied disk image, recover the deleted evidence record, and decode its letter-rotated text to submit the flag.",
+            "Inspect the filesystem and deleted entries; the recovered text uses a reversible alphabet rotation.",
+        ),
+        "bootcamp-2025-52": (
+            "Inspect the image metadata, locate the encoded evidence value, and decode it to submit the flag.",
+            "Check metadata fields beyond the visible image properties; the note uses a reversible alphabet rotation.",
+        ),
+    }
+    default_copy_updates = {
+        "source-review": (
+            "Download the page from a fictional training portal. The visible text is only part of the response. Find the flag without attacking this platform.",
+            "Open the downloaded HTML in a text editor and inspect its comments.",
+            "Download the fictional portal response, locate its audit note, and decode the short letter-shifted value to recover your flag.",
+            "Inspect the HTML comment. Its letters use a reversible alphabet rotation.",
+        ),
+        "image-metadata": (
+            "The image is generated for this exercise. Inspect its metadata to find what was preserved alongside the visible pixels.",
+            "Try exiftool or inspect the PNG text chunks.",
+            "Inspect the generated image metadata and decode the text value preserved alongside the visible pixels.",
+            "Try exiftool or inspect the PNG text chunks; the selected value uses a common text encoding.",
+        ),
+        "endian-note": (
+            "Inspect a synthetic memory dump. Its first four bytes encode the length of the message in little-endian order. Recover exactly that many bytes after the header.",
+            "Decode the first four bytes as a little-endian unsigned integer, then slice the following message.",
+            "Inspect a synthetic memory dump. Decode its little-endian length field, then use the key byte in the header to reverse the payload mask.",
+            "Read the binary header field by field; the payload bytes are transformed.",
+        ),
+        "hidden-files": (
+            "Inspect the provided tar archive in a practice directory. A hidden configuration directory contains your training flag. Do not extract untrusted archives into important folders.",
+            "Files beginning with a dot are hidden by default. Try tar -tf and ls -la.",
+            "Inspect the provided tar archive in a practice directory. Reconcile its snapshot manifest, locate the current hidden receipt, and decode its contents. Do not extract untrusted archives into important folders.",
+            "List the archive paths, compare the snapshot labels, and inspect the receipt's text encoding.",
+        ),
+        "packet-courier": (
+            "Open the synthetic packet capture in Wireshark or another offline packet viewer. Recover the application payload from its UDP datagram. Addresses use documentation-only ranges.",
+            "Inspect the UDP payload or use Follow UDP Stream.",
+            "Open the synthetic packet capture in Wireshark or another offline packet viewer. Identify the UDP datagram and decode its application payload. Addresses use documentation-only ranges.",
+            "Inspect the UDP payload or use Follow UDP Stream; the payload is text-encoded.",
+        ),
+        "response-header": (
+            "Inspect the supplied HTTP response capture and recover the training flag from the relevant response header.",
+            "Read the response headers separately from the body.",
+            "Correlate the supplied request and response records by trace ID, select the successful archive export, and decode its response header value.",
+            "Read the response headers separately from the body, then compare trace IDs and status codes.",
+        ),
+        "hidden-backup": (
+            "Inspect the supplied backup archive, including hidden paths, to find the training flag.",
+            "List the archive contents before extracting it; dot-prefixed paths are easy to miss.",
+            "Inspect the supplied backup archive, including hidden paths. Use its manifest to select the current receipt and decode its contents.",
+            "List the archive contents before extracting it; compare the snapshot labels in the manifest.",
+        ),
+    }
+    copy_rows = {row.slug: row for row in TrainingChallenge.query.filter(TrainingChallenge.slug.in_(default_copy_updates)).all()}
+    for slug, row in copy_rows.items():
+        old_description, old_hint, new_description, new_hint = default_copy_updates[slug]
+        if row.description == old_description:
+            row.description = new_description
+        if row.hint == old_hint:
+            row.hint = new_hint
+    challenges = {row.slug: row for row in TrainingChallenge.query.filter(TrainingChallenge.slug.in_(descriptions)).all()}
+    if len(challenges) != len(descriptions):
+        # Imported bootcamp content may be added later. Leave the marker unset
+        # so the next application start retries when both exercises are present.
+        return 0
+    from CTFd.utils.uploads import get_uploader
+    uploader = get_uploader()
+    new_locations = []
+    changed_slugs = set()
+    changed = 0
+    for slug, challenge in challenges.items():
+        challenge.description, challenge.hint = descriptions[slug]
+        attachments = TrainingAttachment.query.filter_by(challenge_id=challenge.id).all()
+        for attachment in attachments:
+            with uploader.open(attachment.location) as source:
+                original = source.read()
+            obfuscated = obfuscate_visible_flags(original)
+            if obfuscated == original:
+                continue
+            new_location = uploader.upload(
+                io.BytesIO(obfuscated), filename=slug + "-" + attachment.name,
+                path="academy-obfuscated",
+            )
+            new_locations.append(new_location)
+            attachment.location = new_location
+            attachment.sha256 = hashlib.sha256(obfuscated).hexdigest()
+            changed += 1
+            changed_slugs.add(slug)
+    already_obfuscated = True
+    for slug, challenge in challenges.items():
+        attachments = TrainingAttachment.query.filter_by(challenge_id=challenge.id).all()
+        if not attachments:
+            already_obfuscated = False
+            break
+        for attachment in attachments:
+            with uploader.open(attachment.location) as source:
+                if _FLAG_TOKEN.search(source.read()):
+                    already_obfuscated = False
+                    break
+        if not already_obfuscated:
+            break
+    if changed_slugs != set(descriptions) and not (changed == 0 and already_obfuscated):
+        db.session.rollback()
+        for location in new_locations:
+            uploader.delete(location)
+        # Do not mark migration complete if attachment names or source content
+        # differ from the known imports; this avoids a false-success migration.
+        return 0
+    db.session.commit()
+    set_config(EASY_FLAG_OBFUSCATION_CONFIG, True)
+    return changed
 
 
 def load(app):
@@ -437,19 +643,23 @@ def load(app):
     # This idempotent migration erases legacy Academy browser-lab rows and
     # related progress; production backups are taken before the deployment.
     remove_legacy_browser_labs()
+    remove_pico_challenges()
     seed_starters()
-    if not get_config("cyberdune_training:advanced_catalog_v1"):
+    upgrade_intermediate_starters()
+    upgrade_yassir_gift()
+    if not get_config("cyberdune_training:advanced_catalog_v2"):
         existing = {row[0] for row in db.session.query(TrainingChallenge.slug)}
         try:
-            for row in list(advanced_rows()) + list(pico_rows()):
+            for row in advanced_rows():
                 if row["slug"] not in existing:
                     db.session.add(TrainingChallenge(**row))
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
-        set_config("cyberdune_training:advanced_catalog_v1", True)
+        set_config("cyberdune_training:advanced_catalog_v2", True)
     seed_replacement_challenges()
-    simplify_seeded_titles()
+    seed_authored_challenges()
+    upgrade_easy_flag_exposure()
     app.register_blueprint(training)
     app.jinja_env.globals["training_copy"] = tr
     register_user_page_menu_bar("Academy", "/academy")

@@ -1,11 +1,13 @@
 """Independent training behavior, authorization, fairness and exercise artifacts."""
 import ast
 import base64
+import csv
 import io
 import json
 import struct
 import tarfile
 import zipfile
+import zlib
 from datetime import datetime, timedelta
 
 import pytest
@@ -13,7 +15,7 @@ from PIL import Image
 
 from CTFd.config import TestingConfig
 from CTFd.models import Challenges, Solves, Submissions, Users, db
-from CTFd.plugins.cyberdune_training import exercise_flag, remove_legacy_browser_labs, seed_starters, user_summary
+from CTFd.plugins.cyberdune_training import exercise_flag, remove_legacy_browser_labs, seed_starters, upgrade_intermediate_starters, upgrade_yassir_gift, user_summary
 from CTFd.plugins.cyberdune_training.catalog import CATEGORIES
 from CTFd.plugins.cyberdune_training.models import TrainingAnswer, TrainingAttempt, TrainingChallenge, TrainingSolve
 from CTFd.utils import set_config
@@ -52,12 +54,12 @@ def nonce(client):
 
 def test_starter_library_and_independent_event_access(app):
     with app.app_context():
-        assert TrainingChallenge.query.count() == 25
-        assert TrainingChallenge.query.filter_by(active=True).count() == 25
+        assert TrainingChallenge.query.count() == 40
+        assert TrainingChallenge.query.filter_by(active=True).count() == 40
         assert {row.category for row in TrainingChallenge.query.all()} == set(CATEGORIES)
         assert TrainingChallenge.query.filter_by(kind="lab", active=True).count() == 0
         seed_starters()
-        assert TrainingChallenge.query.count() == 25
+        assert TrainingChallenge.query.count() == 40
         set_config("start", 9999999999)
         set_config("end", 10000000999)
     client = app.test_client()
@@ -69,6 +71,33 @@ def test_starter_library_and_independent_event_access(app):
     assert client.get("/academy/scoreboard").status_code == 200
     assert b"XP" not in client.get("/academy").data
     assert b"XP" not in client.get("/academy/scoreboard").data
+
+
+def test_intermediate_starter_migration_preserves_organizer_edits(app):
+    with app.app_context():
+        dispatch = TrainingChallenge.query.filter_by(slug="base64-trail").one()
+        custom = TrainingChallenge.query.filter_by(slug="source-review").one()
+        dispatch.description = "An intercepted fictional dispatch uses a common text encoding. Download and decode it to recover your flag."
+        dispatch.hint = "The alphabet and trailing equals signs suggest Base64. Encoding is not encryption."
+        dispatch.difficulty = "Easy"; dispatch.minutes = 10
+        custom.description = "Organizer's edited copy"
+        set_config("cyberdune_training:intermediate_starters_v2", False)
+        assert upgrade_intermediate_starters() == 1
+        assert dispatch.difficulty == "Medium" and dispatch.minutes == 30 and dispatch.value == 200 and dispatch.hint == ""
+        assert "repeating XOR" in dispatch.description and custom.description == "Organizer's edited copy"
+
+
+def test_yassir_gift_migration_replaces_static_answer_with_generated_recipe(app):
+    with app.app_context():
+        gift = TrainingChallenge(slug="bootcamp-2025-3", name="cadeau hada mn 3and marlithor_cyber",
+            category="Cryptography", difficulty="Easy", kind="challenge", description="old", hint="",
+            value=50, minutes=10, active=True, recipe=None, flag_hash="old-hash")
+        db.session.add(gift); db.session.flush()
+        db.session.add(TrainingAnswer(challenge_id=gift.id, flag_hash="another-old-hash")); db.session.commit()
+        set_config("cyberdune_training:yassir_gift_crypto_v1", False)
+        assert upgrade_yassir_gift() is True
+        assert gift.name == "Yassir's Gift" and gift.difficulty == "Medium" and gift.recipe == "yassir-gift"
+        assert gift.flag_hash is None and TrainingAnswer.query.filter_by(challenge_id=gift.id).count() == 0
 
 
 def test_search_filters_and_empty_recovery(app):
@@ -227,20 +256,85 @@ def test_every_starter_download_is_solvable_and_private(app):
     for slug in ["source-review", "base64-trail", "image-metadata", "public-trail", "xor-blueprint", "endian-note", "hidden-files", "packet-courier", "archive-layers"]:
         response = client.get(endpoint(slug) + "/artifact"); data = response.data; flag = solution(app, slug)
         assert response.status_code == 200 and "no-store" in response.headers["Cache-Control"]
-        if slug == "source-review": recovered = data.decode().split("audit-note: ")[1].split(" -->")[0]
-        elif slug == "base64-trail": recovered = base64.b64decode(data).decode()
-        elif slug == "image-metadata": recovered = Image.open(io.BytesIO(data)).info["TrainingEvidence"]
+        if slug == "source-review":
+            import codecs
+            recovered = codecs.decode(data.decode().split("audit-note: ")[1].split(" -->")[0], "rot_13")
+        elif slug == "base64-trail":
+            with zipfile.ZipFile(io.BytesIO(data)) as archive:
+                delivery = next(row for row in csv.DictReader(io.StringIO(archive.read("delivery-log.csv").decode())) if row["delivery_id"] == "D-204" and row["recipient"] == "node-7" and row["status"] == "accepted")
+                envelopes = [json.loads(row)["envelope_b64"] for row in archive.read("envelopes.jsonl").splitlines()]
+                envelope = next(json.loads(base64.b64decode(item)) for item in envelopes if json.loads(base64.b64decode(item))["record_id"] == delivery["delivery_id"])
+                key = json.loads(archive.read("keyring.json"))[envelope["key_id"]].encode()
+                cipher = bytes.fromhex(envelope["ciphertext_hex"])
+                recovered_bytes = bytes(value ^ key[index % len(key)] for index, value in enumerate(cipher))
+                assert f"{zlib.crc32(recovered_bytes) & 0xffffffff:08x}" == envelope["crc32"]
+                recovered = recovered_bytes.decode()
+        elif slug == "image-metadata":
+            with zipfile.ZipFile(io.BytesIO(data)) as archive:
+                acquisition = Image.open(io.BytesIO(archive.read("evidence.png"))).info["Acquisition-ID"]
+                records = json.loads(archive.read("chain-of-custody.json"))
+                record = next(row for row in records if row["acquisition_id"] == acquisition and row["state"] == "verified")
+                key = json.loads(archive.read("keyring.json"))[record["key_id"]].encode()
+                cipher = bytes.fromhex(record["ciphertext_hex"])
+                recovered_bytes = bytes(value ^ key[index % len(key)] for index, value in enumerate(cipher))
+                assert f"{zlib.crc32(recovered_bytes) & 0xffffffff:08x}" == record["crc32"]
+                recovered = recovered_bytes.decode()
         elif slug == "public-trail":
-            with zipfile.ZipFile(io.BytesIO(data)) as z: recovered = base64.b64decode(json.loads(z.read("profiles/dune.json"))["archive_note"]).decode()
+            with zipfile.ZipFile(io.BytesIO(data)) as z:
+                profile = json.loads(z.read("profiles/dune.json"))
+                envelope = json.loads(base64.b64decode(profile["archive_note"]))
+                key = json.loads(z.read("keyring.json"))[envelope["key_id"]].encode()
+                cipher = bytes.fromhex(envelope["ciphertext_hex"])
+                recovered_bytes = bytes(value ^ key[index % len(key)] for index, value in enumerate(cipher))
+                assert f"{zlib.crc32(recovered_bytes) & 0xffffffff:08x}" == envelope["crc32"]
+                recovered = recovered_bytes.decode()
         elif slug == "xor-blueprint": recovered = bytes(v ^ 42 for v in ast.literal_eval(ast.parse(data.decode()).body[0].value)).decode()
-        elif slug == "endian-note": recovered = data[4:4 + struct.unpack("<I", data[:4])[0]].decode()
+        elif slug == "endian-note":
+            assert data[:4] == b"MEM1"
+            length = struct.unpack("<H", data[4:6])[0]
+            key = data[6]
+            recovered = bytes(value ^ key for value in data[7:7 + length]).decode()
         elif slug == "hidden-files":
             with tarfile.open(fileobj=io.BytesIO(data)) as archive:
                 assert all(not name.startswith("/") and ".." not in name.split("/") for name in archive.getnames())
-                recovered = archive.extractfile("workspace/.config/training.txt").read().decode()
-        elif slug == "packet-courier": recovered = data[82:].decode()
+                manifest = json.load(archive.extractfile("workspace/manifest.json"))
+                encoded = archive.extractfile("workspace/" + manifest["receipt"]).read()
+                cipher = bytes.fromhex(base64.b64decode(encoded).decode())
+                key = json.load(archive.extractfile("workspace/.config/keys.json"))[manifest["key_id"]].encode()
+                recovered_bytes = bytes(value ^ key[index % len(key)] for index, value in enumerate(cipher))
+                expected_crc = archive.extractfile("workspace/.config/nightly-07/receipt.crc32").read().decode().strip()
+                assert f"{zlib.crc32(recovered_bytes) & 0xffffffff:08x}" == expected_crc
+                recovered = recovered_bytes.decode()
+        elif slug == "packet-courier":
+            with zipfile.ZipFile(io.BytesIO(data)) as archive:
+                capture = archive.read("capture.pcap")
+                keyring = json.loads(archive.read("keyring.json"))
+                offset, fragments, session_meta = 24, {}, None
+                while offset < len(capture):
+                    _, _, captured, _ = struct.unpack_from("<IIII", capture, offset)
+                    frame = capture[offset + 16:offset + 16 + captured]; offset += 16 + captured
+                    ip_offset = 14; udp_offset = ip_offset + (frame[ip_offset] & 0x0f) * 4
+                    _, dest_port, _, _ = struct.unpack_from("!HHHH", frame, udp_offset)
+                    if dest_port != 31337: continue
+                    fields = dict(part.split("=", 1) for part in frame[udp_offset + 8:].decode().split(";"))
+                    if fields["sid"] != "S-42": continue
+                    sequence, total = map(int, fields["seq"].split("/"))
+                    fragments[sequence] = bytes.fromhex(fields["hex"])
+                    session_meta = fields
+                assert len(fragments) == total == 3
+                cipher = b"".join(fragments[index] for index in range(1, total + 1))
+                key = keyring[session_meta["kid"]].encode()
+                recovered_bytes = bytes(value ^ key[index % len(key)] for index, value in enumerate(cipher))
+                assert f"{zlib.crc32(recovered_bytes) & 0xffffffff:08x}" == session_meta["crc"]
+                recovered = recovered_bytes.decode()
         else:
-            with zipfile.ZipFile(io.BytesIO(data)) as z: recovered = base64.b64decode(bytes.fromhex(z.read("payload.hex").decode())).decode()
+            with zipfile.ZipFile(io.BytesIO(data)) as z:
+                manifest = json.loads(z.read("manifest.json"))
+                cipher = base64.b64decode(bytes.fromhex(z.read(manifest["payload"]).decode()))
+                key = z.read(manifest["xor_key"]).strip()
+                recovered_bytes = bytes(value ^ key[index % len(key)] for index, value in enumerate(cipher))
+                assert f"{zlib.crc32(recovered_bytes) & 0xffffffff:08x}" == manifest["crc32"]
+                recovered = recovered_bytes.decode()
         assert recovered == flag
         assert client.post(endpoint(slug) + "/submit", json={"flag": recovered}).json["status"] == "correct"
 
@@ -291,7 +385,7 @@ def test_admin_rejects_unusable_labs_and_unsafe_urls(app):
     assert admin.post("/admin/training", data=values).status_code == 400
     values["resource_url"] = ""
     assert admin.post("/admin/training", data=values).status_code == 400
-    with app.app_context(): assert TrainingChallenge.query.count() == 25
+    with app.app_context(): assert TrainingChallenge.query.count() == 40
 
 
 def test_attempt_pruning_never_removes_solve_history(app):

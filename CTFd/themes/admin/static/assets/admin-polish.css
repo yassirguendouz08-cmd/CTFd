@@ -1,0 +1,99 @@
+@font-face {
+  font-family: "Geist Sans";
+  src: url("../../../core-theme/static/webfonts/geist-sans-variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("../../../core-theme/static/webfonts/geist-mono-variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+.cd-admin {
+  --admin-accent: #d94052;
+  font-family: "Geist Sans", system-ui, sans-serif;
+  color: #26303c;
+  letter-spacing: -0.006em;
+}
+
+.cd-admin :where(button, input, select, textarea, .btn, .form-control, .custom-select) {
+  font-family: "Geist Sans", system-ui, sans-serif;
+}
+
+.cd-admin :where(code, pre, kbd, samp) {
+  font-family: "Geist Mono", ui-monospace, monospace;
+}
+
+.cd-admin :where(h1, h2, h3, h4, .modal-title) {
+  font-family: "Geist Sans", system-ui, sans-serif;
+  font-weight: 680;
+  letter-spacing: -0.03em;
+}
+
+.cd-admin > nav.navbar {
+  min-height: 62px;
+  border-bottom: 1px solid #293342;
+  background: #101720 !important;
+  box-shadow: 0 6px 20px rgb(10 18 28 / 14%);
+}
+
+.cd-admin > nav.navbar .navbar-brand {
+  font-family: "Geist Sans", system-ui, sans-serif;
+  font-weight: 720;
+  letter-spacing: -0.02em;
+}
+
+.cd-admin > nav.navbar .nav-link {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 7px;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.cd-admin > nav.navbar .nav-link:hover,
+.cd-admin > nav.navbar .nav-link:focus-visible {
+  color: #fff;
+  background: rgb(255 255 255 / 8%);
+}
+
+.cd-admin .card,
+.cd-admin .modal-content,
+.cd-admin .table-responsive {
+  border-color: #d9e0e8;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgb(25 39 56 / 6%);
+}
+
+.cd-admin .btn-primary {
+  background: linear-gradient(135deg, #e44e60, #c9364a);
+  border-color: #d94052;
+}
+
+.cd-admin .btn-primary:hover {
+  background: #c9364a;
+  border-color: #b92e41;
+}
+
+.cd-admin :where(.form-control, .custom-select, .form-select):focus {
+  border-color: #d94052;
+  box-shadow: 0 0 0 3px rgb(217 64 82 / 15%);
+}
+
+.cd-admin :focus-visible {
+  outline: 2px solid #c9364a;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cd-admin *,
+  .cd-admin *::before,
+  .cd-admin *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

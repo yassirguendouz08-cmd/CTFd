@@ -648,9 +648,26 @@ body.cd-app .container { padding-inline: 64px; }
 .cd-footer-signature,
 .cd-footer-controls,
 .cd-footer-flags { display: flex; align-items: center; gap: 14px; }
-.cd-footer-flags img { width: 40px; height: 28px; border-radius: 50%; object-fit: cover; }
-.cd-footer-credit { color: #999; font-size: 12px; }
-.cd-footer-credit-name { color: #e1e1e1; }
+.cd-footer-flags img {
+  display: block;
+  width: auto;
+  height: clamp(36px, 2.5vw, 42px);
+  max-width: 84px;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  object-fit: contain;
+  box-shadow: none;
+  background: transparent;
+}
+.cd-footer-credit {
+  color: #c5c5c5;
+  font-family: var(--odyssey-body);
+  font-size: clamp(14px, 1vw, 16px);
+  font-weight: 700;
+  line-height: 1.45;
+}
+.cd-footer-credit-name { color: #ff4b5e; font-weight: 800; }
 .cd-footer-language { display: flex; align-items: center; gap: 10px; color: #aaa; font-size: 12px; }
 .cd-footer-language .form-select { width: auto; min-width: 128px; min-height: 38px; }
 
@@ -1303,6 +1320,7 @@ body.cd-app.cd-home .cd-hero-copy { max-width: 920px; margin: 0; }
   body.cd-app .cd-page-head { padding-block: 38px 22px; }
   body.cd-app .cd-page-head h1 { font-size: clamp(40px, 10vw, 58px); }
   body.cd-app .cd-footer-inner { align-items: flex-start; flex-direction: column; }
+  .cd-footer-signature { align-items: flex-start; flex-direction: column; gap: 10px; }
 }
 @media (max-width: 519px) {
   body.cd-app .cd-challenge-grid,
@@ -1320,7 +1338,8 @@ body.cd-app.cd-home .cd-hero-copy { max-width: 920px; margin: 0; }
   body.cd-app .cd-training .tr-panel { padding: 20px; }
   body.cd-app .cd-training .tr-board { min-width: 420px; }
 }
-/* Roomier challenge grids and one icon system across CTF and Academy. */
+
+/* Give both challenge libraries room to breathe and use one category icon system. */
 body.cd-app .cd-challenge-grid,
 body.cd-app .cd-training .tr-grid { column-gap: 24px; row-gap: 24px; }
 body.cd-app .cd-card-category > .cd-category-symbol {
@@ -1348,4 +1367,109 @@ body.cd-app .cd-card-category > .cd-category-symbol {
 @media (max-width: 519px) {
   body.cd-app .cd-challenge-grid,
   body.cd-app .cd-training .tr-grid { column-gap: 0; row-gap: 16px; }
+}
+
+/* Homepage first screen: keep the platform hero within one viewport. */
+body.cd-app.cd-home .cd-hero-shell {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+}
+body.cd-app.cd-home .cd-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  align-items: center;
+  padding-block: clamp(132px, 20vh, 180px) 0;
+  text-align: start;
+}
+body.cd-app.cd-home .cd-hero-copy {
+  width: 100%;
+  max-width: 920px;
+  min-width: 0;
+  margin: 0;
+}
+body.cd-app.cd-home .cd-hero .cd-eyebrow {
+  margin: 0 0 16px;
+  color: #ff3845;
+  font-size: 11px;
+  line-height: 1.45;
+  letter-spacing: .16em;
+}
+body.cd-app.cd-home .cd-hero .cd-brand-title {
+  max-width: 100%;
+  margin: 0;
+  color: #f7f5f5;
+  font-family: var(--odyssey-heading);
+  font-size: clamp(64px, 7.5vw, 132px);
+  font-weight: 400;
+  line-height: .9;
+  letter-spacing: .005em;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 58%);
+}
+body.cd-app.cd-home .cd-platform-title > span {
+  display: block;
+  margin: 0;
+  color: inherit;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+body.cd-app.cd-home .cd-platform-tagline {
+  margin: 14px 0 8px;
+  color: #f1eeee;
+  font: 500 clamp(18px, 1.45vw, 21px)/1.4 var(--odyssey-body);
+}
+body.cd-app.cd-home .cd-hero .cd-hero-description {
+  max-width: 610px;
+  margin: 0 0 20px;
+  color: #d1d1d1;
+  font-size: clamp(15px, 1.12vw, 17px);
+  line-height: 1.58;
+}
+body.cd-app.cd-home .cd-hero .cd-actions {
+  gap: 10px;
+  margin: 0;
+}
+body.cd-app.cd-home .cd-hero .cd-actions .btn {
+  min-height: 48px;
+  padding: 13px 22px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+@media (max-width: 1199px) {
+  body.cd-app.cd-home .cd-hero {
+    padding-block: clamp(132px, 18vh, 168px) 0;
+  }
+  body.cd-app.cd-home .cd-hero .cd-brand-title {
+    font-size: clamp(58px, 8vw, 98px);
+  }
+}
+@media (max-width: 767px) {
+  body.cd-app.cd-home .cd-hero {
+    padding-block: 118px 0;
+    text-align: center;
+  }
+  body.cd-app.cd-home .cd-hero-copy { margin-inline: auto; }
+  body.cd-app.cd-home .cd-hero .cd-eyebrow { margin-inline: auto; }
+  body.cd-app.cd-home .cd-hero .cd-brand-title {
+    font-size: clamp(42px, 10.8vw, 58px);
+    line-height: .94;
+    letter-spacing: 0;
+  }
+  body.cd-app.cd-home .cd-platform-tagline { margin-top: 14px; }
+  body.cd-app.cd-home .cd-hero .cd-hero-description { margin-inline: auto; }
+  body.cd-app.cd-home .cd-hero .cd-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 519px) {
+  body.cd-app.cd-home .cd-hero { padding-block: 112px 0; }
+  body.cd-app.cd-home .cd-hero .cd-brand-title { font-size: clamp(40px, 11.2vw, 48px); }
+  body.cd-app.cd-home .cd-hero .cd-actions { align-items: stretch; }
+  body.cd-app.cd-home .cd-hero .cd-actions .btn { width: 100%; }
 }

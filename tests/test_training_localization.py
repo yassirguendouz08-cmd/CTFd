@@ -1,5 +1,6 @@
 import hashlib
 from html import unescape
+from types import SimpleNamespace
 
 from CTFd.plugins.cyberdune_training import challenge_text
 from CTFd.plugins.cyberdune_training.models import TrainingChallenge
@@ -27,9 +28,9 @@ def test_imported_darija_challenge_copy_tracks_site_language_without_mutating_so
     })
     client = login_as_user(app, name="alice")
     expected = {
-        "en": ("Marlithor's Gift", "Decode the Base64 text below"),
-        "fr": ("Le cadeau de Marlithor", "Décodez le texte Base64 ci-dessous"),
-        "ar": ("هدية من Marlithor", "فكّ ترميز نص Base64 أدناه"),
+        "en": ("Yassir's Gift", "Use the recovery ticket"),
+        "fr": ("Le cadeau de Yassir", "Utilisez le ticket de récupération"),
+        "ar": ("هدية ياسير", "استخدم تذكرة الاستعادة"),
     }
     for language, (title, description) in expected.items():
         monkeypatch.setattr(challenge_text, "get_locale", lambda language=language: language)
@@ -64,3 +65,21 @@ def test_challenge_translation_stops_when_organizer_edits_source(app, monkeypatc
     assert response.status_code == 200
     assert changed_description in body
     assert "Welcome back to digital forensics" not in body
+
+
+def test_all_translated_challenges_follow_the_selected_site_language(monkeypatch):
+    source = {"name": "Original title", "description": "Original briefing", "hint": "Original hint"}
+    columns = [SimpleNamespace(key=key) for key in ("slug", "name", "description", "hint", "flag_hash")]
+    for slug, languages in challenge_text.TRANSLATIONS.items():
+        monkeypatch.setitem(challenge_text.SOURCE_HASHES, slug, {
+            field: hashlib.sha256(source[field].encode("utf-8")).hexdigest()
+            for field in {field for values in languages.values() for field in values}
+        })
+        row = SimpleNamespace(slug=slug, **source, flag_hash="private-test-digest")
+        row.__table__ = SimpleNamespace(columns=columns)
+        for language, expected in languages.items():
+            monkeypatch.setattr(challenge_text, "get_locale", lambda language=language: language)
+            localized = challenge_text.localize_challenge(row)
+            for field, value in expected.items():
+                assert getattr(localized, field) == value, (slug, language, field)
+            assert localized.flag_hash == "private-test-digest"

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CyberDune · Cinematic design preview</title>
+  <link rel="stylesheet" href="CTFd/themes/core-theme/static/assets/redesign.css">
+  <link rel="stylesheet" href="CTFd/themes/core-theme/static/assets/original-ui.css">
+  <link rel="stylesheet" href="CTFd/themes/core-theme/static/assets/global-polish.css">
+  <link rel="stylesheet" href="CTFd/themes/cyberdune/static/css/refined-ui.css">
+  <link rel="stylesheet" href="CTFd/themes/core-theme/static/assets/cinematic-system.css">
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { min-height: 100vh; }
+    .preview-backdrop { position: fixed; inset: 0; z-index: -2; overflow: hidden; background: #07090c; }
+    .preview-backdrop img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .preview-backdrop::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg,#05070adc 0%,#05070a89 48%,#05070ad4 100%),radial-gradient(ellipse at 17% 54%,#a9344020,transparent 43%),linear-gradient(180deg,#02030419 0%,transparent 50%,#07090cde 100%); }
+    .preview-header { position: sticky; top: 0; z-index: 20; }
+    .preview-nav { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+    .preview-brand { display: flex; align-items: center; gap: 10px; color: white; font-size: 12px; font-weight: 700; letter-spacing: .08em; }
+    .preview-brand img { width: 42px; height: 42px; object-fit: contain; }
+    .preview-links { display: flex; align-items: center; gap: 4px; }
+    .preview-links a { display: inline-flex; align-items: center; min-height: 38px; padding: 0 14px; border-radius: 999px; color: #bdc2cb; font-size: 12px; }
+    .preview-links a:hover, .preview-links a.active { color: white; background: #dc46531a; }
+    .preview-hero { display: flex; align-items: center; min-height: min(690px, calc(100svh - 82px)); padding: 62px 0; }
+    .preview-hero-grid { display: grid; grid-template-columns: minmax(0,1.18fr) minmax(320px,.72fr); align-items: center; gap: clamp(48px,8vw,120px); width: 100%; max-width: 1400px; margin: auto; padding: 0 clamp(20px,4vw,56px); }
+    .preview-copy { max-width: 740px; padding-top: 20px; position: relative; }
+    .preview-copy::before { content: ''; position: absolute; top: 0; left: 0; width: 56px; height: 2px; background: linear-gradient(90deg,#df5360,transparent); }
+    .preview-kicker { color: #c6a6aa; font: 500 10px/1.8 'Geist Mono',monospace; letter-spacing: .16em; text-transform: uppercase; }
+    .preview-copy h1 { margin: 22px 0 24px; font-size: clamp(56px,7vw,94px); font-weight: 750; letter-spacing: -.075em; line-height: .99; }
+    .preview-copy h1 span { color: #e05a66; }
+    .preview-copy p { max-width: 60ch; color: #c8cbd1; font-size: clamp(16px,1.3vw,18px); line-height: 1.8; }
+    .preview-cta { display: inline-flex; align-items: center; min-height: 50px; margin-top: 14px; padding: 0 22px; border: 1px solid #eb626e; border-radius: 6px; background: #d83e4d; color: white; font-size: 13px; font-weight: 600; }
+    .preview-note { margin-top: 21px; color: #aeb3bc; font-size: 12px; }
+    .preview-console { max-width: 440px; justify-self: end; padding: clamp(25px,3vw,38px); border: 1px solid #ffffff20; border-radius: 18px; background: linear-gradient(145deg,#171b21e8,#0b0e13e8); box-shadow: 0 26px 80px #0006; backdrop-filter: blur(16px); }
+    .preview-console h2 { margin: 36px 0 12px; font-size: 24px; }
+    .preview-console p { color: #b9bec7; font-size: 14px; }
+    .preview-ticker { overflow: hidden; padding: 13px 0; border: 1px solid #ffffff16; border-radius: 9px; background: #080b10a6; color: #cbd0d7; font: 600 14px 'Geist Mono',monospace; letter-spacing: .02em; white-space: nowrap; }
+    .preview-ticker span { color: #d75a64; }
+    .preview-section { padding: 64px 0 70px; border-top: 1px solid #ffffff12; background: linear-gradient(180deg,#080a0dcc,#080a0df5); }
+    .preview-section-inner { width: 100%; max-width: 1320px; margin: auto; padding-inline: clamp(20px,4vw,56px); }
+    .preview-section h2 { margin: 10px 0; font-size: clamp(28px,4vw,44px); }
+    .preview-lead { max-width: 64ch; color: #aeb5bf; }
+    .preview-progress { display: grid; grid-template-columns: 1.3fr repeat(3,.55fr) 1fr; align-items: center; gap: 18px; margin: 26px 0 18px; padding: 20px 24px; border: 1px solid #ffffff19; border-radius: 14px; background: linear-gradient(125deg,#171b20df,#0d1015f0); }
+    .preview-progress div { display: flex; flex-direction: column; gap: 4px; }
+    .preview-progress small { color: #a8afb9; font-size: 11px; }
+    .preview-progress strong { color: #f1f2f4; font: 600 22px 'Geist Mono',monospace; }
+    .preview-progress .live-note { color: #969eaa; font: 12px/1.6 'Geist Sans',sans-serif; }
+    .preview-filter { display: grid; grid-template-columns: 1fr 220px; gap: 10px 16px; margin-bottom: 26px; padding: 18px 20px; border: 1px solid #ffffff17; border-radius: 14px; background: #101319dc; }
+    .preview-filter label { color: #aab1bb; font-size: 11px; }
+    .preview-filter input, .preview-filter select { min-height: 43px; width: 100%; padding: 10px 12px; border: 1px solid #ffffff23; border-radius: 7px; background: #090c11; color: #eff0f3; }
+    .preview-card-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 15px; }
+    .preview-card { display: flex; min-height: 194px; flex-direction: column; gap: 13px; padding: 18px; border: 1px solid #ffffff19; border-inline-start: 2px solid #b84a5555; border-radius: 12px; background: linear-gradient(145deg,#171b21ee,#101318f2); }
+    .preview-card-top, .preview-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .preview-card-top { color: #b9bec8; font-size: 10px; letter-spacing: .08em; }
+    .preview-card h3 { margin: auto 0 0; color: #f0f1f4; font-size: 17px; }
+    .preview-card-bottom { margin-top: auto; padding-top: 12px; border-top: 1px solid #ffffff15; color: #aeb5bf; font-size: 11px; }
+    .preview-solved { border-color: #4b876c88; border-inline-start-color: #4b876c; background: linear-gradient(145deg,#162820f2,#101a16f5); }
+    .preview-live { color: #a9d8bd; }
+    .preview-split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; }
+    .preview-panel { min-width: 0; padding: clamp(20px,3vw,30px); border: 1px solid #ffffff1a; border-radius: 14px; background: linear-gradient(145deg,#15191fdc,#0d1015eb); }
+    .preview-panel h3 { margin: 0 0 16px; font-size: 20px; }
+    .preview-panel p, .preview-panel li { color: #c2c7cf; font-size: 13px; line-height: 1.8; }
+    .preview-score-head { display: grid; grid-template-columns: 80px 1fr 100px; gap: 14px; padding: 12px 0; border-bottom: 1px solid #ffffff18; color: #a8b0bc; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+    .preview-score-empty { padding: 20px 0 4px; color: #969eaa; font-size: 12px; }
+    .preview-rule { padding: 12px 0; border-bottom: 1px solid #ffffff12; color: #c2c7cf; font-size: 13px; }
+    .preview-rule:last-child { border: 0; }
+    .preview-rule b { color: #e78a92; font-weight: 550; }
+    .preview-footer { padding: 22px; border-top: 1px solid #ffffff13; background: #080a0edb; color: #969eaa; text-align: center; font-size: 11px; }
+    :where(a,button,input,select):focus-visible { outline: 2px solid #ff8e98; outline-offset: 3px; }
+    @media(max-width:1050px){.preview-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.preview-progress{grid-template-columns:repeat(2,1fr)}.preview-progress .live-note{grid-column:1/-1}}
+    @media(max-width:900px){.preview-hero{padding-block:60px}.preview-hero-grid{grid-template-columns:1fr;max-width:760px;gap:36px}.preview-console{justify-self:start;max-width:540px;width:100%}.preview-links a:nth-last-child(2){display:none}}
+    @media(max-width:620px){.preview-header{height:70px;flex-basis:70px}.preview-brand img{width:38px;height:38px}.preview-links{gap:0}.preview-links a{padding-inline:9px;font-size:11px}.preview-links a:nth-child(2),.preview-links a:nth-child(3){display:none}.preview-hero{min-height:auto;padding-block:50px}.preview-hero-grid{padding-inline:20px;gap:30px}.preview-copy h1{font-size:clamp(44px,12vw,60px)}.preview-console{padding:23px}.preview-section{padding-block:44px}.preview-section-inner{padding-inline:20px}.preview-card-grid,.preview-split{grid-template-columns:1fr}.preview-progress{gap:14px;padding:16px}.preview-progress strong{font-size:19px}.preview-filter{grid-template-columns:1fr}.preview-card{min-height:170px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  </style>
+</head>
+<body class="cd-site cd-home">
+  <div class="preview-backdrop" aria-hidden="true"><img src="CTFd/themes/core-theme/static/img/original-background-poster.webp" alt=""></div>
+  <header class="cd-header preview-header">
+    <nav class="cd-nav-wrap preview-nav" aria-label="Main navigation">
+      <a class="preview-brand" href="#home"><img src="CTFd/themes/core-theme/static/img/cyberdune-white.png" alt=""><span>CYBERDUNE</span></a>
+      <div class="cd-nav-pages preview-links">
+        <a class="active" href="#home">Home</a><a href="#challenges">Challenges</a><a href="#scoreboard">Scoreboard</a><a href="#rules">Rules</a><a href="#academy">Academy</a>
+      </div>
+      <a class="btn btn-primary btn-sm" href="#challenges">Account</a>
+    </nav>
+  </header>
+  <main id="home">
+    <section class="preview-hero">
+      <div class="preview-hero-grid">
+        <div class="preview-copy">
+          <span class="preview-kicker">CyberDune · Capture the flag</span>
+          <h1>CYBER<span>DUNE</span></h1>
+          <p>Welcome to the CyberDune CTF platform. Test your skills and capture the flag.</p>
+          <a class="preview-cta" href="#challenges">&gt; ./start_hack.sh</a>
+          <div class="preview-note">We won't steal your passwords :)</div>
+        </div>
+        <aside class="preview-console">
+          <span class="preview-kicker">Platform ready</span>
+          <h2>Capture the flag.</h2>
+          <p>Follow the clues. Find your flag.</p>
+          <div class="preview-ticker">WEB <span>·</span> CRYPTO <span>·</span> LINUX <span>·</span> OSINT <span>·</span> REVERSE <span>·</span> FORENSICS</div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="preview-section" id="challenges">
+      <div class="preview-section-inner">
+        <span class="preview-kicker">Challenge board · visual preview</span>
+        <h2>Find your next challenge.</h2>
+        <p class="preview-lead">Clear category and difficulty cues keep the board easy to scan. The connected platform supplies live challenge and progress data.</p>
+        <div class="preview-progress" aria-label="Preview of live progress panel">
+          <div><small>Your progress</small><strong>Account data</strong></div>
+          <div><small>Solved</small><strong>—</strong></div>
+          <div><small>Score</small><strong>—</strong></div>
+          <div><small>Rank</small><strong>—</strong></div>
+          <div class="live-note">Progress values load from the signed-in account.</div>
+        </div>
+        <div class="preview-filter"><label for="preview-search">Search challenges</label><label for="preview-category">Category</label><input id="preview-search" type="search" placeholder="Name, category, author or tag"><select id="preview-category"><option>All categories</option></select></div>
+        <div class="preview-card-grid">
+          <article class="preview-card"><div class="preview-card-top"><span>WEB</span><span>Easy</span></div><h3>Challenge name</h3><div class="preview-card-bottom"><span>Solves —</span><span>Points —</span></div></article>
+          <article class="preview-card"><div class="preview-card-top"><span>FORENSICS</span><span>Medium</span></div><h3>Challenge name</h3><div class="preview-card-bottom"><span>Solves —</span><span>Points —</span></div></article>
+          <article class="preview-card"><div class="preview-card-top"><span>CRYPTOGRAPHY</span><span>Hard</span></div><h3>Challenge name</h3><div class="preview-card-bottom"><span>Solves —</span><span>Points —</span></div></article>
+          <article class="preview-card preview-solved"><div class="preview-card-top"><span>OSINT</span><span class="preview-live">✓ Solved</span></div><h3>Challenge name</h3><div class="preview-card-bottom"><span>Solves —</span><span>Points —</span></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="preview-section" id="scoreboard">
+      <div class="preview-section-inner">
+        <span class="preview-kicker">Competition · live rankings</span>
+        <h2>Scoreboard</h2>
+        <p class="preview-lead">A clear rank hierarchy and aligned scores, populated from the competition backend.</p>
+        <div class="preview-panel">
+          <div class="preview-score-head"><span>Rank</span><span>Team</span><span>Score</span></div>
+          <div class="preview-score-empty">Live standings appear here when the scoreboard is connected.</div>
+        </div>
+        <div class="preview-split">
+          <article class="preview-panel" id="rules"><span class="preview-kicker">Participant guide</span><h3>Rules</h3><p>Documentation-style sections improve readability while preserving the event's existing rule text.</p><div class="preview-rule"><b>Team &amp; eligibility</b><br>Rules remain unchanged in the platform.</div><div class="preview-rule"><b>Code of conduct</b><br>Important restrictions receive a restrained accent.</div></article>
+          <article class="preview-panel" id="academy"><span class="preview-kicker">Independent practice space</span><h3>Academy</h3><p>Learning cards use the same surface language, with progress and course content supplied by the Academy.</p><div class="preview-rule">Learning library <span style="float:right;color:#e78a92">Open Academy ↗</span></div><div class="preview-rule">Academy standings <span style="float:right;color:#aeb5bf">Live data</span></div></article>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="preview-footer">CyberDune CTF · visual preview · no backend statistics shown</footer>
+</body>
+</html>

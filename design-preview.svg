@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1120" viewBox="0 0 1440 1120">
+  <defs>
+    <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#111720"/><stop offset="1" stop-color="#090c11"/></linearGradient>
+    <linearGradient id="card" x2="1" y2="1"><stop stop-color="#191f29"/><stop offset="1" stop-color="#11151c"/></linearGradient>
+    <linearGradient id="red" x2="1" y2="1"><stop stop-color="#ed6674"/><stop offset="1" stop-color="#c93749"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity=".28"/></filter>
+  </defs>
+  <rect width="1440" height="1120" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1440" height="78" fill="#0b0f15" stroke="#292f39"/>
+  <circle cx="54" cy="39" r="17" fill="#e64a5b"/><path d="M47 41h14M54 32v18" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+  <text x="82" y="47" fill="#f4f5f8" font-family="sans-serif" font-size="19" font-weight="700" letter-spacing="1">CYBERDUNE</text>
+  <text x="915" y="46" fill="#d5d9e0" font-family="sans-serif" font-size="15">Challenges</text><text x="1030" y="46" fill="#f27b86" font-family="sans-serif" font-size="15" font-weight="600">Academy</text><text x="1137" y="46" fill="#d5d9e0" font-family="sans-serif" font-size="15">Scoreboard</text>
+  <rect x="1283" y="19" width="112" height="40" rx="20" fill="none" stroke="#454b56"/><text x="1310" y="44" fill="#f1f3f7" font-family="sans-serif" font-size="13">Sign in</text>
+  <g font-family="sans-serif">
+    <text x="132" y="143" fill="#f07883" font-family="monospace" font-size="12" letter-spacing="2">CYBERDUNE ACADEMY  /  PRACTICE TRACK</text>
+    <text x="132" y="203" fill="#f6f7fa" font-size="48" font-weight="700" letter-spacing="-1.7">Build your security skills</text>
+    <text x="132" y="239" fill="#a7afbd" font-size="16">Choose a challenge, investigate carefully, and submit the flag when you find it.</text>
+    <text x="132" y="264" fill="#a7afbd" font-size="16">Your Academy progress is tracked separately.</text>
+  </g>
+  <g filter="url(#shadow)" font-family="sans-serif">
+    <rect x="132" y="298" width="370" height="92" rx="13" fill="#10141b" stroke="#2b303a"/><rect x="520" y="298" width="370" height="92" rx="13" fill="#10141b" stroke="#2b303a"/><rect x="908" y="298" width="400" height="92" rx="13" fill="#10141b" stroke="#2b303a"/>
+    <text x="156" y="339" fill="#f5f6f8" font-size="26" font-weight="700">18 / 60</text><text x="156" y="367" fill="#a7afbd" font-size="13">CHALLENGES SOLVED</text>
+    <text x="544" y="339" fill="#f5f6f8" font-size="26" font-weight="700">4,250</text><text x="544" y="367" fill="#a7afbd" font-size="13">POINTS EARNED</text>
+    <text x="932" y="339" fill="#f5f6f8" font-size="26" font-weight="700">#12</text><text x="932" y="367" fill="#a7afbd" font-size="13">ACADEMY RANK</text>
+  </g>
+  <rect x="132" y="420" width="530" height="48" rx="9" fill="#0c1016" stroke="#333b48"/><text x="155" y="450" fill="#788392" font-family="sans-serif" font-size="14">⌕   Search challenges</text>
+  <rect x="678" y="420" width="184" height="48" rx="9" fill="#10141b" stroke="#333b48"/><text x="699" y="450" fill="#d7dce4" font-family="sans-serif" font-size="14">All categories   ▾</text>
+  <rect x="878" y="420" width="166" height="48" rx="9" fill="#10141b" stroke="#333b48"/><text x="900" y="450" fill="#d7dce4" font-family="sans-serif" font-size="14">All levels   ▾</text>
+  <g filter="url(#shadow)" font-family="sans-serif">
+    <rect x="132" y="495" width="376" height="206" rx="13" fill="url(#card)" stroke="#303641"/><rect x="532" y="495" width="376" height="206" rx="13" fill="url(#card)" stroke="#303641"/><rect x="932" y="495" width="376" height="206" rx="13" fill="url(#card)" stroke="#303641"/>
+    <rect x="154" y="516" width="103" height="25" rx="13" fill="#33171c" stroke="#71343c"/><text x="170" y="533" fill="#ffc1c7" font-size="11" font-weight="700" letter-spacing=".7">FORENSICS</text><text x="435" y="534" fill="#c1c8d3" font-size="12">Easy</text>
+    <text x="154" y="582" fill="#f4f5f8" font-size="22" font-weight="700">Last Known Good</text><text x="154" y="611" fill="#a7afbd" font-size="14">Reconstruct a short incident timeline</text><text x="154" y="632" fill="#a7afbd" font-size="14">from a collection of system artifacts.</text><path d="M154 658h332" stroke="#303641"/><text x="154" y="682" fill="#d0d5de" font-family="monospace" font-size="12">⚑ 8 solves</text><text x="385" y="682" fill="#d0d5de" font-family="monospace" font-size="12">★ 100 points</text>
+    <rect x="554" y="516" width="61" height="25" rx="13" fill="#33171c" stroke="#71343c"/><text x="570" y="533" fill="#ffc1c7" font-size="11" font-weight="700" letter-spacing=".7">WEB</text><text x="829" y="534" fill="#c1c8d3" font-size="12">Medium</text>
+    <text x="554" y="582" fill="#f4f5f8" font-size="22" font-weight="700">Quiet Redirect</text><text x="554" y="611" fill="#a7afbd" font-size="14">Trace an unexpected redirect and identify</text><text x="554" y="632" fill="#a7afbd" font-size="14">the server-side condition behind it.</text><path d="M554 658h332" stroke="#303641"/><text x="554" y="682" fill="#d0d5de" font-family="monospace" font-size="12">⚑ 3 solves</text><text x="785" y="682" fill="#d0d5de" font-family="monospace" font-size="12">★ 250 points</text>
+    <rect x="954" y="516" width="87" height="25" rx="13" fill="#33171c" stroke="#71343c"/><text x="970" y="533" fill="#ffc1c7" font-size="11" font-weight="700" letter-spacing=".7">CRYPTO</text><text x="1251" y="534" fill="#c1c8d3" font-size="12">Hard</text>
+    <text x="954" y="582" fill="#f4f5f8" font-size="22" font-weight="700">Three Small Clues</text><text x="954" y="611" fill="#a7afbd" font-size="14">Combine several partial observations</text><text x="954" y="632" fill="#a7afbd" font-size="14">to recover the hidden message.</text><path d="M954 658h332" stroke="#303641"/><text x="954" y="682" fill="#d0d5de" font-family="monospace" font-size="12">⚑ 1 solve</text><text x="1185" y="682" fill="#d0d5de" font-family="monospace" font-size="12">★ 400 points</text>
+  </g>
+  <rect x="132" y="735" width="760" height="278" rx="14" fill="#10141b" stroke="#2b303a"/>
+  <text x="160" y="778" fill="#f07883" font-family="monospace" font-size="12" letter-spacing="1.6">CHALLENGE DETAILS</text><text x="160" y="821" fill="#f4f5f8" font-family="sans-serif" font-size="27" font-weight="700">Quiet Redirect</text>
+  <text x="160" y="861" fill="#c0c7d2" font-family="sans-serif" font-size="15">We found a small web service that behaves differently depending on</text><text x="160" y="886" fill="#c0c7d2" font-family="sans-serif" font-size="15">how the request is formed. Inspect the response carefully and follow</text><text x="160" y="911" fill="#c0c7d2" font-family="sans-serif" font-size="15">the evidence to the flag.</text><text x="160" y="961" fill="#f4f5f8" font-family="sans-serif" font-size="17" font-weight="600">Files</text><text x="160" y="988" fill="#a7afbd" font-family="sans-serif" font-size="14">Nothing to download — investigate the live challenge service.</text>
+  <rect x="914" y="735" width="394" height="278" rx="14" fill="#10141b" stroke="#2b303a"/>
+  <text x="941" y="778" fill="#f4f5f8" font-family="sans-serif" font-size="19" font-weight="700">Submit flag</text><text x="941" y="809" fill="#a7afbd" font-family="sans-serif" font-size="14">Flags use the standard CyberDune format.</text>
+  <rect x="941" y="839" width="340" height="48" rx="9" fill="#0c1016" stroke="#333b48"/><text x="958" y="869" fill="#77818f" font-family="monospace" font-size="13">flag{...}</text><rect x="941" y="905" width="340" height="48" rx="9" fill="url(#red)"/><text x="1070" y="935" fill="#fff" font-family="sans-serif" font-size="14" font-weight="700">Submit</text>
+  <text x="720" y="1072" text-anchor="middle" fill="#7e8897" font-family="sans-serif" font-size="12">CYBERDUNE CTF  ·  LEARN BY INVESTIGATING</text>
+</svg>

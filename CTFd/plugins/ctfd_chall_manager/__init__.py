@@ -7,7 +7,6 @@ from CTFd.plugins import register_plugin_assets_directory
 from CTFd.plugins.challenges import CHALLENGE_CLASSES
 from CTFd.plugins.ctfd_chall_manager.api import register_api_endpoints
 from CTFd.plugins.ctfd_chall_manager.models import (
-    DynamicIaCChallenge,
     DynamicIaCValueChallenge,
 )
 from CTFd.plugins.ctfd_chall_manager.utils.chall_manager_error import (

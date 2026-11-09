@@ -94,6 +94,11 @@ def import_bootcamp(path):
         prepared = []
         for row in challenges:
             cid = row["id"]
+            # Only import reviewed, self-contained exercises. Incomplete entries
+            # removed from the live catalog must not be recreated by a later
+            # archive re-import.
+            if cid not in READY:
+                continue
             if not flags[cid] or row.get("logic", "any") not in (None, "any"):
                 raise ValueError("Missing flags or unsupported multi-flag logic")
             assets = [(PurePosixPath(name).name, player_attachment(name, archive.read(name))) for name in files[cid]]

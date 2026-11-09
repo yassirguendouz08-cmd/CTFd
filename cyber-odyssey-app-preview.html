@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CyberDune — Local preview</title>
+  <link rel="stylesheet" href="CTFd/themes/cyberdune/static/css/cyberdune.css?v=14">
+  <link rel="stylesheet" href="CTFd/themes/cyberdune/static/css/operations.css?v=14">
+  <link rel="stylesheet" href="CTFd/themes/cyberdune/static/css/club.css?v=1">
+  <link rel="stylesheet" href="CTFd/themes/core-theme/static/assets/cyber-odyssey-system.css?v=20261103-9">
+  <style>
+    .cd-app { padding-top: 0; }
+    .cd-app main { min-width: 0; }
+    .cd-app .cd-nav { position: absolute; inset: 0 0 auto; z-index: 100; width: 100%; }
+    .cd-app .cd-nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .cd-app .navbar-brand { display: flex; align-items: center; margin: 0; }
+    .cd-app .navbar-collapse { display: flex; align-items: center; justify-content: space-between; flex: 1; }
+    .cd-app .navbar-nav { display: flex; align-items: center; list-style: none; margin: 0; }
+    .cd-app .navbar-nav .nav-link { text-decoration: none; }
+    .cd-app .cd-nav-account { display: flex; align-items: center; margin: 0; }
+    .cd-app .cd-nav-account .nav-link { border: 1px solid rgb(255 255 255 / 13%); }
+    .cd-app .cd-hero-shell { min-height: min(850px, 100svh); }
+    .cd-app .cd-hero { min-height: min(850px, 100svh); grid-template-columns: 1fr; align-items: end; padding-block: 170px 82px; }
+    .cd-app .cd-hero-copy { align-self: end; max-width: 920px; margin: 0; }
+    .cd-app .cd-home-workspace { padding-bottom: 12px; }
+    .cd-app .cd-guide { padding-bottom: 64px; }
+    @media (max-width: 767px) {
+      .cd-app .navbar-collapse { align-items: stretch; flex-direction: column; }
+      .cd-app .navbar-nav { align-items: stretch; flex-direction: column; }
+      .cd-app .cd-hero { min-height: 100svh; padding-block: 145px 52px; }
+    }
+  </style>
+</head>
+<body class="cd-app cd-home">
+  <div class="cd-original-backdrop" aria-hidden="true">
+    <video muted loop playsinline autoplay preload="metadata" poster="CTFd/themes/core-theme/static/img/original-background-poster.webp">
+      <source src="CTFd/themes/core-theme/static/img/cyberdune-background.webm" type="video/webm">
+    </video>
+  </div>
+  <header class="navbar navbar-expand-xl fixed-top cd-nav">
+    <div class="container">
+      <a class="navbar-brand" href="#home" aria-label="CyberDune home"><span class="cd-official-logo"><img src="CTFd/themes/cyberdune/static/img/cyberdune-white.png" alt="CyberDune"></span></a>
+      <div class="navbar-collapse">
+        <ul class="navbar-nav me-auto">
+          <li><a class="nav-link active" href="#home">Home</a></li>
+          <li><a class="nav-link" href="#challenge-workspace">Challenges</a></li>
+          <li><a class="nav-link" href="#platform-guide">Platform guide</a></li>
+        </ul>
+        <div class="cd-nav-account"><a class="nav-link" href="#home">Account</a></div>
+      </div>
+    </div>
+  </header>
+  <main id="home">
+    <div class="cd-hero-shell">
+      <section class="container cd-hero">
+        <div class="cd-hero-copy">
+          <p class="cd-eyebrow"><span class="cd-dot"></span> BORN IN THE SAHARA. CONNECTED BY CURIOSITY.</p>
+          <h1 class="cd-brand-title cd-platform-title">CyberDune <span>CTF Platform</span></h1>
+          <p class="cd-platform-tagline">Explore. Learn. Hack. Evolve.</p>
+          <p class="cd-hero-description">A cybersecurity playground built for curious minds, future hackers, and competitive CTF teams.</p>
+          <div class="cd-actions"><a class="btn btn-primary" href="#challenge-workspace">Explore challenges <span aria-hidden="true">↗</span></a><a class="btn btn-outline-secondary" href="#platform-guide">Your first flag starts here</a></div>
+        </div>
+      </section>
+    </div>
+    <section id="challenge-workspace" class="container cd-home-workspace" data-home-workspace data-load-challenges="false" data-load-scores="false">
+      <div class="cd-section-heading"><div><p class="cd-eyebrow">CHOOSE YOUR ANGLE OF ATTACK</p><h2>Pick your next lead.</h2></div><a href="#challenge-workspace">All challenges ↗</a></div>
+      <div class="cd-home-categories" data-home-categories></div>
+      <p data-categories-empty class="cd-home-placeholder">Open the challenge board to see available challenges.</p>
+    </section>
+    <section id="platform-guide" class="container cd-guide">
+      <div class="cd-section-heading"><div><p class="cd-eyebrow">FROM FIRST CLUE TO FIRST FLAG</p><h2>Your first solve is closer than you think.</h2></div><p>Bring your curiosity. We’ll bring the puzzles.</p></div>
+      <div class="cd-guide-grid">
+        <article><span class="cd-step">01</span><h3>Choose your handle.</h3><p>Join CyberDune. Set up your profile. Your solves will tell the rest of the story.</p></article>
+        <article><span class="cd-step">02</span><h3>Follow a lead.</h3><p>Pick a challenge that makes you curious. Inspect its files, connect the clues, and use hints if you hit a wall.</p></article>
+        <article><span class="cd-step">03</span><h3>Make the solve count.</h3><p>Found it? Submit your flag inside the challenge. A correct flag earns points and adds your solve to the scoreboard.</p></article>
+      </div>
+      <div class="cd-scope"><span aria-hidden="true">⊞</span><div><strong>Break the puzzle. Respect the scope.</strong><p>Only test targets explicitly provided for a challenge. The platform, other participants, and the club website are outside the scope. Follow the published challenge rules.</p></div></div>
+    </section>
+  </main>
+  <footer class="cd-footer"><div class="container cd-footer-inner"><div class="cd-footer-brand"><span class="cd-official-logo"><img src="CTFd/themes/cyberdune/static/img/cyberdune-white.png" alt="CyberDune"></span><small>Sahara roots. Hacker mindset.</small></div><div class="cd-footer-links"><a href="#platform-guide">Platform guide</a></div></div></footer>
+</body>
+</html>

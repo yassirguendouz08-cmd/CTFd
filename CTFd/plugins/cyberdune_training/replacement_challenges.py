@@ -4,6 +4,7 @@ import codecs
 import gzip
 import io
 import json
+import struct
 import tarfile
 import zipfile
 
@@ -15,8 +16,8 @@ LEGACY_BROWSER_LABS = (
 
 CHALLENGES = (
     dict(slug="response-header", name="Response Header Trace", category="Web", difficulty="Easy", value=50, minutes=10,
-         description="Inspect the supplied HTTP response capture and recover the training flag from the relevant response header.",
-         hint="Read the response headers separately from the body."),
+         description="Correlate the supplied request and response records by trace ID, select the successful archive export, and decode its response header value.",
+         hint="Read the response headers separately from the body, then compare trace IDs and status codes."),
     dict(slug="rot13-recovery", name="Rotated Dispatch", category="Cryptography", difficulty="Easy", value=50, minutes=10,
          description="A short dispatch was encoded with a fixed alphabet rotation. Decode the attached text to recover your flag.",
          hint="The transformation is reversible by applying the same rotation again."),
@@ -33,8 +34,8 @@ CHALLENGES = (
          description="Inspect a synthetic stack snapshot. Decode the saved control-flow record and recover the flag stored in the captured payload. This is a static file exercise; it does not execute native code.",
          hint="The snapshot documents little-endian fields. Decode the payload only after locating its length and offset."),
     dict(slug="hidden-backup", name="Hidden Backup", category="Linux", difficulty="Easy", value=50, minutes=15,
-         description="Inspect the supplied backup archive, including hidden paths, to find the training flag.",
-         hint="List the archive contents before extracting it; dot-prefixed paths are easy to miss."),
+         description="Inspect the supplied backup archive, including hidden paths. Use its manifest to select the current receipt and decode its contents.",
+         hint="List the archive contents before extracting it; compare the snapshot labels in the manifest."),
     dict(slug="fragment-courier", name="Fragment Courier", category="Networking", difficulty="Medium", value=200, minutes=35,
          description="Reassemble the out-of-order application fragments in the capture manifest, then decode the recovered message.",
          hint="Sort by the sequence field before joining the fragment data."),
@@ -47,6 +48,18 @@ CHALLENGES = (
     dict(slug="proxy-chain", name="Proxy Chain", category="Web", difficulty="Hard", value=400, minutes=75,
          description="Analyze a fictional reverse-proxy capture and configuration bundle. Reconstruct the normalized route selected by each proxy before identifying the response that contains the flag.",
          hint="Compare the raw path, decoded path, and normalized path at every hop; the final backend sees only the normalized value."),
+    dict(slug="field-notes", name="Field Notes", category="OSINT", difficulty="Medium", value=200, minutes=30,
+         description="Investigate a fictional archive using the case code and project index. Correlate the matching project with its archived public post, then decode the note. All people, projects, and records are synthetic; no external accounts or websites are involved.",
+         hint="Match the exact case code first, then verify both the project and handle before decoding the archived note."),
+    dict(slug="client-side-record-gate", name="Client-Side Record Gate", category="Web", difficulty="Medium", value=200, minutes=30,
+         description="Audit a fictional offline records viewer. Use the support ticket to identify the requested record, inspect how the browser selects records, and retrieve the matching entry. The files run locally and never contact a server.",
+         hint="The page reads a record identifier from the URL. Follow that identifier into the local record catalog."),
+    dict(slug="shell-history-recovery", name="Shell History Recovery", category="Linux", difficulty="Medium", value=200, minutes=30,
+         description="Review a synthetic home-directory backup. Follow the analyst's shell history to the hidden transfer file, decode it, and read the recovered receipt for your flag.",
+         hint="List hidden archive paths, then trace the base64 command recorded in .bash_history."),
+    dict(slug="udp-fragment-capture", name="UDP Fragment Capture", category="Networking", difficulty="Medium", value=200, minutes=35,
+         description="Analyze a synthetic Ethernet capture. Isolate the UDP stream sent to the training collector, order its numbered fragments, join their hexadecimal data, and decode the result.",
+         hint="Filter on UDP destination port 31337. Ignore diagnostic packets without a sequence number."),
 )
 
 
@@ -65,7 +78,21 @@ def _zip(files):
 
 def artifact(recipe, flag):
     if recipe == "response-header":
-        return "response.txt", ("HTTP/1.1 200 OK\nContent-Type: text/plain\nX-Training-Flag: " + flag + "\n\nRequest completed.\n").encode()
+        encoded = base64.b64encode(flag.encode()).decode()
+        requests = [
+            {"trace":"tr-18","method":"GET","path":"/status"},
+            {"trace":"tr-42","method":"GET","path":"/archive/export"},
+            {"trace":"tr-43","method":"GET","path":"/archive/export"},
+        ]
+        responses = [
+            {"trace":"tr-18","status":200,"headers":{"X-Archive-Note":"bm90LXRoZS1mbGFn"}},
+            {"trace":"tr-42","status":503,"headers":{"X-Archive-Note":"c2VydmljZS11bmF2YWlsYWJsZQ=="}},
+            {"trace":"tr-43","status":200,"headers":{"X-Archive-Note":encoded}},
+        ]
+        return "response-trace.zip", _zip({
+            "requests.jsonl": ("\n".join(json.dumps(row) for row in requests) + "\n").encode(),
+            "responses.jsonl": ("\n".join(json.dumps(row) for row in responses) + "\n").encode(),
+        })
     if recipe == "rot13-recovery":
         return "dispatch.txt", (codecs.encode(flag, "rot_13") + "\n").encode()
     if recipe == "event-correlation":
@@ -102,7 +129,12 @@ def artifact(recipe, flag):
     if recipe == "hidden-backup":
         output = io.BytesIO()
         with tarfile.open(fileobj=output, mode="w:gz") as archive:
-            files = {"backup/README.txt": b"Inspect all backup paths, including hidden entries.\n", "backup/.config/training/flag.txt": flag.encode()}
+            files = {
+                "backup/README.txt": b"Use the manifest to select the current snapshot receipt.\n",
+                "backup/manifest.json": b'{"current":"snap-12","receipt":".cache/snap-12/receipt.b64"}\n',
+                "backup/.cache/snap-11/receipt.b64": base64.b64encode(b"superseded record"),
+                "backup/.cache/snap-12/receipt.b64": base64.b64encode(flag.encode()),
+            }
             for name, content in files.items():
                 info = tarfile.TarInfo(name); info.size = len(content); info.mode = 0o644
                 archive.addfile(info, io.BytesIO(content))
@@ -131,4 +163,79 @@ def artifact(recipe, flag):
             "responses.jsonl": ("\n".join(json.dumps({"id": i, "status": 200 if i == 2 else 404, "body": flag if i == 2 else "not found"}) for i in range(4)) + "\n").encode(),
         }
         return "proxy-evidence.zip", _zip(files)
+    if recipe == "field-notes":
+        rows = [
+            "case_code,project,handle,post_type,archived,note_b64",
+            "CD-410,ATLAS-04,amber_owl,release,true,bm90LXRoZS1mbGFn",
+            "CD-417,LARKSPUR-17,salt_orbit,release,true," + base64.b64encode(flag.encode()).decode(),
+            "CD-417,LARKSPUR-17,salt_orbit,draft,false,bm90LXRoZS1mbGFn",
+            "CD-417,DECOY-71,amber_owl,release,true,bm90LXRoZS1mbGFn",
+        ]
+        files = {
+            "START-HERE.txt": b"Case CD-417 is linked to a project in the index. Verify the same project and handle in the archived posts; only an archived release is relevant. Decode its note_b64 field.\n",
+            "project-index.csv": b"case_code,project,handle\nCD-410,ATLAS-04,amber_owl\nCD-417,LARKSPUR-17,salt_orbit\nCD-417,DECOY-71,amber_owl\n",
+            "archived-posts.csv": ("\n".join(rows) + "\n").encode(),
+        }
+        return "field-notes.zip", _zip(files)
+    if recipe == "client-side-record-gate":
+        records = {
+            "R-12": {"owner": "Public desk", "body": "Public hours: 09:00–17:00."},
+            "R-17": {"owner": "Archive team", "body": flag},
+            "R-71": {"owner": "Status page", "body": "No incident recorded."},
+        }
+        files = {
+            "README.txt": b"Open index.html locally. The support ticket names the record to review. Inspect records.js and app.js to understand the local viewer.\n",
+            "ticket.txt": b"Ticket CD-228: retrieve record R-17 from the fictional archive viewer.\n",
+            "index.html": b'<!doctype html><meta charset="utf-8"><title>Offline records</title><h1>Archive viewer</h1><pre id="record">Choose a record with ?record=ID</pre><script src="records.js"></script><script src="app.js"></script>\n',
+            "records.js": ("window.RECORDS = " + json.dumps(records) + ";\n").encode(),
+            "app.js": b'const id = new URLSearchParams(location.search).get("record"); document.querySelector("#record").textContent = window.RECORDS[id]?.body || "Record not found";\n',
+        }
+        return "client-side-records.zip", _zip(files)
+    if recipe == "shell-history-recovery":
+        encoded = base64.b64encode(("receipt=CD-RECOVERY\n" + flag + "\n").encode())
+        files = {
+            "case/README.txt": b"Synthetic analyst home-directory backup. Review hidden paths and follow the commands in .bash_history.\n",
+            "case/home/analyst/.bash_history": b"ls -la\nbase64 -d ~/.cache/export.b64 > /tmp/export.txt\ngrep RECOVERY /tmp/export.txt\n",
+            "case/home/analyst/.cache/export.b64": encoded,
+            "case/home/analyst/notes.txt": b"Old transfer: this sample is not the current receipt.\n",
+        }
+        output = io.BytesIO()
+        with tarfile.open(fileobj=output, mode="w:gz") as archive:
+            for name, content in files.items():
+                info = tarfile.TarInfo(name); info.size = len(content); info.mode = 0o644
+                archive.addfile(info, io.BytesIO(content))
+        return "shell-history-case.tar.gz", output.getvalue()
+    if recipe == "udp-fragment-capture":
+        def checksum(data):
+            if len(data) % 2:
+                data += b"\x00"
+            total = sum(struct.unpack("!" + "H" * (len(data) // 2), data))
+            total = (total & 0xffff) + (total >> 16)
+            total = (total & 0xffff) + (total >> 16)
+            return (~total) & 0xffff
+
+        def packet(payload, source_port, dest_port, ident):
+            udp = struct.pack("!HHHH", source_port, dest_port, 8 + len(payload), 0) + payload
+            src = bytes((192, 0, 2, 10)); dst = bytes((198, 51, 100, 20))
+            ip = struct.pack("!BBHHHBBH4s4s", 0x45, 0, 20 + len(udp), ident, 0, 64, 17, 0, src, dst)
+            ip = ip[:10] + struct.pack("!H", checksum(ip)) + ip[12:]
+            return bytes.fromhex("0200000000020200000000010800") + ip + udp
+
+        encoded = flag.encode().hex()
+        width = (len(encoded) + 3) // 4
+        chunks = [encoded[i * width:(i + 1) * width] for i in range(4)]
+        packets = [
+            (b"diagnostic keepalive", 40000, 31337),
+            (f"seq=3/4;hex={chunks[2]}".encode(), 40002, 31337),
+            (f"seq=1/4;hex={chunks[0]}".encode(), 40001, 31337),
+            (b"seq=1/1;hex=6465636f79", 40003, 31338),
+            (f"seq=4/4;hex={chunks[3]}".encode(), 40004, 31337),
+            (f"seq=2/4;hex={chunks[1]}".encode(), 40005, 31337),
+        ]
+        pcap = bytearray(struct.pack("<IHHIIII", 0xA1B2C3D4, 2, 4, 0, 0, 65535, 1))
+        for index, (payload, source_port, dest_port) in enumerate(packets):
+            frame = packet(payload, source_port, dest_port, index + 1)
+            pcap.extend(struct.pack("<IIII", 1_800_000_000 + index, 0, len(frame), len(frame)))
+            pcap.extend(frame)
+        return "dns-fragments.pcap", bytes(pcap)
     raise KeyError(recipe)
