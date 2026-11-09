@@ -1,0 +1,81 @@
+{% load i18n %}
+<footer class="cd-footer py-2" style="
+  background-color: var(--bg-secondary, #111827);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 8px 16px;
+  height: auto;
+  line-height: 20px;
+  min-height: 64px;
+">
+  <div class="container-fluid px-0">
+    <div class="row g-0 align-items-center flex-wrap">
+      <!-- Left: links -->
+      <div class="col-6 col-md-3 col-lg-2 text-start small text-muted">
+        <a href="{{ url_for('views.static_html', route='/') }}" class="text-reset" style="color: var(--muted, #a0aaba); text-decoration: none;">
+          {{ cd_copy("The club ↗") }}
+        </a>
+        <br>
+        <a href="https://ctfd.io" target="_blank" rel="noopener" class="text-reset" style="color: var(--muted, #a0aaba); text-decoration: none;">
+          {{ cd_copy("Powered by CTFd") }}
+        </a>
+      </div>
+      <!-- Center: pill with social icons -->
+      <div class="col-6 col-md-6 col-lg-4 text-center">
+        <div class="btn-group btn-group-lg btn-group-centered" role="group" style="
+          display: inline-flex;
+          gap: 6px;
+          background-color: var(--card-bg, #1f2937);
+          border-radius: 16px;
+          padding: 4px 8px;
+        ">
+          <!-- Email button -->
+          <a href="mailto:cyberdunecontact@gmail.com" class="btn btn-outline-light py-2 px-3" style="
+            border-radius: 18px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted, #a0aaba);
+            font-size: 12px;
+            transition: background-color 0.2s;
+            aria-label="{{ _('Email CyberDune contact') }}">
+            <i class="fas fa-envelope" style="color: var(--muted, #a0aaba);"></i>
+          </a>
+          <!-- LinkedIn button -->
+          <a href="https://www.linkedin.com/company/cyberdune/" target="_blank" rel="noopener" class="btn btn-outline-light py-2 px-3" style="
+            border-radius: 18px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted, #a0aaba);
+            font-size: 12px;
+            transition: background-color 0.2s;
+            aria-label="{{ _('LinkedIn CyberDune') }}">
+            <i class="fab fa-linkedin-in" style="color: var(--muted, #a0aaba);"></i>
+          </a>
+          <!-- Instagram button -->
+          <a href="https://www.instagram.com/cyberdune_estg/" target="_blank" rel="noopener" class="btn btn-outline-light py-2 px-3" style="
+            border-radius: 18px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted, #a0aaba);
+            font-size: 12px;
+            transition: background-color 0.2s;
+            aria-label="{{ _('Instagram CyberDune') }}">
+            <i class="fab fa-instagram" style="color: var(--muted, #a0aaba);"></i>
+          </a>
+        </div>
+      </div>
+      <!-- Right: copyright -->
+      <div class="col-12 col-md-3 col-lg-3 text-end small text-muted">
+        <span>{{ _('© 2026 CyberDune. Sahara roots. Hacker mindset.') }}</span>
+      </div>
+    </div>
+  </div>
+</footer>

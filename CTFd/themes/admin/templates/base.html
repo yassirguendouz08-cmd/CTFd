@@ -139,18 +139,71 @@
 		{% endblock %}
 	</main>
 
-	<footer class="footer pt-2">
-		<div class="container text-center">
-			<a href="https://ctfd.io" class="text-secondary">
-				<small class="text-muted">
-					Powered by CTFd
-				</small>
-			</a>
-			<span>
-				<small class="text-muted"><br> Version {{ get_config('ctf_version') }}</small>
-			</span>
+	<footer class="pt-2" style="
+  background-color: var(--bg-secondary, #111827);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 8px 16px;
+  height: auto;
+  min-height: 64px;
+  color: var(--muted, #a0aaba);
+">
+	<div class="container-fluid px-0">
+		<div class="row g-0 align-items-center flex-wrap">
+			<div class="col-12 col-md-6 col-lg-4 text-center">
+				<div class="btn-group btn-group-lg btn-group-centered" role="group" style="
+				  display: inline-flex;
+				  gap: 6px;
+				  background-color: var(--card-bg, #1f2937);
+				  border-radius: 16px;
+				  padding: 4px 8px;
+				">
+					<a href="mailto:cyberdunecontact@gmail.com" class="btn btn-outline-light py-2 px-3" style="
+					  border-radius: 18px;
+					  width: 36px;
+					  height: 36px;
+					  display: flex;
+					  align-items: center;
+					  justify-content: center;
+					  color: var(--muted, #a0aaba);
+					  font-size: 12px;
+					  transition: background-color 0.2s;
+					  aria-label="{{ _('Email CyberDune contact') }}">
+					  <i class="fas fa-envelope"></i>
+					</a>
+					<a href="https://www.linkedin.com/company/cyberdune/" target="_blank" rel="noopener" class="btn btn-outline-light py-2 px-3" style="
+					  border-radius: 18px;
+					  width: 36px;
+					  height: 36px;
+					  display: flex;
+					  align-items: center;
+					  justify-content: center;
+					  color: var(--muted, #a0aaba);
+					  font-size: 12px;
+					  transition: background-color 0.2s;
+					  aria-label="{{ _('LinkedIn CyberDune') }}">
+					  <i class="fab fa-linkedin-in"></i>
+					</a>
+					<a href="https://www.instagram.com/cyberdune_estg/" target="_blank" rel="noopener" class="btn btn-outline-light py-2 px-3" style="
+					  border-radius: 18px;
+					  width: 36px;
+					  height: 36px;
+					  display: flex;
+					  align-items: center;
+					  justify-content: center;
+					  color: var(--muted, #a0aaba);
+					  font-size: 12px;
+					  transition: background-color 0.2s;
+					  aria-label="{{ _('Instagram CyberDune') }}">
+					  <i class="fab fa-instagram"></i>
+					</a>
+				</div>
+			</div>
+			<div class="col-12 col-md-6 col-lg-8 text-end small text-muted">
+				<span>{{ _('© 2026 CyberDune. Sahara roots. Hacker mindset.') }}</span>
+			</div>
 		</div>
-	</footer>
+	</div>
+</footer>
 
 	{% block entrypoint %}
 		{{ Assets.js("assets/js/pages/main.js", theme="admin") }}
