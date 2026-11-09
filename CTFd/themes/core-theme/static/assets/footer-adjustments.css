@@ -117,9 +117,9 @@ body.cd-app .cd-footer-social-cards strong { overflow-wrap: anywhere; font: 400 
 body.cd-app .cd-footer-social-cards > a > i { flex: 0 0 24px; color: var(--odyssey-red, #ed1c24); font-size: 22px; }
 body.cd-app .cd-footer-social-cards > a > span:last-child { margin-inline-start: auto; color: #ff7786; }
 
-/* Keep the landing route's shared footer visually identical to every page. */
-body.cd-app.cd-home .cd-footer { padding: 8px 0; }
-body.cd-app.cd-home .cd-footer-inner { min-height: 42px; gap: clamp(12px, 2vw, 28px); }
+/* Keep the shared footer dimensions consistent across home and interior pages. */
+body.cd-app .cd-footer { padding: 8px 0; }
+body.cd-app .cd-footer-inner { min-height: 42px; gap: clamp(12px, 2vw, 28px); }
 body.cd-app.cd-home .cd-footer-social-cards { padding-block: clamp(18px, 2.5vw, 30px); }
 body.cd-app.cd-home .cd-footer-social-cards > a { min-height: 54px; gap: 8px; padding: 8px 10px; }
 body.cd-app.cd-home .cd-footer-social-cards > a > i { width: 17px; font-size: 15px; }
@@ -189,8 +189,7 @@ body.cd-app.cd-home .cd-footer-social-cards strong { font-size: clamp(10px, .72v
 }
 
 @media (max-width: 599.98px) {
-  body.cd-app.cd-home .cd-footer { padding: 8px 0; }
-  body.cd-app.cd-home .cd-footer-inner { min-height: 42px; }
+  body.cd-app .cd-footer-inner { min-height: 42px; }
   body.cd-app .cd-footer-social-cards { grid-template-columns: 1fr; gap: 12px; }
   body.cd-app .cd-footer-social-cards > a { min-height: 88px; padding: 16px; }
   body.cd-site .cd-footer-inner,
