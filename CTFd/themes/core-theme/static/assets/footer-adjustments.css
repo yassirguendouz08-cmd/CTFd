@@ -98,6 +98,27 @@ body.cd-app .cd-footer-inner {
     padding-top: clamp(92px, 13vh, 132px);
     padding-bottom: clamp(24px, 4vh, 42px);
   }
+  body.cd-app.cd-home {
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+    min-height: 560px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  body.cd-app.cd-home main {
+    display: flex;
+    min-height: 0;
+    flex: 1 1 0;
+    flex-direction: column;
+  }
+  body.cd-app.cd-home .cd-hero-shell,
+  body.cd-app.cd-home .cd-hero {
+    height: 100%;
+    min-height: 0;
+    flex: 1 1 auto;
+  }
 }
 
 @media (max-width: 1023.98px) {
