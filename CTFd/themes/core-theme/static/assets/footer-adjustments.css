@@ -10,6 +10,35 @@
   --cd-page-gutter: clamp(18px, 3vw, 48px);
 }
 
+/* Shared red CyberDune artwork for every non-home platform route. */
+body.cd-app:not(.cd-home) {
+  background-color: #080808;
+}
+body.cd-app:not(.cd-home)::before {
+  background-color: #080808;
+  background-image:
+    linear-gradient(rgb(5 5 5 / 72%), rgb(5 5 5 / 72%)),
+    url("../img/cyberdune-red-global-bg.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  opacity: 1;
+}
+body.cyberdune-admin {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+}
+body.cyberdune-admin::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(rgb(5 5 5 / 76%), rgb(5 5 5 / 76%)), url("../img/cyberdune-red-global-bg.png") center / cover no-repeat fixed;
+}
+
 body.cd-app { line-height: 1.6; }
 body.cd-app main { width: 100%; min-width: 0; padding: 0 0 var(--cd-space-5); }
 body.cd-app main > .container,
