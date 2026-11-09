@@ -1,3 +1,31 @@
+/* Shared CyberDune page rhythm tokens. */
+:root {
+  --cd-space-1: 8px;
+  --cd-space-2: 12px;
+  --cd-space-3: 18px;
+  --cd-space-4: 24px;
+  --cd-space-5: 32px;
+  --cd-space-6: 48px;
+  --cd-content-width: 1560px;
+  --cd-page-gutter: clamp(18px, 3vw, 48px);
+}
+
+body.cd-app { line-height: 1.6; }
+body.cd-app main { width: 100%; min-width: 0; padding: 0 0 var(--cd-space-5); }
+body.cd-app main > .container,
+body.cd-app main > .bg_container > .container,
+body.cd-app main > .bg_container > .title_container > .container {
+  width: 100%; max-width: var(--cd-content-width); padding-inline: var(--cd-page-gutter);
+}
+body.cd-app main :where(.cd-page-head, .title_container) { margin-bottom: var(--cd-space-4); padding-block: var(--cd-space-5) var(--cd-space-3); }
+body.cd-app main :where(.cd-page-head h1, .title_container h1) { margin: 0 0 var(--cd-space-2); }
+body.cd-app main :where(.cd-page-head p, .title_container p) { margin-bottom: 0; }
+body.cd-app main :where(.cd-head-row, .cd-board-toolbar) { gap: var(--cd-space-3); }
+body.cd-app main :where(.cd-board-summary, .cd-challenge-grid, .cd-training .tr-grid) { row-gap: var(--cd-space-4); }
+body.cd-app main :where(.cd-auth, .cd-auth-card, .cd-instance-panel) { gap: var(--cd-space-4); }
+body.cd-app main :where(.card, .cd-panel, .cd-operations-card) { min-width: 0; }
+body.cd-app .container { max-width: var(--cd-content-width); }
+
 body.cd-site .cd-footer .cd-footer-flags img,
 body.cd-app .cd-footer .cd-footer-flags img {
   display: block;
@@ -145,4 +173,10 @@ body.cd-app .cd-footer-inner {
   .cd-footer-contacts a,
   .cd-footer-links a { font-size: 10px; }
   .cd-footer-credit { font-size: 10px; }
+}
+
+@media (max-width: 599.98px) {
+  body.cd-app { --cd-page-gutter: 18px; }
+  body.cd-app main { padding-bottom: var(--cd-space-4); }
+  body.cd-app main :where(.cd-page-head, .title_container) { margin-bottom: var(--cd-space-3); padding-block: var(--cd-space-4) var(--cd-space-2); }
 }
