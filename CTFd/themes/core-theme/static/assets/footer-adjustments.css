@@ -98,6 +98,25 @@ body.cd-app .cd-footer-inner {
 .cd-footer-links a:hover { color: #ff5968; }
 .cd-footer a:focus-visible { outline: 2px solid #ff7780; outline-offset: 3px; }
 
+/* Contact cards reuse the challenge board's shared CyberDune card styling. */
+body.cd-app .cd-footer-social-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.5vw, 20px);
+  padding-block: clamp(18px, 2.5vw, 30px);
+}
+body.cd-app .cd-footer-social-cards > a {
+  min-width: 0;
+  min-height: 112px;
+  padding: 20px clamp(16px, 2vw, 28px);
+  gap: 18px;
+}
+body.cd-app .cd-footer-social-cards > a > span:nth-child(2) { display: grid; min-width: 0; gap: 8px; }
+body.cd-app .cd-footer-social-cards small { font: 500 11px/1.4 var(--odyssey-body, Inter, sans-serif); letter-spacing: .06em; }
+body.cd-app .cd-footer-social-cards strong { overflow-wrap: anywhere; font: 400 clamp(16px, 1.4vw, 22px)/1.2 var(--odyssey-heading, sans-serif); }
+body.cd-app .cd-footer-social-cards > a > i { flex: 0 0 24px; color: var(--odyssey-red, #ed1c24); font-size: 22px; }
+body.cd-app .cd-footer-social-cards > a > span:last-child { margin-inline-start: auto; color: #ff7786; }
+
 /* Desktop landing page shares one viewport between the hero and footer. */
 @media (min-width: 1024px) {
   body.cd-site.cd-home {
@@ -161,6 +180,8 @@ body.cd-app .cd-footer-inner {
 }
 
 @media (max-width: 599.98px) {
+  body.cd-app .cd-footer-social-cards { grid-template-columns: 1fr; gap: 12px; }
+  body.cd-app .cd-footer-social-cards > a { min-height: 88px; padding: 16px; }
   body.cd-site .cd-footer-inner,
   body.cd-app .cd-footer-inner {
     gap: 10px 14px;

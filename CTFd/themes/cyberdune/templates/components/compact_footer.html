@@ -1,13 +1,13 @@
 <footer class="cd-footer" aria-label="CyberDune footer">
+  <nav class="container cd-footer-social-cards cd-comms-links" aria-label="CyberDune contact channels">
+    <a href="mailto:cyberdunecontact@gmail.com"><i class="fas fa-envelope" aria-hidden="true"></i><span><small>EMAIL</small><strong>cyberdunecontact@gmail.com</strong></span><span aria-hidden="true">↗</span></a>
+    <a href="https://www.linkedin.com/company/cyberdune/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in" aria-hidden="true"></i><span><small>LINKEDIN</small><strong>CYBERDUNE</strong></span><span aria-hidden="true">↗</span></a>
+    <a href="https://www.instagram.com/cyberdune_estg/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram" aria-hidden="true"></i><span><small>INSTAGRAM</small><strong>@cyberdune_estg</strong></span><span aria-hidden="true">↗</span></a>
+  </nav>
   <div class="container cd-footer-inner">
     <a class="cd-footer-brand" href="{{ url_for('views.static_html', route='/') }}" aria-label="CyberDune home">
       <img src="{{ url_for('views.themes_beta', theme='cyberdune', path='img/cyberdune-white.png') }}" alt="CyberDune" width="40" height="40">
     </a>
-    <nav class="cd-footer-contacts" aria-label="CyberDune contact links">
-      <a href="mailto:cyberdunecontact@gmail.com">cyberdunecontact@gmail.com</a>
-      <a href="https://www.linkedin.com/company/cyberdune/" target="_blank" rel="noopener noreferrer">LinkedIn <span>CYBERDUNE</span></a>
-      <a href="https://www.instagram.com/cyberdune_estg/" target="_blank" rel="noopener noreferrer">Instagram <span>@cyberdune_estg</span></a>
-    </nav>
     <div class="cd-footer-signature">
       <span class="cd-footer-flags" aria-label="Morocco and Palestine"><img src="{{ url_for('views.themes_beta', theme='core-theme', path='img/flag-morocco.svg') }}" alt="Morocco"><img src="{{ url_for('views.themes_beta', theme='core-theme', path='img/flag-palestine.svg') }}" alt="Palestine"></span>
       <span class="cd-footer-credit">Developed by <span class="cd-footer-credit-name">Yassir Guendouz</span></span>
