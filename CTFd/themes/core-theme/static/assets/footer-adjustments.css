@@ -206,6 +206,39 @@ body.cd-app.cd-home .cd-footer-social-cards strong { font-size: clamp(10px, .72v
   .cd-footer-credit { font-size: 10px; }
 }
 
+/* Let the complete hero share the page with the contact cards and footer. */
+body.cd-app.cd-home {
+  height: auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+body.cd-app.cd-home main { display: block; min-height: 0; flex: 1 0 auto; overflow: visible; }
+body.cd-app.cd-home .cd-hero-shell {
+  min-height: 0;
+  height: auto;
+}
+body.cd-app.cd-home .cd-hero {
+  box-sizing: border-box;
+  min-height: clamp(500px, calc(100svh - 300px), 820px);
+  height: auto;
+  align-items: center;
+  padding-block: clamp(100px, 13vh, 150px) 36px;
+  overflow: visible;
+}
+body.cd-app.cd-home .cd-hero .cd-brand-title { font-size: clamp(52px, 6vw, 112px); }
+
+@media (max-width: 1023.98px) {
+  body.cd-app.cd-home { height: auto; min-height: 100svh; overflow-y: auto; }
+  body.cd-app.cd-home main { flex: 1 0 auto; }
+  body.cd-app.cd-home .cd-hero { min-height: 600px; padding-block: 112px 48px; }
+}
+@media (max-width: 767px) {
+  body.cd-app.cd-home .cd-hero { min-height: 0; padding-block: 104px 42px; }
+  body.cd-app.cd-home .cd-hero .cd-brand-title { font-size: clamp(42px, 10.8vw, 58px); }
+}
+
 @media (max-width: 599.98px) {
   body.cd-app { --cd-page-gutter: 18px; }
   body.cd-app main { padding-bottom: var(--cd-space-4); }
