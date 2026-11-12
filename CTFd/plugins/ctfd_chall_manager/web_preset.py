@@ -1,7 +1,9 @@
 """Admin-only shortcuts for the reusable CyberDune web scenario."""
+import ipaddress
+import os
 import re
 import secrets
-import os
+from pathlib import PurePosixPath
 
 from flask import redirect, render_template, request
 
@@ -11,7 +13,7 @@ from CTFd.plugins.ctfd_chall_manager.models import DynamicIaCValueChallenge
 from CTFd.utils import get_config
 from CTFd.utils.decorators import admins_only
 
-DEFAULT_WEB_SCENARIO = "scenario-registry:5000/scenarios/web-container:v4-amd64"
+DEFAULT_WEB_SCENARIO = "scenario-registry:5000/scenarios/web-container:v5-amd64"
 
 
 def web_payload(values):
@@ -40,8 +42,50 @@ def web_payload(values):
     }
     public_host = os.getenv("INSTANCE_PUBLIC_HOST", "").strip()
     if public_host:
+        if not valid_public_host(public_host):
+            raise ValueError(
+                "INSTANCE_PUBLIC_HOST must be a public hostname or IP without a scheme, port, or path."
+            )
+        try:
+            port_min = int(os.getenv("INSTANCE_PORT_MIN", "20000"))
+            port_max = int(os.getenv("INSTANCE_PORT_MAX", "20127"))
+        except ValueError as exc:
+            raise ValueError("INSTANCE_PORT_MIN and INSTANCE_PORT_MAX must be whole numbers.") from exc
+        if port_min < 1024 or port_max > 65535 or port_min > port_max or port_max - port_min > 4095:
+            raise ValueError("Configure an inclusive public port range of at most 4096 ports.")
+        port_state_file = os.getenv(
+            "INSTANCE_PORT_STATE_FILE",
+            "/var/lib/chall-manager/cyberdune-port-allocations.json",
+        ).strip()
+        state_path = PurePosixPath(port_state_file)
+        if not state_path.is_absolute() or ".." in state_path.parts:
+            raise ValueError("INSTANCE_PORT_STATE_FILE must be an absolute path in persistent manager storage.")
         payload["additional"]["public_host"] = public_host
+        payload["additional"]["port_min"] = str(port_min)
+        payload["additional"]["port_max"] = str(port_max)
+        payload["additional"]["port_state_file"] = str(state_path)
     return payload
+
+
+def valid_public_host(host):
+    """Accept only a public hostname/IP; player URLs add the allocated port."""
+    if len(host) > 253 or any(char.isspace() for char in host):
+        return False
+    try:
+        address = ipaddress.ip_address(host)
+        return address.is_global
+    except ValueError:
+        pass
+    if host.endswith("."):
+        return False
+    labels = host.split(".")
+    if len(labels) < 2:
+        return False
+    return all(
+        1 <= len(label) <= 63
+        and re.fullmatch(r"[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?", label)
+        for label in labels
+    )
 
 
 def register_web_preset(blueprint):

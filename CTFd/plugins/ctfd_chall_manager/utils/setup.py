@@ -35,7 +35,7 @@ def setup_default_configs():
         )
         cm_api_url = default_cm_api_url
 
-    logger.debug("configuring chall-manager_api_url to %s", cm_api_url)
+    logger.debug("configuring Chall-Manager API URL")
 
     # Load env
     cm_api_timeout = os.getenv(

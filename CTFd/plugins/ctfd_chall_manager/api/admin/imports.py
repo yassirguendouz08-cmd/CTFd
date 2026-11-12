@@ -48,7 +48,7 @@ class AdminImport(Resource):
         # retrieve challenge information on CTFd
         challenge = DynamicIaCChallenge.query.filter_by(id=challenge_id).first()
         challenge_dict = {k: v for k, v in challenge.__dict__.items()}
-        logger.debug("challenge %d infos : %s", challenge_id, challenge_dict)
+        logger.debug("challenge %d data prepared for manager import", challenge_id)
 
         data = prepare_ctfdcm_database(challenge_dict)
         params = prepare_chall_manager_payload(data)

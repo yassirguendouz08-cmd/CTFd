@@ -3,7 +3,7 @@ FROM --platform=$BUILDPLATFORM golang:1.26.2-bookworm AS builder
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
-COPY main.go main_test.go Pulumi.yaml ./
+COPY main.go main_test.go port_allocator.go Pulumi.yaml ./
 RUN go test ./...
 ARG SCENARIO_ARCH=amd64
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${SCENARIO_ARCH} go build -trimpath -o /out/main . \

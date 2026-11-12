@@ -95,10 +95,19 @@ injection or a hardened production deployment.
    to `1`, **Timeout** to `600` seconds and pool Min/Max to `0` initially. The janitor
    removes expired instances, and Renew extends the lease.
 5. Set **Scenario** to your published artifact. Fill **Additional** with the
-   values that scenario expects (such as image, internal port and worker hostname).
-   The example Docker scenario returns a dynamically published port; configure
-   worker firewall/routing for its real target ports. An HTTPS platform does not
-   automatically make target endpoints HTTPS.
+   values that scenario expects (such as image and internal port). For the v5
+   CyberDune web scenario, public launches also require `public_host`, `port_min`,
+   `port_max`, and `port_state_file`. The default bounded range is inclusive
+   `20000-20127`; the state path must be on the manager's persistent
+   `/var/lib/chall-manager` volume and must be identical across manager processes.
+   New admin presets copy these values from the environment. Existing challenge
+   records keep their saved metadata and must be backed up and updated explicitly.
+   The scenario binds the selected port explicitly and returns it in the URL.
+   If Docker reports that the reserved port is already bound, the scenario
+   releases that reservation only after confirming its own gateway container is
+   gone, then retries on another reserved port (up to three attempts). Validate
+   that retry on a disposable Docker host before exposing the range; an HTTPS
+   platform does not automatically make direct target endpoints HTTPS.
 6. If you want account-specific flags, the scenario must inject the generated
    `FLAG` into the image and export it through the SDK's `Flags` output. The image
    must actually use that value. See the [flag guide](https://ctfer.io/docs/ctfd-chall-manager/learn-more/flag/).

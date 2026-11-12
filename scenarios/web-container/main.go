@@ -11,8 +11,8 @@ import (
 	"net"
 	"net/http"
 	"net/url"
-	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/ctfer-io/chall-manager/sdk"
@@ -77,13 +77,35 @@ func publicBinding(host string) (string, error) {
 		return "127.0.0.1", nil
 	}
 	if ip := net.ParseIP(host); ip != nil {
-		if !ip.IsGlobalUnicast() || ip.IsLoopback() {
+		if !ip.IsGlobalUnicast() || ip.IsLoopback() || ip.IsPrivate() || ip.IsLinkLocalUnicast() {
 			return "", fmt.Errorf("public_host must be a reachable worker hostname or IP")
 		}
-	} else if len(host) > 253 || !regexp.MustCompile(`^[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?$`).MatchString(host) || host == "localhost" {
-		return "", fmt.Errorf("public_host must contain only a worker hostname, without scheme, path or port")
+	} else if !validPublicHostname(host) {
+		return "", fmt.Errorf("public_host must contain a valid worker hostname, without scheme, path or port")
 	}
 	return "0.0.0.0", nil
+}
+
+func validPublicHostname(host string) bool {
+	if len(host) > 253 || host == "localhost" || strings.HasSuffix(host, ".") {
+		return false
+	}
+	labels := strings.Split(host, ".")
+	if len(labels) < 2 {
+		return false
+	}
+	for _, label := range labels {
+		if len(label) == 0 || len(label) > 63 || label[0] == '-' || label[len(label)-1] == '-' {
+			return false
+		}
+		for _, char := range label {
+			if !((char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') ||
+				(char >= '0' && char <= '9') || char == '-') {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func connectionInfo(host string, published int) string {
@@ -145,6 +167,30 @@ func main() {
 				return fmt.Errorf("invalid internal port")
 			}
 		}
+		hostPort := 0
+		minPort, maxPort := 0, 0
+		portStateFile := ""
+		if publicHost != "" {
+			minPort, maxPort, err = configuredPortRange(req.Config.Additional)
+			if err != nil {
+				return err
+			}
+			portStateFile, err = configuredPortLedger(req.Config.Additional)
+			if err != nil {
+				return err
+			}
+			hostPort, err = reservePublicPort(portStateFile, req.Config.Identity, minPort, maxPort, nil, time.Now().UTC())
+			if err != nil {
+				return err
+			}
+		}
+		// Only the gateway publishes a host port, so only it carries the port label.
+		var identityLabels docker.ContainerLabelArray
+		if publicHost != "" {
+			identityLabels = docker.ContainerLabelArray{
+				docker.ContainerLabelArgs{Label: pulumi.String(portIdentityLabel), Value: pulumi.String(req.Config.Identity)},
+			}
+		}
 		// Targets have their own internal network, never the CTFd control network.
 		network, err := docker.NewNetwork(req.Ctx, "target-network", &docker.NetworkArgs{
 			Internal: pulumi.Bool(true),
@@ -165,6 +211,7 @@ func main() {
 			Ulimits: docker.ContainerUlimitArray{docker.ContainerUlimitArgs{
 				Name: pulumi.String("nproc"), Soft: pulumi.Int(64), Hard: pulumi.Int(64),
 			}},
+			Labels: identityLabels,
 			NetworksAdvanced: docker.ContainerNetworksAdvancedArray{docker.ContainerNetworksAdvancedArgs{
 				Name: network.Name,
 			}},
@@ -179,28 +226,59 @@ func main() {
 			return err
 		}
 		address := container.ID().ApplyT(func(id pulumi.ID) (string, error) { return inspectTargetAddress(string(id)) }).(pulumi.StringOutput)
-		gateway, err := docker.NewContainer(req.Ctx, "gateway", &docker.ContainerArgs{
-			Image:   pulumi.String("cyberdune/instance-gateway:v1"),
-			Command: pulumi.StringArray{pulumi.String("TCP-LISTEN:8080,fork,reuseaddr"), address.ApplyT(func(ip string) string { return fmt.Sprintf("TCP:%s:%d", ip, port) }).(pulumi.StringOutput)},
-			Memory:  pulumi.Int(32), MemorySwap: pulumi.Int(32),
-			CpuPeriod: pulumi.Int(100000), CpuQuota: pulumi.Int(25000),
-			ReadOnly:     pulumi.Bool(true),
-			Capabilities: &docker.ContainerCapabilitiesArgs{Drops: pulumi.StringArray{pulumi.String("ALL")}},
-			SecurityOpts: pulumi.StringArray{pulumi.String("no-new-privileges:true")},
-			// Ready means that the target accepts TCP connections, not just that Docker started.
-			Healthcheck: &docker.ContainerHealthcheckArgs{
-				Tests:    pulumi.StringArray{pulumi.String("CMD"), pulumi.String("socat"), pulumi.String("-u"), pulumi.String("OPEN:/dev/null"), address.ApplyT(func(ip string) string { return fmt.Sprintf("TCP:%s:%d,connect-timeout=1", ip, port) }).(pulumi.StringOutput)},
-				Interval: pulumi.String("2s"), Timeout: pulumi.String("2s"), Retries: pulumi.Int(30), StartPeriod: pulumi.String("1s"),
+		// A host process can claim the reserved port after the allocator checked
+		// it. Docker's bind error is the only reliable signal, so retry there
+		// and never re-offer a port that just failed.
+		failedPorts := map[int]bool{}
+		var gateway *docker.Container
+		startGateway := func(candidate int) error {
+			resourceName := "gateway"
+			labels := identityLabels
+			if publicHost != "" {
+				resourceName = "gateway-" + strconv.Itoa(candidate)
+				labels = docker.ContainerLabelArray{
+					docker.ContainerLabelArgs{Label: pulumi.String(portIdentityLabel), Value: pulumi.String(req.Config.Identity)},
+					docker.ContainerLabelArgs{Label: pulumi.String(portNumberLabel), Value: pulumi.String(strconv.Itoa(candidate))},
+				}
+			}
+			args := &docker.ContainerArgs{
+				Image:   pulumi.String("cyberdune/instance-gateway:v1"),
+				Command: pulumi.StringArray{pulumi.String("TCP-LISTEN:8080,fork,reuseaddr"), address.ApplyT(func(ip string) string { return fmt.Sprintf("TCP:%s:%d", ip, port) }).(pulumi.StringOutput)},
+				Memory:  pulumi.Int(32), MemorySwap: pulumi.Int(32),
+				CpuPeriod: pulumi.Int(100000), CpuQuota: pulumi.Int(25000),
+				ReadOnly:     pulumi.Bool(true),
+				Capabilities: &docker.ContainerCapabilitiesArgs{Drops: pulumi.StringArray{pulumi.String("ALL")}},
+				SecurityOpts: pulumi.StringArray{pulumi.String("no-new-privileges:true")},
+				// Ready means that the target accepts TCP connections, not just that Docker started.
+				Healthcheck: &docker.ContainerHealthcheckArgs{
+					Tests:    pulumi.StringArray{pulumi.String("CMD"), pulumi.String("socat"), pulumi.String("-u"), pulumi.String("OPEN:/dev/null"), address.ApplyT(func(ip string) string { return fmt.Sprintf("TCP:%s:%d,connect-timeout=1", ip, port) }).(pulumi.StringOutput)},
+					Interval: pulumi.String("2s"), Timeout: pulumi.String("2s"), Retries: pulumi.Int(30), StartPeriod: pulumi.String("1s"),
+				},
+				Wait: pulumi.Bool(true), WaitTimeout: pulumi.Int(90),
+				Sysctls: pulumi.StringMap{"net.ipv4.ip_forward": pulumi.String("0")},
+				Labels:  labels,
+				NetworksAdvanced: docker.ContainerNetworksAdvancedArray{
+					docker.ContainerNetworksAdvancedArgs{Name: network.Name},
+					docker.ContainerNetworksAdvancedArgs{Name: ingress.Name},
+				},
+				Ports: docker.ContainerPortArray{docker.ContainerPortArgs{Internal: pulumi.Int(8080), External: pulumi.Int(candidate), Ip: pulumi.String(bind), Protocol: pulumi.String("tcp")}},
+				Rm:    pulumi.Bool(true),
+			}
+			if publicHost != "" {
+				args.Name = pulumi.String(gatewayContainerName(req.Config.Identity))
+			}
+			created, err := docker.NewContainer(req.Ctx, resourceName, args, opts...)
+			gateway = created
+			return err
+		}
+		hostPort, err = reserveAndStart(hostPort, failedPorts, startGateway,
+			func() (int, error) {
+				return reservePublicPort(portStateFile, req.Config.Identity, minPort, maxPort, failedPorts, time.Now().UTC())
 			},
-			Wait: pulumi.Bool(true), WaitTimeout: pulumi.Int(90),
-			Sysctls: pulumi.StringMap{"net.ipv4.ip_forward": pulumi.String("0")},
-			NetworksAdvanced: docker.ContainerNetworksAdvancedArray{
-				docker.ContainerNetworksAdvancedArgs{Name: network.Name},
-				docker.ContainerNetworksAdvancedArgs{Name: ingress.Name},
+			func(candidate int) error {
+				return releaseFailedReservation(portStateFile, req.Config.Identity, candidate)
 			},
-			Ports: docker.ContainerPortArray{docker.ContainerPortArgs{Internal: pulumi.Int(8080), External: pulumi.Int(0), Ip: pulumi.String(bind), Protocol: pulumi.String("tcp")}},
-			Rm:    pulumi.Bool(true),
-		}, opts...)
+		)
 		if err != nil {
 			return err
 		}
@@ -210,6 +288,14 @@ func main() {
 			published, err := inspectPublishedPort(string(id), 8080, bind)
 			if err != nil {
 				return "", err
+			}
+			if publicHost != "" {
+				if published != hostPort {
+					return "", fmt.Errorf("Docker published port %d instead of reserved port %d", published, hostPort)
+				}
+				if err := markPublicPortActive(portStateFile, req.Config.Identity, hostPort); err != nil {
+					return "", err
+				}
 			}
 			return connectionInfo(publicHost, published), nil
 		}).(pulumi.StringOutput)

@@ -1,5 +1,6 @@
 """Behavioral checks for spam protection; no real emails or users created."""
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 from types import SimpleNamespace
 from concurrent.futures import ThreadPoolExecutor
@@ -78,8 +79,16 @@ class SecurityTests(unittest.TestCase):
 
     def test_security_headers_and_cookies(self):
         response = self.client.get('/login')
-        for key in ('X-Content-Type-Options','X-Frame-Options','Referrer-Policy','Strict-Transport-Security'):
+        for key in ('X-Content-Type-Options','X-Frame-Options','Referrer-Policy','Strict-Transport-Security','Content-Security-Policy'):
             self.assertIn(key, response.headers)
+        policy = response.headers['Content-Security-Policy']
+        self.assertIn("default-src 'self'", policy)
+        self.assertIn("object-src 'none'", policy)
+        self.assertIn("frame-ancestors 'self'", policy)
+        self.assertIn("script-src 'self' 'unsafe-inline'", policy)
+        self.assertIn('https://cdn.jsdelivr.net', policy)
+        nginx = (Path(__file__).parents[1] / 'conf' / 'nginx' / 'http.conf').read_text()
+        self.assertIn(f'add_header Content-Security-Policy "{policy}" always;', nginx)
         self.assertEqual(response.headers['Cache-Control'],'no-store')
         self.assertTrue(self.app.config['SESSION_COOKIE_SECURE'])
         self.assertEqual(self.app.config['SESSION_COOKIE_SAMESITE'],'Lax')

@@ -346,10 +346,10 @@ class DynamicIaCValueChallenge(DynamicValueChallenge):
         if "flags" in data.keys():
             cm_flags = list(data["flags"])
             logger.debug(
-                "flags provided by CM for challenge %s source %s: %s",
+                "Chall-Manager supplied %d flags for challenge %s source %s",
+                len(cm_flags),
                 challenge.id,
                 source_id,
-                cm_flags,
             )
 
             for idx, flag in enumerate(cm_flags):
@@ -479,14 +479,9 @@ def prepare_ctfdcm_database(data) -> dict | ChallManagerPluginException:
                 # Attempt to parse the string as JSON
                 data["additional"] = json.loads(data["additional"])
             except json.JSONDecodeError as e:
-                logger.error(
-                    "error while decoding additional configuration, found %s : %s",
-                    data["additional"],
-                    e,
-                )
+                logger.error("error while decoding additional configuration: %s", e)
                 raise ChallManagerPluginException(
-                    f"error while decoding additional configuration, \
-                    found {data['additional']}"
+                    "error while decoding additional configuration"
                 ) from e
         elif not isinstance(data["additional"], dict):
             raise ChallManagerPluginException("Additional configuration must be a JSON object.")

@@ -16,6 +16,9 @@ services:
     environment:
       DIR: /var/lib/chall-manager
       CACHE: /var/cache/chall-manager
+      INSTANCE_PORT_MIN: ${INSTANCE_PORT_MIN:-20000}
+      INSTANCE_PORT_MAX: ${INSTANCE_PORT_MAX:-20127}
+      INSTANCE_PORT_STATE_FILE: ${INSTANCE_PORT_STATE_FILE:-/var/lib/chall-manager/cyberdune-port-allocations.json}
       PULUMI_HOME: /var/lib/pulumi
       PULUMI_BACKEND_URL: file:///var/lib/chall-manager/pulumi-state
       PULUMI_CONFIG_PASSPHRASE: ${CM_PULUMI_PASSPHRASE:?Set CM_PULUMI_PASSPHRASE in .env.instances}

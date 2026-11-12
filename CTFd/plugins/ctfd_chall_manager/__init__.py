@@ -123,7 +123,7 @@ def load(app):  # pylint: disable=too-many-statements
                     i["challengeId"],
                 )
 
-            logger.debug("instance: %s", i)
+            logger.debug("instance loaded for challenge_id=%s", i.get("challengeId"))
 
         return render_template(
             "chall_manager_admin_instances.html",

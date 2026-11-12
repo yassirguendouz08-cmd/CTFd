@@ -101,6 +101,11 @@ path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.ini")
 config_ini.read(path)
 
 
+def secure_session_cookies(public_origin: str, configured: bool) -> bool:
+    """Secure cookies are mandatory when the platform origin uses HTTPS."""
+    return configured or public_origin.lower().startswith("https://")
+
+
 # fmt: off
 class ServerConfig(object):
     SECRET_KEY: str = empty_str_cast(config_ini["server"]["SECRET_KEY"]) \
@@ -160,6 +165,11 @@ class ServerConfig(object):
     MAX_FORM_PARTS = int(os.getenv("MAX_FORM_PARTS", 200))
     PUBLIC_ORIGIN = os.getenv("PUBLIC_ORIGIN", "")
 
+    # Keep the session host-only. HTTPS origins always require Secure cookies.
+    SESSION_COOKIE_SECURE: bool = secure_session_cookies(
+        PUBLIC_ORIGIN,
+        config_ini["security"].getboolean("SESSION_COOKIE_SECURE", fallback=False),
+    )
     SESSION_COOKIE_HTTPONLY: bool = config_ini["security"].getboolean("SESSION_COOKIE_HTTPONLY", fallback=True)
 
     SESSION_COOKIE_SAMESITE: str = empty_str_cast(config_ini["security"]["SESSION_COOKIE_SAMESITE"]) \

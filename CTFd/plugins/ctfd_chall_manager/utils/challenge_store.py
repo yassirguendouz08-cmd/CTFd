@@ -36,7 +36,7 @@ def query_challenges() -> list | ChallManagerException:
     s = requests.Session()
     result = []
 
-    logger.debug("querying challenges from %s", url)
+    logger.debug("querying challenges from Chall-Manager")
 
     try:
         with s.get(url, headers=None, stream=True, timeout=api_timeout()) as resp:
@@ -48,7 +48,7 @@ def query_challenges() -> list | ChallManagerException:
                     if not isinstance(res, dict) or "error" in res or not isinstance(res.get("result"), dict):
                         raise ValueError("Invalid challenge listing response")
                     result.append(res["result"])
-        logger.debug("successfully queried challenges: %s", result)
+        logger.debug("successfully queried %d challenges", len(result))
     except Exception as e:
         logger.error("error querying challenges: %s", e)
         raise ChallManagerException(message="error querying challenges") from e
@@ -81,7 +81,7 @@ def create_challenge(
         r = requests.post(
             url, data=json.dumps(payload), headers=headers, timeout=api_timeout()
         )
-        logger.debug("received response: %s %s", r.status_code, r.text)
+        logger.debug("challenge create response status: %s", r.status_code)
         r.raise_for_status()
     except requests.HTTPError as e:
         custom_exception = chall_manager_exception_builder(r)
@@ -107,7 +107,7 @@ def delete_challenge(challenge_id: int) -> requests.Response | ChallManagerExcep
 
     try:
         r = requests.delete(url, timeout=api_timeout())
-        logger.debug("received response: %s %s", r.status_code, r.text)
+        logger.debug("challenge delete response status: %s", r.status_code)
         r.raise_for_status()
     except requests.HTTPError as e:
         custom_exception = chall_manager_exception_builder(r)
@@ -132,7 +132,7 @@ def get_challenge(challenge_id: int) -> requests.Response | ChallManagerExceptio
 
     try:
         r = requests.get(url, timeout=api_timeout())
-        logger.debug("recieved response: %s %s", r.status_code, r.text)
+        logger.debug("challenge lookup response status: %s", r.status_code)
         r.raise_for_status()
     except requests.HTTPError as e:
         custom_exception = chall_manager_exception_builder(r)
@@ -175,7 +175,7 @@ def update_challenge(
         r = requests.patch(
             url, data=json.dumps(payload), headers=headers, timeout=api_timeout()
         )
-        logger.debug("received response: %s %s", r.status_code, r.text)
+        logger.debug("challenge update response status: %s", r.status_code)
         r.raise_for_status()
     except requests.HTTPError as e:
         custom_exception = chall_manager_exception_builder(r)

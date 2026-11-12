@@ -21,6 +21,21 @@ return {count, redis.call('TTL', KEYS[1])}
 _local_lock = threading.Lock()
 
 INSTANCE_PATH = '/api/v1/plugins/ctfd-chall-manager/instance'
+CONTENT_SECURITY_POLICY = (
+    "default-src 'self'; "
+    "base-uri 'self'; "
+    "object-src 'none'; "
+    "frame-ancestors 'self'; "
+    "form-action 'self'; "
+    "script-src 'self' 'unsafe-inline'; "
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+    "img-src 'self' data: blob: https:; "
+    "font-src 'self' data: https://cdn.jsdelivr.net; "
+    "connect-src 'self' wss:; "
+    "frame-src 'self' https:; "
+    "media-src 'self' data: blob: https:; "
+    "worker-src 'self' blob:"
+)
 
 
 def consume(bucket, identity, limit, interval):
@@ -124,6 +139,7 @@ def load(app):
         response.headers.setdefault('X-Content-Type-Options', 'nosniff')
         response.headers.setdefault('X-Frame-Options', 'SAMEORIGIN')
         response.headers.setdefault('Referrer-Policy', 'strict-origin-when-cross-origin')
+        response.headers.setdefault('Content-Security-Policy', CONTENT_SECURITY_POLICY)
         if get_config('cyberdune_https') or app.config.get('PUBLIC_ORIGIN', '').startswith('https://'):
             response.headers.setdefault('Strict-Transport-Security', 'max-age=31536000')
         if request.endpoint in ('auth.login', 'auth.register', 'auth.confirm', 'auth.reset_password'):
