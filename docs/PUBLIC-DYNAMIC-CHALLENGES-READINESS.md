@@ -281,5 +281,38 @@ gateway container removes its route. Verify externally before calling it ready.
 
 **GitHub publish.** The edge-mode change is committed on
 `public-dynamic-challenges-remediation` and pushed from this authenticated
-machine. Production still runs the `release-29285d66` image and the
-`v5-arm64` scenario until a deliberate rebuild.
+machine. Production runs `cyberdune/ctfd:release-2c8fa295` (base
+`29285d66` plus the CSP fix below) with the `v5-arm64` scenario; the edge
+change stays out of production until DNS and a wildcard certificate exist.
+
+## Challenge board CSP fix and VPS ZIP end-to-end (2026-11-12)
+
+The challenge board spinner was not a theme or API bug: the
+`cyberdune_security` CSP blocked `'unsafe-eval'`, and Alpine (CTFd's own
+frontend framework) evaluates every `x-data`/`x-show` expression with
+`new Function()`. Alpine therefore never initialized, `ChallengeBoard.loaded`
+stayed undefined, and the spinner never hid. The fix adds `'unsafe-eval'` to
+`script-src` and allows the theme's existing Google Fonts import
+(`fonts.googleapis.com` / `fonts.gstatic.com`). A Playwright run against
+production confirmed the board loads (`loaded: true`, spinner hidden, modal
+opens) with zero CSP errors on `/`, `/login`, `/scoreboard` and `/challenges`.
+
+The ZIP workflow was then exercised end-to-end on the production VPS through
+the real builder service and `v5-arm64` scenario:
+
+- path-traversal and symlink ZIPs were rejected with 400 before any build;
+- a Dockerfile with a failing `RUN` reported `failed` with the Docker build log
+  visible, and `finish` would return 409;
+- a valid ZIP built `cyberdune/zip-<job>:v1`, registered challenge 64, and
+  launched two team instances (teams 5 and 7) on loopback ports `32773`/`32774`;
+- each instance served its own flag over HTTP and the two flags differed;
+- cross-team flag submissions returned `incorrect`; each team's own flag
+  returned `correct`;
+- stopping both instances, deleting the test challenge and removing the image
+  and queue folder restored the database to its prior counts (71 users,
+  29 teams, 1 challenge, 0 solves, 0 submissions, 61 training challenges,
+  96 training solves).
+
+Public HTTPS targets remain blocked by the same external gate:
+`targets.cyberdune.online` is still NXDOMAIN and no wildcard certificate or
+DNS-01 credential exists on the VPS.
