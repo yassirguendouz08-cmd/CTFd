@@ -129,5 +129,43 @@ class PublicChallengePresetTests(unittest.TestCase):
                     self.web_payload(values)
 
 
+    def test_configured_edge_host_uses_edge_mode_without_public_ports(self):
+        values = {"name": "test", "image": "example/test:v1", "port": "8080"}
+        with patch.dict(os.environ, {
+            "INSTANCE_EDGE_HOST": "targets.cyberdune.online",
+            "INSTANCE_EDGE_NETWORK": "ctfd_instance_edge",
+        }, clear=True), patch(
+            "CTFd.plugins.ctfd_chall_manager.web_preset.get_config", return_value=None
+        ):
+            payload = self.web_payload(values)
+        self.assertEqual(payload["additional"]["edge_host"], "targets.cyberdune.online")
+        self.assertEqual(payload["additional"]["edge_network"], "ctfd_instance_edge")
+        self.assertNotIn("public_host", payload["additional"])
+        self.assertNotIn("port_min", payload["additional"])
+
+    def test_edge_and_public_modes_are_mutually_exclusive(self):
+        values = {"name": "test", "image": "example/test:v1", "port": "8080"}
+        with patch.dict(os.environ, {
+            "INSTANCE_EDGE_HOST": "targets.cyberdune.online",
+            "INSTANCE_PUBLIC_HOST": "targets.cyberdune.online",
+        }, clear=True), patch(
+            "CTFd.plugins.ctfd_chall_manager.web_preset.get_config", return_value=None
+        ):
+            with self.assertRaisesRegex(ValueError, "not both"):
+                self.web_payload(values)
+
+    def test_edge_host_rejects_scheme_and_bad_network(self):
+        values = {"name": "test", "image": "example/test:v1", "port": "8080"}
+        for environment, message in (
+            ({"INSTANCE_EDGE_HOST": "https://targets.cyberdune.online"}, "INSTANCE_EDGE_HOST"),
+            ({"INSTANCE_EDGE_HOST": "targets.cyberdune.online", "INSTANCE_EDGE_NETWORK": "bad/name"}, "EDGE_NETWORK"),
+        ):
+            with self.subTest(environment=environment), patch.dict(
+                os.environ, environment, clear=True
+            ), patch("CTFd.plugins.ctfd_chall_manager.web_preset.get_config", return_value=None):
+                with self.assertRaisesRegex(ValueError, message):
+                    self.web_payload(values)
+
+
 if __name__ == "__main__":
     unittest.main()

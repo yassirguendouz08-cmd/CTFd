@@ -64,6 +64,19 @@ def web_payload(values):
         payload["additional"]["port_min"] = str(port_min)
         payload["additional"]["port_max"] = str(port_max)
         payload["additional"]["port_state_file"] = str(state_path)
+    edge_host = os.getenv("INSTANCE_EDGE_HOST", "").strip()
+    if edge_host:
+        if public_host:
+            raise ValueError("Configure INSTANCE_EDGE_HOST or INSTANCE_PUBLIC_HOST, not both.")
+        if not valid_public_host(edge_host):
+            raise ValueError(
+                "INSTANCE_EDGE_HOST must be a public hostname without a scheme, port, or path."
+            )
+        edge_network = os.getenv("INSTANCE_EDGE_NETWORK", "ctfd_instance_edge").strip()
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", edge_network):
+            raise ValueError("INSTANCE_EDGE_NETWORK must be a Docker network name.")
+        payload["additional"]["edge_host"] = edge_host
+        payload["additional"]["edge_network"] = edge_network
     return payload
 
 

@@ -476,3 +476,39 @@ func TestFailedPortIsNotReoffered(t *testing.T) {
 		t.Fatal("exhausted range after exclusions was reused")
 	}
 }
+
+func TestEdgeModeHostnameAndRoutingLabels(t *testing.T) {
+	hostname, err := edgeHostname("0122b21d68e3d1ff", "targets.cyberdune.online")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if hostname != "0122b21d68e3d1ff.targets.cyberdune.online" {
+		t.Fatalf("unexpected hostname %q", hostname)
+	}
+	labels := edgeRoutingLabels(hostname, "ctfd_instance_edge", "0122b21d68e3d1ff")
+	if labels["traefik.enable"] != "true" || labels["traefik.docker.network"] != "ctfd_instance_edge" {
+		t.Fatalf("missing edge enable/network labels: %v", labels)
+	}
+	if labels["traefik.http.routers.cyberdune-0122b21d68e3d1ff.rule"] != "Host(`0122b21d68e3d1ff.targets.cyberdune.online`)" {
+		t.Fatalf("bad router rule: %v", labels)
+	}
+	if labels["traefik.http.services.cyberdune-0122b21d68e3d1ff.loadbalancer.server.port"] != "8080" {
+		t.Fatalf("bad service port: %v", labels)
+	}
+	for _, test := range []struct{ identity, host string }{
+		{"", "targets.cyberdune.online"},
+		{"Bad_Identity", "targets.cyberdune.online"},
+		{"0122b21d68e3d1ff", "https://targets.cyberdune.online"},
+		{"0122b21d68e3d1ff", "localhost"},
+	} {
+		if _, err := edgeHostname(test.identity, test.host); err == nil {
+			t.Fatalf("edgeHostname(%q, %q) should fail", test.identity, test.host)
+		}
+	}
+	if validEdgeNetwork("bad/name") || validEdgeNetwork("") {
+		t.Fatal("invalid edge network accepted")
+	}
+	if !validEdgeNetwork("ctfd_instance_edge") {
+		t.Fatal("valid edge network rejected")
+	}
+}

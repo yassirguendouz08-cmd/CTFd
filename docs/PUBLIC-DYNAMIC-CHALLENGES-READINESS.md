@@ -17,7 +17,9 @@ host, not a subdomain beneath `ctf.cyberdune.online`, and the host-only CTFd
 cookie will not be sent to it. Do not set a parent-domain cookie such as
 `.cyberdune.online`. Public endpoint traffic from the current scenario is
 plain HTTP (`http://targets.cyberdune.online:<port>/`); this does not provide
-HTTPS to challenge apps.
+HTTPS to challenge apps. The optional edge mode described below serves
+`https://<instance-id>.targets.cyberdune.online` and is disabled until DNS and
+a wildcard certificate exist.
 
 ## New and existing challenge metadata
 
@@ -116,16 +118,18 @@ Review both the Ubuntu host firewall and Oracle NSG/Security List before
 enabling the range in production. Do not open the range on the VPS based on
 this implementation alone. This is not a production-readiness claim.
 
-## VPS work still required
+## VPS configuration status
 
-Before any public launch, review and configure both Ubuntu host firewall and
-Oracle NSG/Security List rules for TCP `80`/`443`, the existing SSH port, and
-the verified challenge port allocation range. Challenge gateway ports are
-currently published on all host interfaces when `public_host` is set. Do not
-expose the Docker API or Chall-Manager API. Direct challenge HTTP traffic does
-not traverse Nginx, so the website TLS certificate does not protect these
-connections. A dedicated challenge reverse proxy with HTTPS would be a
-separate architecture change.
+The production VPS runs the platform and the challenge engine on one Docker
+daemon. The host firewall currently allows only SSH, `80` and `443`; no
+challenge port range is open. Direct challenge HTTP traffic on the public port
+range does not traverse Nginx, so the website certificate would not protect it.
+
+The chosen public path is the optional HTTPS edge in `services/edge/`: host
+Nginx terminates TLS for `*.targets.cyberdune.online` and proxies to Traefik,
+which routes by container label to the gateway. Gateways then publish no host
+port. This keeps challenge traffic TLS-only on `443`. It stays disabled until
+DNS and a wildcard certificate exist; the public port range stays closed.
 
 Uploaded Dockerfiles are untrusted build input, and the trusted manager/build
 worker's Docker socket access is effectively host-level authority. Existing
@@ -175,8 +179,9 @@ routing, host firewall/NSG behavior, or capacity under load.
 The release also fixes a version-tag mismatch: `scripts/configure-web-launcher.py`
 accepted only `v2`–`v4` launcher references while the preset and
 `publish-instance-launcher.sh` publish `v5`, and `publish-test-web.sh` still
-tagged `v1`. The validator now accepts any numeric version and the publish
-helper uses `v5`.
+tagged `v1`. The validator now accepts any numeric version. The edge change
+bumps both publish helpers to `v6`, so rebuilding does not overwrite the
+deployed `v5` artifact.
 
 ## Public-mode and ZIP results (2026-11-12)
 
@@ -201,36 +206,80 @@ confirmed that challenge creation no longer writes to the ledger.
 The real ZIP builder (`services/instance-builder/worker.py`) was exercised
 against the stack: path-traversal and symlink archives were rejected with 400, a
 valid ZIP built and launched a challenge, and a ZIP with a failing `RUN` reported
-`failed` while `finish` returned 409. This still ran on Docker Desktop, not the
-dedicated worker, and no TLS edge was in front of it.
+`failed` while `finish` returned 409. This ran on Docker Desktop before the VPS
+cutover; the VPS run below reused an already-built ZIP image.
+
+## Production VPS deployment (2026-11-12)
+
+The existing Oracle Cloud VPS (ARM64, 2 vCPU, 11 GiB RAM) was updated in place.
+No new machine, worker or paid resource was provisioned, and `/home/ubuntu/CTFd`
+was not reset, cleaned or switched.
+
+- A verified backup was written to
+  `/home/ubuntu/cyberdune-backups/deploy-20261112T082813Z/` (database, uploads,
+  manager state, Pulumi state, registry, config/secrets, production worktree,
+  inventory and checksums).
+- The release tree at `/home/ubuntu/cyberdune-releases/release-29285d66/source`
+  was built into `cyberdune/ctfd:release-29285d66` and deployed through a new
+  Compose overlay; the source is baked into the image, so the host checkout is
+  no longer bind-mounted over `/opt/CTFd`.
+- External `https://ctf.cyberdune.online` returns 200 with HSTS, CSP,
+  `X-Frame-Options`, `nosniff`, `Referrer-Policy`, and a host-only
+  `Secure; HttpOnly; SameSite=Lax` session cookie. `/`, `/login`, `/register`,
+  `/scoreboard`, `/teams`, `/training` and `/rules` return 200; `/challenges`
+  redirects unauthenticated users. The 61 training challenges and 71 users were
+  intact after cutover.
+- The manager was aligned with `INSTANCE_PORT_MIN/MAX=20000/20127` and the
+  shared port ledger, and the CTFd web launcher was set to the ARM64
+  `web-container:v5-arm64` scenario.
+- A real two-player lifecycle ran on the VPS: both launches took about 9 s,
+  received loopback ports `32770`/`32771` and different HMAC flags, and the
+  served `/flag` matched each player's flag. Targets were read-only, all
+  capabilities dropped, `no-new-privileges`, 128 MB / 0.5 CPU / 64 PIDs, with no
+  mounts or published ports on a per-instance internal network. Metadata, CTFd,
+  the manager, MariaDB and Redis were unreachable from the target network. The
+  janitor removed both instances after expiry and freed the ports.
+- A manager restart left the instance serving the same flag with API state
+  intact, and an explicit destroy removed all instance containers.
+
+Public challenge access remains disabled: `INSTANCE_PUBLIC_HOST` and
+`INSTANCE_EDGE_HOST` are empty, no challenge ports are open, and
+`targets.cyberdune.online` does not resolve. This is a working private-mode
+deployment, not a public dynamic-challenge readiness claim.
 
 ## Open gates (2026-11-12)
 
-**Dedicated worker.** No OCI CLI or API credentials exist locally, on the VPS, or
-in this environment, so quota, capacity and the actual bill could not be
-inspected. The existing VPS cannot host the worker: it shares the production
-kernel and Docker daemon, has 2 vCPU / 12 GB and 16 GB free disk, has no
-`/dev/kvm`, and restricts unprivileged user namespaces. Candidate shapes:
-
-- `VM.Standard.E5.Flex`, x86_64, 4 OCPU / 16 GB, 100 GB boot. Oracle's public
-  price list shows E5 at $0.015–$0.03 per OCPU-hour plus $0.002 per GB-hour,
-  roughly $55–$135 per month before storage and egress. The exact tier and bill
-  must be confirmed in the tenancy console. This is a paid resource.
-- `VM.Standard.A1.Flex`, ARM64, 4 OCPU / 24 GB. Oracle halved the Always Free A1
-  allowance to 2 OCPU / 12 GB in June 2026; a second 4/24 instance may be
-  billable and capacity is often unavailable. It also requires the native ARM64
-  manager build path.
-
-Provisioning is blocked until OCI access is provided to read quota and price, or
-a paid shape is explicitly approved.
+**Dedicated worker.** Out of scope by decision: the deployment stays on the one
+existing VPS, so no second machine, worker or paid resource is provisioned. That
+means the platform and the challenge engine share one kernel and one Docker
+daemon. A container escape or a malicious privileged build is a host-level
+compromise, and challenge load competes with CTFd for 2 vCPU / 11 GiB. Only
+trusted admins may upload ZIPs/Dockerfiles. This residual risk is accepted, not
+removed.
 
 **Public TLS routing.** Needs control of `cyberdune.online` DNS to add
-`*.targets` and a DNS-01 ACME credential. The proposed edge is Traefik on the
-worker using its Docker provider: gateway containers carry
-`Host("<identity>.targets.cyberdune.online")` labels on a shared edge network,
-publish no host ports, and a wildcard certificate is issued through DNS-01.
-Removing the container removes the route. The worker would expose only 80/443.
+`*.targets` and a DNS-01 ACME credential. Both are external gates; neither
+credential exists on the VPS. The single-VPS design is implemented and
+disabled by default in `services/edge/`:
 
-**GitHub publish.** The fix commit is local only. This environment has no GitHub
-token, credential helper, `gh` CLI, or SSH key, so the push must run from an
-authenticated machine.
+- the scenario accepts `edge_host`/`edge_network`, validates the instance
+  identity as a DNS label, attaches the gateway to the shared
+  `ctfd_instance_edge` network, adds Traefik `Host()` labels, publishes no host
+  port, and returns `https://<identity>.<edge_host>/`;
+- `web_preset.py` emits edge mode from `INSTANCE_EDGE_HOST` /
+  `INSTANCE_EDGE_NETWORK` and refuses to combine it with `INSTANCE_PUBLIC_HOST`;
+- `services/edge/docker-compose.edge.yml` runs Traefik on `127.0.0.1:8081`
+  with the Docker provider;
+- `services/edge/nginx-targets.conf` terminates TLS for
+  `*.targets.cyberdune.online` and proxies to Traefik.
+
+To enable, add `*.targets` -> `51.170.136.188`, obtain a wildcard certificate
+through DNS-01 (manual TXT, the Namecheap API, or a delegated
+`_acme-challenge.targets`), install the Nginx snippet, start the edge Compose
+file, and set `INSTANCE_EDGE_HOST=targets.cyberdune.online` on CTFd. Removing a
+gateway container removes its route. Verify externally before calling it ready.
+
+**GitHub publish.** The edge-mode change is committed on
+`public-dynamic-challenges-remediation` and pushed from this authenticated
+machine. Production still runs the `release-29285d66` image and the
+`v5-arm64` scenario until a deliberate rebuild.

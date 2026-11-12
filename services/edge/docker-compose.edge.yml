@@ -1,0 +1,35 @@
+# Optional public HTTPS edge for dynamic challenges. Disabled by default.
+#
+# It is only useful once *.targets.cyberdune.online resolves to this host and
+# the host Nginx has a wildcard certificate. Start it explicitly, next to the
+# existing CTFd project:
+#
+#   docker compose -p cyberdune-edge -f services/edge/docker-compose.edge.yml up -d
+#
+# Traefik reads gateway labels over the shared edge network and listens on
+# 127.0.0.1 only; the host Nginx terminates TLS and proxies to it.
+services:
+  edge:
+    image: traefik:v3.7.18
+    restart: unless-stopped
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=ctfd_instance_edge
+      - --entrypoints.web.address=:8080
+      - --log.level=WARN
+      - --accesslog=false
+    ports:
+      - 127.0.0.1:8081:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - ctfd_instance_edge
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+networks:
+  ctfd_instance_edge:
+    name: ctfd_instance_edge

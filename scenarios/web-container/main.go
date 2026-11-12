@@ -108,6 +108,60 @@ func validPublicHostname(host string) bool {
 	return true
 }
 
+const defaultEdgeNetwork = "ctfd_instance_edge"
+
+// edgeHostname returns the public HTTPS hostname for an instance. chall-manager
+// identities are hex labels, so they are already DNS-safe.
+func edgeHostname(identity, edgeHost string) (string, error) {
+	if !validPublicHostname(edgeHost) {
+		return "", fmt.Errorf("edge_host must be a valid public hostname without scheme, port or path")
+	}
+	if len(identity) == 0 || len(identity) > 63 || identity[0] == '-' || identity[len(identity)-1] == '-' {
+		return "", fmt.Errorf("instance identity is not a valid DNS label")
+	}
+	for _, char := range identity {
+		if !((char >= 'a' && char <= 'z') || (char >= '0' && char <= '9') || char == '-') {
+			return "", fmt.Errorf("instance identity is not a valid DNS label")
+		}
+	}
+	return identity + "." + edgeHost, nil
+}
+
+func validEdgeNetwork(name string) bool {
+	if len(name) == 0 || len(name) > 128 {
+		return false
+	}
+	for _, char := range name {
+		if !((char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') ||
+			(char >= '0' && char <= '9') || char == '-' || char == '_' || char == '.') {
+			return false
+		}
+	}
+	return true
+}
+
+// edgeRoutingLabels let the shared Traefik edge find this gateway without a
+// published host port. TLS terminates at the host Nginx in front of Traefik.
+func edgeRoutingLabels(hostname, network, identity string) map[string]string {
+	name := "cyberdune-" + identity
+	return map[string]string{
+		"traefik.enable":                                              "true",
+		"traefik.docker.network":                                      network,
+		"traefik.http.routers." + name + ".rule":                      "Host(`" + hostname + "`)",
+		"traefik.http.routers." + name + ".entrypoints":               "web",
+		"traefik.http.routers." + name + ".service":                   name,
+		"traefik.http.services." + name + ".loadbalancer.server.port": "8080",
+	}
+}
+
+func dockerLabels(values map[string]string) docker.ContainerLabelArray {
+	labels := docker.ContainerLabelArray{}
+	for key, value := range values {
+		labels = append(labels, docker.ContainerLabelArgs{Label: pulumi.String(key), Value: pulumi.String(value)})
+	}
+	return labels
+}
+
 func connectionInfo(host string, published int) string {
 	if host != "" {
 		return "http://" + net.JoinHostPort(host, strconv.Itoa(published)) + "/"
@@ -155,6 +209,24 @@ func main() {
 		bind, err := publicBinding(publicHost)
 		if err != nil {
 			return err
+		}
+		edgeHost := strings.TrimSpace(req.Config.Additional["edge_host"])
+		edgeNetwork := strings.TrimSpace(req.Config.Additional["edge_network"])
+		if edgeNetwork == "" {
+			edgeNetwork = defaultEdgeNetwork
+		}
+		var edgeName string
+		if edgeHost != "" {
+			if publicHost != "" {
+				return fmt.Errorf("edge_host and public_host are mutually exclusive")
+			}
+			if !validEdgeNetwork(edgeNetwork) {
+				return fmt.Errorf("edge_network is not a valid Docker network name")
+			}
+			edgeName, err = edgeHostname(req.Config.Identity, edgeHost)
+			if err != nil {
+				return err
+			}
 		}
 		flag, err := instanceFlag(req.Config.Additional["flag_seed"], req.Config.Identity)
 		if err != nil {
@@ -223,9 +295,21 @@ func main() {
 			return err
 		}
 		// Only the TCP gateway has an ingress network. The target keeps its internal network.
-		ingress, err := docker.NewNetwork(req.Ctx, "gateway-network", &docker.NetworkArgs{}, opts...)
-		if err != nil {
-			return err
+		gatewayNetworks := docker.ContainerNetworksAdvancedArray{
+			docker.ContainerNetworksAdvancedArgs{Name: network.Name},
+		}
+		var gatewayLabels docker.ContainerLabelArray
+		if edgeHost != "" {
+			// Attach to the existing shared edge network; Traefik reads the labels.
+			gatewayNetworks = append(gatewayNetworks, docker.ContainerNetworksAdvancedArgs{Name: pulumi.String(edgeNetwork)})
+			gatewayLabels = dockerLabels(edgeRoutingLabels(edgeName, edgeNetwork, req.Config.Identity))
+		} else {
+			ingress, err := docker.NewNetwork(req.Ctx, "gateway-network", &docker.NetworkArgs{}, opts...)
+			if err != nil {
+				return err
+			}
+			gatewayNetworks = append(gatewayNetworks, docker.ContainerNetworksAdvancedArgs{Name: ingress.Name})
+			gatewayLabels = identityLabels
 		}
 		address := container.ID().ApplyT(func(id pulumi.ID) (string, error) { return inspectTargetAddress(string(id)) }).(pulumi.StringOutput)
 		// A host process can claim the reserved port after the allocator checked
@@ -235,7 +319,7 @@ func main() {
 		var gateway *docker.Container
 		startGateway := func(candidate int) error {
 			resourceName := "gateway"
-			labels := identityLabels
+			labels := gatewayLabels
 			if publicHost != "" {
 				resourceName = "gateway-" + strconv.Itoa(candidate)
 				labels = docker.ContainerLabelArray{
@@ -257,16 +341,16 @@ func main() {
 					Interval: pulumi.String("2s"), Timeout: pulumi.String("2s"), Retries: pulumi.Int(30), StartPeriod: pulumi.String("1s"),
 				},
 				Wait: pulumi.Bool(true), WaitTimeout: pulumi.Int(90),
-				Sysctls: pulumi.StringMap{"net.ipv4.ip_forward": pulumi.String("0")},
-				Labels:  labels,
-				NetworksAdvanced: docker.ContainerNetworksAdvancedArray{
-					docker.ContainerNetworksAdvancedArgs{Name: network.Name},
-					docker.ContainerNetworksAdvancedArgs{Name: ingress.Name},
-				},
-				Ports: docker.ContainerPortArray{docker.ContainerPortArgs{Internal: pulumi.Int(8080), External: pulumi.Int(candidate), Ip: pulumi.String(bind), Protocol: pulumi.String("tcp")}},
-				Rm:    pulumi.Bool(true),
+				Sysctls:          pulumi.StringMap{"net.ipv4.ip_forward": pulumi.String("0")},
+				Labels:           labels,
+				NetworksAdvanced: gatewayNetworks,
+				Rm:               pulumi.Bool(true),
 			}
-			if publicHost != "" {
+			// Edge mode routes through Traefik, so the gateway publishes no host port.
+			if edgeHost == "" {
+				args.Ports = docker.ContainerPortArray{docker.ContainerPortArgs{Internal: pulumi.Int(8080), External: pulumi.Int(candidate), Ip: pulumi.String(bind), Protocol: pulumi.String("tcp")}}
+			}
+			if publicHost != "" || edgeHost != "" {
 				args.Name = pulumi.String(gatewayContainerName(req.Config.Identity))
 			}
 			created, err := docker.NewContainer(req.Ctx, resourceName, args, opts...)
@@ -287,6 +371,9 @@ func main() {
 		resp.Flags = pulumi.StringArray{pulumi.String(flag)}.ToStringArrayOutput()
 		// Read the actual binding from Docker; provider Ports can retain input-only values.
 		resp.ConnectionInfo = gateway.ID().ApplyT(func(id pulumi.ID) (string, error) {
+			if edgeHost != "" {
+				return "https://" + edgeName + "/", nil
+			}
 			published, err := inspectPublishedPort(string(id), 8080, bind)
 			if err != nil {
 				return "", err
