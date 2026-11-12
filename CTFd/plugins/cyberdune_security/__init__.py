@@ -21,16 +21,18 @@ return {count, redis.call('TTL', KEYS[1])}
 _local_lock = threading.Lock()
 
 INSTANCE_PATH = '/api/v1/plugins/ctfd-chall-manager/instance'
+# Alpine (CTFd's frontend framework) evaluates x-data/x-show with new Function(),
+# so script-src must allow 'unsafe-eval' or every Alpine component stays inert.
 CONTENT_SECURITY_POLICY = (
     "default-src 'self'; "
     "base-uri 'self'; "
     "object-src 'none'; "
     "frame-ancestors 'self'; "
     "form-action 'self'; "
-    "script-src 'self' 'unsafe-inline'; "
-    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; "
     "img-src 'self' data: blob: https:; "
-    "font-src 'self' data: https://cdn.jsdelivr.net; "
+    "font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; "
     "connect-src 'self' wss:; "
     "frame-src 'self' https:; "
     "media-src 'self' data: blob: https:; "
