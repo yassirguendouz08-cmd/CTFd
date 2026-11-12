@@ -167,11 +167,10 @@ Observed results:
 - Explicit destroy removed all instance containers and per-instance networks
   for both players.
 
-This run validates the private-mode lifecycle on one Docker engine. It does
-**not** validate public mode (the ledger and public binding path were not
-exercised because `INSTANCE_PUBLIC_HOST` stayed empty), the ZIP/image builder,
-malicious archives or symlinks, ARM64 native builds, worker reboot recovery,
-TLS or edge routing, host firewall/NSG behavior, or capacity under load.
+This run validates the private-mode lifecycle on one Docker engine. The
+follow-up runs below add public mode and the ZIP builder on the same stack.
+Neither validates ARM64 native builds, worker reboot recovery, TLS or edge
+routing, host firewall/NSG behavior, or capacity under load.
 
 The release also fixes a version-tag mismatch: `scripts/configure-web-launcher.py`
 accepted only `v2`–`v4` launcher references while the preset and
@@ -204,3 +203,34 @@ against the stack: path-traversal and symlink archives were rejected with 400, a
 valid ZIP built and launched a challenge, and a ZIP with a failing `RUN` reported
 `failed` while `finish` returned 409. This still ran on Docker Desktop, not the
 dedicated worker, and no TLS edge was in front of it.
+
+## Open gates (2026-11-12)
+
+**Dedicated worker.** No OCI CLI or API credentials exist locally, on the VPS, or
+in this environment, so quota, capacity and the actual bill could not be
+inspected. The existing VPS cannot host the worker: it shares the production
+kernel and Docker daemon, has 2 vCPU / 12 GB and 16 GB free disk, has no
+`/dev/kvm`, and restricts unprivileged user namespaces. Candidate shapes:
+
+- `VM.Standard.E5.Flex`, x86_64, 4 OCPU / 16 GB, 100 GB boot. Oracle's public
+  price list shows E5 at $0.015–$0.03 per OCPU-hour plus $0.002 per GB-hour,
+  roughly $55–$135 per month before storage and egress. The exact tier and bill
+  must be confirmed in the tenancy console. This is a paid resource.
+- `VM.Standard.A1.Flex`, ARM64, 4 OCPU / 24 GB. Oracle halved the Always Free A1
+  allowance to 2 OCPU / 12 GB in June 2026; a second 4/24 instance may be
+  billable and capacity is often unavailable. It also requires the native ARM64
+  manager build path.
+
+Provisioning is blocked until OCI access is provided to read quota and price, or
+a paid shape is explicitly approved.
+
+**Public TLS routing.** Needs control of `cyberdune.online` DNS to add
+`*.targets` and a DNS-01 ACME credential. The proposed edge is Traefik on the
+worker using its Docker provider: gateway containers carry
+`Host("<identity>.targets.cyberdune.online")` labels on a shared edge network,
+publish no host ports, and a wildcard certificate is issued through DNS-01.
+Removing the container removes the route. The worker would expose only 80/443.
+
+**GitHub publish.** The fix commit is local only. This environment has no GitHub
+token, credential helper, `gh` CLI, or SSH key, so the push must run from an
+authenticated machine.
