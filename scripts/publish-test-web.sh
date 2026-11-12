@@ -23,7 +23,7 @@ sudo docker build --tag "$image" "$challenge"
 # executable must also be AMD64, although target images run natively on ARM64.
 scenario_arch=${SCENARIO_ARCH:-amd64}
 case "$scenario_arch" in amd64|arm64) ;; *) printf 'Unsupported SCENARIO_ARCH\n' >&2; exit 1 ;; esac
-artifact_tag="web-container:v1-$scenario_arch"
+artifact_tag="web-container:v5-$scenario_arch"
 temp_dir=$(mktemp -d)
 trap 'sudo rm -f -- "$temp_dir/main" "$temp_dir/Pulumi.yaml"; rmdir -- "$temp_dir"' EXIT
 

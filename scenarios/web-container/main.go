@@ -170,7 +170,9 @@ func main() {
 		hostPort := 0
 		minPort, maxPort := 0, 0
 		portStateFile := ""
-		if publicHost != "" {
+		// chall-manager runs the program in preview when a challenge is created.
+		// Reserving here would leak a pending lease for every challenge.
+		if publicHost != "" && !req.Ctx.DryRun() {
 			minPort, maxPort, err = configuredPortRange(req.Config.Additional)
 			if err != nil {
 				return err

@@ -46,7 +46,7 @@ New web challenge**, enter a name and the Docker image, then click Create.
 It generates a new flag seed and fills the scenario, private sharing, 10-minute
 timeout, mana and constant points automatically. Description/points/port are
 optional. The first test image is `cyberdune/cookie-mirage:v1`.
-The installed default launcher is `scenario-registry:5000/scenarios/web-container:v1-amd64`.
+The installed default launcher is `scenario-registry:5000/scenarios/web-container:v5-amd64`.
 You can save a digest-pinned reference once in the **Web scenario** setting;
 all subsequent quick creations use it. Image content still needs to be built
 or made available on the worker once per new app; the admin form cannot create
